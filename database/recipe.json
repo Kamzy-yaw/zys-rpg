@@ -1,0 +1,56 @@
+{
+  "diamond_sword": {
+    "name": "Forge Diamond Sword",
+    "output": "diamond_sword",
+    "materials": {
+      "ore_diamond": 4,
+      "ore_gold": 2
+    }
+  },
+  "netherite_sword": {
+    "name": "Forge Netherite Sword",
+    "output": "netherite_sword",
+    "materials": {
+      "ore_titanium": 4,
+      "ore_mythril": 2
+    }
+  },
+  "iron_armor": {
+    "name": "Forge Iron Armor",
+    "output": "iron_armor",
+    "materials": {
+      "ore_iron": 6
+    }
+  },
+  "gold_armor": {
+    "name": "Forge Gold Armor",
+    "output": "gold_armor",
+    "materials": {
+      "ore_gold": 6
+    }
+  },
+  "diamond_armor": {
+    "name": "Forge Diamond Armor",
+    "output": "diamond_armor",
+    "materials": {
+      "ore_diamond": 5,
+      "ore_gold": 2
+    }
+  },
+  "mythril_armor": {
+    "name": "Forge Mythril Armor",
+    "output": "mythril_armor",
+    "materials": {
+      "ore_mythril": 5,
+      "ore_diamond": 2
+    }
+  },
+  "titanium_armor": {
+    "name": "Forge Titanium Armor",
+    "output": "titanium_armor",
+    "materials": {
+      "ore_titanium": 5,
+      "ore_mythril": 3
+    }
+  }
+}

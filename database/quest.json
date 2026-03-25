@@ -1,0 +1,30 @@
+{
+  "goblin_hunt": {
+    "name": "Hunt Goblin",
+    "target": "goblin",
+    "amount": 5,
+    "rewardGold": 200,
+    "rewardExp": 100
+  },
+  "slime_cleanup": {
+    "name": "Slime Cleanup",
+    "target": "slime",
+    "amount": 8,
+    "rewardGold": 180,
+    "rewardExp": 90
+  },
+  "wolf_purge": {
+    "name": "Wolf Purge",
+    "target": "wolf",
+    "amount": 6,
+    "rewardGold": 300,
+    "rewardExp": 160
+  },
+  "orc_breaker": {
+    "name": "Orc Breaker",
+    "target": "orc",
+    "amount": 4,
+    "rewardGold": 420,
+    "rewardExp": 240
+  }
+}

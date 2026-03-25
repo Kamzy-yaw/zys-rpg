@@ -1,0 +1,103 @@
+{
+  "wood_sword": {
+    "name": "Wooden Sword",
+    "type": "weapon",
+    "atk": 2,
+    "price": 90
+  },
+  "stone_sword": {
+    "name": "Stone Sword",
+    "type": "weapon",
+    "atk": 4,
+    "price": 180
+  },
+  "iron_sword": {
+    "name": "Iron Sword",
+    "type": "weapon",
+    "atk": 6,
+    "price": 320
+  },
+  "diamond_sword": {
+    "name": "Diamond Sword",
+    "type": "weapon",
+    "atk": 10,
+    "craftOnly": true
+  },
+  "netherite_sword": {
+    "name": "Netherite Sword",
+    "type": "weapon",
+    "atk": 14,
+    "craftOnly": true
+  },
+  "iron_armor": {
+    "name": "Iron Armor",
+    "type": "armor",
+    "def": 3,
+    "tough": 1,
+    "craftOnly": true
+  },
+  "gold_armor": {
+    "name": "Gold Armor",
+    "type": "armor",
+    "def": 4,
+    "tough": 1,
+    "craftOnly": true
+  },
+  "diamond_armor": {
+    "name": "Diamond Armor",
+    "type": "armor",
+    "def": 6,
+    "tough": 2,
+    "craftOnly": true
+  },
+  "mythril_armor": {
+    "name": "Mythril Armor",
+    "type": "armor",
+    "def": 8,
+    "tough": 3,
+    "craftOnly": true
+  },
+  "titanium_armor": {
+    "name": "Titanium Armor",
+    "type": "armor",
+    "def": 10,
+    "tough": 4,
+    "craftOnly": true
+  },
+  "hp_potion": {
+    "name": "HP Potion",
+    "type": "potion",
+    "heal": 50,
+    "price": 30
+  },
+  "fish": {
+    "name": "Ikan Segar",
+    "type": "resource",
+    "sellPrice": 20
+  },
+  "ore_iron": {
+    "name": "Iron Ore",
+    "type": "resource",
+    "sellPrice": 18
+  },
+  "ore_gold": {
+    "name": "Gold Ore",
+    "type": "resource",
+    "sellPrice": 30
+  },
+  "ore_diamond": {
+    "name": "Diamond Ore",
+    "type": "resource",
+    "sellPrice": 55
+  },
+  "ore_mythril": {
+    "name": "Mythril Ore",
+    "type": "resource",
+    "sellPrice": 80
+  },
+  "ore_titanium": {
+    "name": "Titanium Ore",
+    "type": "resource",
+    "sellPrice": 115
+  }
+}

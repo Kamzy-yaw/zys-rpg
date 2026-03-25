@@ -1,0 +1,37 @@
+{
+  "field": {
+    "name": "Green Field",
+    "level": 1,
+    "monsters": ["slime", "goblin"]
+  },
+  "forest": {
+    "name": "Eldwood Forest",
+    "level": 5,
+    "monsters": ["wolf", "goblin"]
+  },
+  "desert": {
+    "name": "Sunscar Desert",
+    "level": 8,
+    "monsters": ["goblin", "wolf"]
+  },
+  "ice_land": {
+    "name": "Frostveil Ice Land",
+    "level": 12,
+    "monsters": ["wolf", "orc"]
+  },
+  "volcano": {
+    "name": "Ashfang Volcano",
+    "level": 16,
+    "monsters": ["orc"]
+  },
+  "sky_island": {
+    "name": "Aether Sky Island",
+    "level": 20,
+    "monsters": ["orc", "wolf"]
+  },
+  "mine": {
+    "name": "Blackstone Mine",
+    "level": 10,
+    "monsters": ["orc"]
+  }
+}

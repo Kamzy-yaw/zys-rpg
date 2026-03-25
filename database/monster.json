@@ -1,0 +1,41 @@
+{
+  "slime": {
+    "name": "Slime",
+    "hp": 30,
+    "atk": 5,
+    "exp": 10,
+    "gold": 8,
+    "rarity": 60
+  },
+
+  "goblin": {
+    "name": "Goblin",
+    "hp": 50,
+    "atk": 8,
+    "exp": 20,
+    "gold": 15,
+    "drops": [
+      { "item": "wood_sword", "chance": 20 },
+      { "item": "hp_potion", "chance": 30 }
+    ],
+    "rarity": 25
+  },
+
+  "wolf": {
+    "name": "Wild Wolf",
+    "hp": 70,
+    "atk": 12,
+    "exp": 35,
+    "gold": 25,
+    "rarity": 10
+  },
+
+  "orc": {
+    "name": "Orc Warrior",
+    "hp": 120,
+    "atk": 18,
+    "exp": 60,
+    "gold": 40,
+    "rarity": 5
+  }
+}
