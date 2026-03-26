@@ -5,6 +5,7 @@ let text = `*RPG v2 COMMAND CENTER*
 .start
 .profile
 .menu
+.channel
 
 *COMBAT*
 .hunt
