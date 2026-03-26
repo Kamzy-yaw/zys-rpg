@@ -49,8 +49,15 @@ player.quest.claimable = false
 
 let text = `\uD83C\uDFC1 Reward quest di-claim!\n${q.name}\n+${q.rewardExp} EXP\n+${q.rewardGold} Gold`
 
-if (levelUp(player)) {
-text += `\n\n\u2728 LEVEL UP!\nLevel sekarang: ${player.level}\nHP: ${player.maxhp}\nSTR: ${player.str}`
+let lvResult = levelUp(player)
+if (lvResult) {
+let g = lvResult.gains
+let gainText = []
+if (g.str) gainText.push(`STR +${g.str}`)
+if (g.agi) gainText.push(`AGI +${g.agi}`)
+if (g.int) gainText.push(`INT +${g.int}`)
+if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
+text += `\n\n\u2728 LEVEL UP!\nLevel sekarang: ${player.level}\nHP: ${player.maxhp}\nBonus stat: ${gainText.join(", ")}`
 }
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))

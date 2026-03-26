@@ -25,6 +25,12 @@ let aD = p.armor ? getDurability(p, p.armor) : null
 let pD = p.pickaxe ? getDurability(p, p.pickaxe) : null
 if (typeof p.miningExp !== 'number') p.miningExp = 0
 if (typeof p.miningLevel !== 'number') p.miningLevel = 1
+let armorTough = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].tough || 0) : 0
+let armorDef = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].def || 0) : 0
+let effectiveTough = Number(p.toughness || 0) + armorTough
+let critChance = Math.min(50, Number(p.int || 0) * 0.1)
+let dodgeChance = Math.min(50, Number(p.agi || 0) * 0.1)
+let reductionChance = Math.min(25, effectiveTough * 0.1)
 
 let need = p.level * 100
 
@@ -40,7 +46,11 @@ Area: ${areaDB[p.area].name}
 STR: ${p.str}
 AGI: ${p.agi}
 INT: ${p.int}
-TOUGH: ${p.toughness}
+TOUGH: ${p.toughness} + ${armorTough} (armor) = ${effectiveTough}
+DEF Armor: ${armorDef}
+Crit Chance: ${critChance.toFixed(1)}% (cap 50%)
+Dodge Chance: ${dodgeChance.toFixed(1)}% (cap 50%)
+Damage Reduction Chance: ${reductionChance.toFixed(1)}% (cap 25%)
 
 Weapon: ${weaponName}
 Armor: ${armorName}

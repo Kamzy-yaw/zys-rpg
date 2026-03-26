@@ -1,23 +1,23 @@
 {
-  "slime_cleanup": { "name": "Slime Cleanup", "target": "slime", "amount": 8, "rewardGold": 180, "rewardExp": 90, "repeat": 3 },
-  "goblin_hunt": { "name": "Goblin Hunt", "target": "goblin", "amount": 5, "rewardGold": 200, "rewardExp": 100, "repeat": 3 },
-  "wolf_purge": { "name": "Wolf Purge", "target": "wolf", "amount": 6, "rewardGold": 300, "rewardExp": 160, "repeat": 3 },
-  "spider_nest": { "name": "Spider Nest", "target": "spider", "amount": 6, "rewardGold": 260, "rewardExp": 150, "repeat": 3 },
-  "bat_cave": { "name": "Bat Cave", "target": "bat", "amount": 7, "rewardGold": 240, "rewardExp": 140, "repeat": 3 },
+  "slime_cleanup": { "name": "Slime Cleanup", "target": "slime", "amount": 8, "rewardGold": 180, "rewardExp": 90, "repeat": 3, "minLevel": 1 },
+  "goblin_hunt": { "name": "Goblin Hunt", "target": "goblin", "amount": 5, "rewardGold": 200, "rewardExp": 100, "repeat": 3, "minLevel": 2 },
+  "wolf_purge": { "name": "Wolf Purge", "target": "wolf", "amount": 6, "rewardGold": 300, "rewardExp": 160, "repeat": 3, "minLevel": 5 },
+  "spider_nest": { "name": "Spider Nest", "target": "spider", "amount": 6, "rewardGold": 260, "rewardExp": 150, "repeat": 3, "minLevel": 5 },
+  "bat_cave": { "name": "Bat Cave", "target": "bat", "amount": 7, "rewardGold": 240, "rewardExp": 140, "repeat": 3, "minLevel": 4 },
 
-  "skeleton_patrol": { "name": "Skeleton Patrol", "target": "skeleton", "amount": 6, "rewardGold": 350, "rewardExp": 200, "repeat": 2 },
-  "zombie_cleanup": { "name": "Zombie Cleanup", "target": "zombie", "amount": 6, "rewardGold": 370, "rewardExp": 210, "repeat": 2 },
-  "bandit_hunt": { "name": "Bandit Hunt", "target": "bandit", "amount": 5, "rewardGold": 400, "rewardExp": 230, "repeat": 2 },
-  "orc_breaker": { "name": "Orc Breaker", "target": "orc", "amount": 4, "rewardGold": 420, "rewardExp": 240, "repeat": 2 },
-  "lizardman_raid": { "name": "Lizardman Raid", "target": "lizardman", "amount": 5, "rewardGold": 450, "rewardExp": 260, "repeat": 2 },
+  "skeleton_patrol": { "name": "Skeleton Patrol", "target": "skeleton", "amount": 6, "rewardGold": 350, "rewardExp": 200, "repeat": 2, "minLevel": 9 },
+  "zombie_cleanup": { "name": "Zombie Cleanup", "target": "zombie", "amount": 6, "rewardGold": 370, "rewardExp": 210, "repeat": 2, "minLevel": 10 },
+  "bandit_hunt": { "name": "Bandit Hunt", "target": "bandit", "amount": 5, "rewardGold": 400, "rewardExp": 230, "repeat": 2, "minLevel": 11 },
+  "orc_breaker": { "name": "Orc Breaker", "target": "orc", "amount": 4, "rewardGold": 420, "rewardExp": 240, "repeat": 2, "minLevel": 10 },
+  "lizardman_raid": { "name": "Lizardman Raid", "target": "lizardman", "amount": 5, "rewardGold": 450, "rewardExp": 260, "repeat": 2, "minLevel": 12 },
 
-  "troll_slayer": { "name": "Troll Slayer", "target": "troll", "amount": 3, "rewardGold": 600, "rewardExp": 350, "repeat": 2 },
-  "harpy_storm": { "name": "Harpy Storm", "target": "harpy", "amount": 4, "rewardGold": 620, "rewardExp": 360, "repeat": 2 },
-  "minotaur_hunt": { "name": "Minotaur Hunt", "target": "minotaur", "amount": 2, "rewardGold": 750, "rewardExp": 420, "repeat": 1 },
-  "wyvern_slayer": { "name": "Wyvern Slayer", "target": "wyvern", "amount": 2, "rewardGold": 900, "rewardExp": 480, "repeat": 1 },
-  "golem_destroyer": { "name": "Golem Destroyer", "target": "golem", "amount": 2, "rewardGold": 950, "rewardExp": 500, "repeat": 1 },
+  "troll_slayer": { "name": "Troll Slayer", "target": "troll", "amount": 3, "rewardGold": 600, "rewardExp": 350, "repeat": 2, "minLevel": 16 },
+  "harpy_storm": { "name": "Harpy Storm", "target": "harpy", "amount": 4, "rewardGold": 620, "rewardExp": 360, "repeat": 2, "minLevel": 17 },
+  "minotaur_hunt": { "name": "Minotaur Hunt", "target": "minotaur", "amount": 2, "rewardGold": 750, "rewardExp": 420, "repeat": 1, "minLevel": 19 },
+  "wyvern_slayer": { "name": "Wyvern Slayer", "target": "wyvern", "amount": 2, "rewardGold": 900, "rewardExp": 480, "repeat": 1, "minLevel": 20 },
+  "golem_destroyer": { "name": "Golem Destroyer", "target": "golem", "amount": 2, "rewardGold": 950, "rewardExp": 500, "repeat": 1, "minLevel": 22 },
 
-  "dragon_hunt": { "name": "Dragon Hunt", "target": "dragon", "amount": 1, "rewardGold": 3000, "rewardExp": 1200, "repeat": 1 },
-  "demon_lord": { "name": "Demon Lord Hunt", "target": "demon_lord", "amount": 1, "rewardGold": 5000, "rewardExp": 2000, "repeat": 1 },
-  "phoenix_trial": { "name": "Phoenix Trial", "target": "phoenix", "amount": 1, "rewardGold": 6000, "rewardExp": 2500, "repeat": 1 }
+  "dragon_hunt": { "name": "Dragon Hunt", "target": "dragon", "amount": 1, "rewardGold": 3000, "rewardExp": 1200, "repeat": 1, "minLevel": 30 },
+  "demon_lord": { "name": "Demon Lord Hunt", "target": "demon_lord", "amount": 1, "rewardGold": 5000, "rewardExp": 2000, "repeat": 1, "minLevel": 40 },
+  "phoenix_trial": { "name": "Phoenix Trial", "target": "phoenix", "amount": 1, "rewardGold": 6000, "rewardExp": 2500, "repeat": 1, "minLevel": 45 }
 }

@@ -54,28 +54,37 @@ let hp2 = p2.maxhp
 let rounds = 0
 let score1 = battleScore(p1)
 let score2 = battleScore(p2)
+let p1Armor = armorStats(p1)
+let p2Armor = armorStats(p2)
+
+let p1CritChance = Math.min(50, Number(p1.int || 0) * 0.1)
+let p2CritChance = Math.min(50, Number(p2.int || 0) * 0.1)
+let p1DodgeChance = Math.min(50, Number(p1.agi || 0) * 0.1)
+let p2DodgeChance = Math.min(50, Number(p2.agi || 0) * 0.1)
+let p1ReductionChance = Math.min(25, (Number(p1.toughness || 0) + p1Armor.tough) * 0.1)
+let p2ReductionChance = Math.min(25, (Number(p2.toughness || 0) + p2Armor.tough) * 0.1)
 
 while (hp1 > 0 && hp2 > 0 && rounds < 12) {
 rounds += 1
 
-let crit1 = Math.random() * 100 < Math.min(35, Math.floor(p1.int * 1.5))
-let dodge2 = Math.random() * 100 < Math.min(30, Math.floor(p2.agi * 1.2))
+let crit1 = Math.random() * 100 < p1CritChance
+let dodge2 = Math.random() * 100 < p2DodgeChance
 if (!dodge2) {
 let atk1 = weaponAtk(p1)
-let def2 = armorStats(p2).def + armorStats(p2).tough + p2.toughness
-let dmg1 = Math.max(1, (p1.str + atk1 + Math.floor(Math.random() * 4)) - Math.floor(def2 / 2))
+let dmg1 = Math.max(1, (p1.str + atk1 + Math.floor(Math.random() * 4)) - p2Armor.def)
+if (Math.random() * 100 < p2ReductionChance) dmg1 = Math.max(1, Math.floor(dmg1 * 0.7))
 if (crit1) dmg1 = Math.floor(dmg1 * 1.5)
 hp2 -= dmg1
 score1 += dmg1
 }
 if (hp2 <= 0) break
 
-let crit2 = Math.random() * 100 < Math.min(35, Math.floor(p2.int * 1.5))
-let dodge1 = Math.random() * 100 < Math.min(30, Math.floor(p1.agi * 1.2))
+let crit2 = Math.random() * 100 < p2CritChance
+let dodge1 = Math.random() * 100 < p1DodgeChance
 if (!dodge1) {
 let atk2 = weaponAtk(p2)
-let def1 = armorStats(p1).def + armorStats(p1).tough + p1.toughness
-let dmg2 = Math.max(1, (p2.str + atk2 + Math.floor(Math.random() * 4)) - Math.floor(def1 / 2))
+let dmg2 = Math.max(1, (p2.str + atk2 + Math.floor(Math.random() * 4)) - p1Armor.def)
+if (Math.random() * 100 < p1ReductionChance) dmg2 = Math.max(1, Math.floor(dmg2 * 0.7))
 if (crit2) dmg2 = Math.floor(dmg2 * 1.5)
 hp1 -= dmg2
 score2 += dmg2

@@ -80,7 +80,7 @@ text += `Tool: ${pickaxeName} (Power +${pickaxePower})\n`
 
 // collapse event
 let eventRoll = Math.random()
-if (eventRoll < 0.08) {
+if (eventRoll < 0.03) {
 let dmg = 20 + Math.floor(Math.random() * 11)
 player.hp = Math.max(1, player.hp - dmg)
 player.lastMine = now
@@ -89,7 +89,7 @@ return m.reply(`⚠️ Tambang runtuh!\nHP -${dmg}\nHP sekarang: ${player.hp}/${
 }
 
 // mine monster event
-if (eventRoll >= 0.08 && eventRoll < 0.16) {
+if (eventRoll >= 0.03 && eventRoll < 0.11) {
 let dmg = 10 + Math.floor(Math.random() * 11)
 player.hp = Math.max(1, player.hp - dmg)
 if (Math.random() < 0.35) player.inventory.push('ore_iron')
@@ -98,7 +98,7 @@ fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 return m.reply(`👾 Monster muncul di tambang!\nKamu menang tapi HP -${dmg}\n+ Resource tambahan`)
 }
 
-let luckyLegendary = eventRoll >= 0.16 && eventRoll < 0.20
+let luckyLegendary = eventRoll >= 0.11 && eventRoll < 0.15
 if (luckyLegendary) {
 let legPool = ORES.filter((o) => o.tier === 'LEGENDARY' && player.level >= o.minLevel)
 if (legPool.length > 0) {

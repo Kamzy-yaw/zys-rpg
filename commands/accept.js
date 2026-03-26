@@ -25,6 +25,7 @@ if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
 
 let player = db[sender]
 normalizeQuest(player)
+if (typeof player.level !== 'number') player.level = 1
 
 if (player.quest.active && !player.quest.claimable) {
 return m.reply("Kamu masih punya quest aktif. Selesaikan dulu, lalu .claim.")
@@ -51,6 +52,10 @@ player.quest.progress = 0
 player.quest.claimable = false
 
 let q = questDB[picked]
+let minLevel = Number(q.minLevel || 1)
+if (player.level < minLevel) {
+return m.reply(`Level kamu belum cukup untuk quest ini.\nButuh Lv.${minLevel}+ | Level kamu Lv.${player.level}`)
+}
 let done = Number(player.quest.completed[picked] || 0)
 let repeatMax = Number(q.repeat || 1)
 if (done >= repeatMax) {

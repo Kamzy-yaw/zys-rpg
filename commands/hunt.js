@@ -71,10 +71,13 @@ let mobHP = mob.hp
 let rounds = 0
 let battleLog = []
 
+let critChance = Math.min(50, Number(player.int || 0) * 0.1)
+let dodgeChance = Math.min(50, Number(player.agi || 0) * 0.1)
+let reductionChance = Math.min(25, (Number(player.toughness || 0) + armorTough) * 0.1)
+
 while (mobHP > 0 && player.hp > 0 && rounds < 20) {
 rounds += 1
 
-let critChance = Math.min(35, Math.floor(player.int * 1.5))
 let isCrit = Math.random() * 100 < critChance
 let basePlayerDamage = Math.max(1, player.str + weaponAtk + Math.floor(Math.random() * 5))
 let playerDamage = isCrit ? Math.floor(basePlayerDamage * 1.5) : basePlayerDamage
@@ -83,16 +86,16 @@ battleLog.push(`Ronde ${rounds}: kamu hit ${mob.name} -${playerDamage} HP${isCri
 
 if (mobHP <= 0) break
 
-let reduction = Math.floor((player.toughness + armorTough + armorDef) / 2)
-let dodgeChance = Math.min(30, Math.floor(player.agi * 1.2))
 let dodged = Math.random() * 100 < dodgeChance
 
 if (dodged) {
 battleLog.push(`Ronde ${rounds}: kamu menghindar! (${mob.name} miss)`)
 } else {
-let mobDamage = Math.max(1, mob.atk + Math.floor(Math.random() * 4) - 1 - reduction)
+let reduced = Math.random() * 100 < reductionChance
+let mobDamage = Math.max(1, mob.atk + Math.floor(Math.random() * 4) - 1 - armorDef)
+if (reduced) mobDamage = Math.max(1, Math.floor(mobDamage * 0.7))
 player.hp -= mobDamage
-battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP`)
+battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${reduced ? " (REDUCE!)" : ""}`)
 }
 }
 
@@ -160,7 +163,14 @@ Ketik .claim untuk ambil reward.`
 }
 }
 
-if (levelUp(player)) {
+let lvResult = levelUp(player)
+if (lvResult) {
+let g = lvResult.gains
+let gainText = []
+if (g.str) gainText.push(`STR +${g.str}`)
+if (g.agi) gainText.push(`AGI +${g.agi}`)
+if (g.int) gainText.push(`INT +${g.int}`)
+if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
 
 text += `
 
@@ -168,7 +178,7 @@ text += `
 
 Level sekarang: ${player.level}
 HP: ${player.maxhp}
-STR: ${player.str}`
+Bonus stat: ${gainText.join(", ")}`
 }
 } else {
 let penalty = Math.min(player.gold, Math.floor(player.gold * 0.1))

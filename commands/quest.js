@@ -27,6 +27,7 @@ let player = db[sender]
 normalizeQuest(player)
 
 let text = "\uD83D\uDCDC Quest Board\n\n"
+let pLevel = Number(player.level || 1)
 
 if (player.quest.active && questDB[player.quest.active]) {
 let q = questDB[player.quest.active]
@@ -47,7 +48,9 @@ let q = questDB[id]
 let done = Number(player.quest.completed[id] || 0)
 let repeatMax = Number(q.repeat || 1)
 let remain = Math.max(0, repeatMax - done)
-text += `- ${id}: ${q.name} (${q.amount} ${q.target}) | ${q.rewardExp} EXP + ${q.rewardGold} Gold | selesai ${done}/${repeatMax}x | sisa ${remain}\n`
+let minLevel = Number(q.minLevel || 1)
+let fit = pLevel >= minLevel ? "✅" : "🔒"
+text += `${fit} ${id}: ${q.name} (Lv.${minLevel}+)\n   Target: ${q.amount} ${q.target} | Reward: ${q.rewardExp} EXP + ${q.rewardGold} Gold\n   Repeat: ${done}/${repeatMax}x | Sisa: ${remain}\n`
 }
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
