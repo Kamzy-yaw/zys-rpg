@@ -63,7 +63,8 @@ levelDiff = Math.max(0, scaledLevel - baseLevel)
 }
 let mobHPMax = Math.max(1, Math.floor((Number(mob.hp || 1)) * (1 + levelDiff * 0.12)))
 let mobAtkScaled = Math.max(1, Math.floor((Number(mob.atk || 1)) * (1 + levelDiff * 0.08)))
-let mobDefense = Math.max(1, Math.floor((scaledLevel * 0.7) + (mobHPMax / 140)))
+// DEF monster dibuat lebih ringan agar tidak men-lock damage player di 1.
+let mobDefense = Math.max(1, Math.floor((scaledLevel * 0.25) + (mobHPMax / 260)))
 
 let weaponAtk = 0
 let armorDef = 0
@@ -95,9 +96,10 @@ rounds += 1
 let isCrit = Math.random() * 100 < critChance
 let strValue = Number(player.str || 0)
 let baseFromWeapon = weaponAtk > 0
-? (weaponAtk * (1 + (Math.min(strValue, 200) / 250)))
-: (1 + (strValue * 0.15))
-let rawPlayerDamage = Math.max(1, Math.floor(baseFromWeapon) + Math.floor(Math.random() * 3))
+? (weaponAtk * (1 + (Math.min(strValue, 220) / 220)))
+: (1 + (strValue * 0.25))
+let strBonus = Math.floor(Math.min(strValue, 250) * 0.12)
+let rawPlayerDamage = Math.max(1, Math.floor(baseFromWeapon) + strBonus + Math.floor(Math.random() * 4))
 let playerDamage = Math.max(1, rawPlayerDamage - mobDefense)
 if (isCrit) playerDamage = Math.floor(playerDamage * 1.35)
 mobHP -= playerDamage
