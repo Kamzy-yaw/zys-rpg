@@ -4,9 +4,11 @@
   "desert": { "name": "Sunscar Desert", "level": 8, "monsters": ["wild_dog", "goblin", "sand_wyrm"] },
   "ice_land": { "name": "Frostveil Ice Land", "level": 12, "monsters": ["wolf", "orc", "skeleton", "zombie", "frost_golem"] },
   "volcano": { "name": "Ashfang Volcano", "level": 16, "monsters": ["orc", "lizardman", "kobold", "gnoll", "lava_behemoth"] },
-  "sky_island": { "name": "Aether Sky Island", "level": 20, "monsters": ["harpy", "wyvern", "storm_seraph"] },
+  "sky_island": { "name": "Aether Sky Island", "level": 20, "monsters": ["harpy", "wyvern", "storm_seraph", "shadow_knight"] },
   "mine": { "name": "Blackstone Mine", "level": 10, "monsters": ["cave_worm", "kobold", "bandit", "orc"] },
-  "ruins": { "name": "Ancient Ruins", "level": 25, "monsters": ["minotaur", "golem", "troll"] },
-  "dragon_peak": { "name": "Dragon Peak", "level": 30, "monsters": ["dragon", "wyvern", "golem"] },
-  "void_gate": { "name": "Void Gate", "level": 40, "monsters": ["demon_lord", "phoenix"] }
+  "ruins": { "name": "Ancient Ruins", "level": 25, "monsters": ["minotaur", "golem", "troll", "ancient_treant", "frost_revenant"] },
+  "crystal_cave": { "name": "Crystal Cave", "level": 28, "monsters": ["golem", "frost_revenant", "void_reaper"] },
+  "dragon_peak": { "name": "Dragon Peak", "level": 30, "monsters": ["dragon", "wyvern", "elder_drake", "void_reaper"] },
+  "mystic_swamp": { "name": "Mystic Swamp", "level": 33, "monsters": ["ancient_treant", "frost_revenant", "elder_drake"] },
+  "void_gate": { "name": "Void Gate", "level": 40, "monsters": ["demon_lord", "phoenix", "abyss_overlord"] }
 }

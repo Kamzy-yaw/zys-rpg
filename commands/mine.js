@@ -70,7 +70,7 @@ pickaxeName = itemDB[player.pickaxe].name
 }
 }
 
-let effectiveLevel = player.level + Math.floor(pickaxePower / 2)
+let effectiveLevel = player.level + Math.floor(player.miningLevel * 0.8) + Math.floor(pickaxePower / 2)
 let pool = ORES.filter((o) => effectiveLevel >= o.minLevel)
 if (pool.length === 0) return m.reply("Kamu belum bisa mining ore apapun.")
 
@@ -100,7 +100,8 @@ let bonusText = bonus ? `+ 1 ${itemDB[bonus] ? itemDB[bonus].name : bonus}` : "T
 return m.reply(`Monster muncul di tambang!\nReward: HP -${dmg}\nDrop: ${bonusText}`)
 }
 
-let luckyLegendary = eventRoll >= 0.11 && eventRoll < 0.15
+let legendaryWindow = Math.min(0.08, 0.04 + (player.miningLevel * 0.001))
+let luckyLegendary = eventRoll >= 0.11 && eventRoll < (0.11 + legendaryWindow)
 if (luckyLegendary) {
 let legPool = ORES.filter((o) => o.tier === 'LEGENDARY' && player.level >= o.minLevel)
 if (legPool.length > 0) {
@@ -112,12 +113,14 @@ text += `Jackpot!\nDrop: + 1 ${jackpot.name}\n`
 
 let nodes = 1 + Math.floor(Math.random() * 2)
 if (pickaxePower >= 6) nodes += 1
+if (player.miningLevel >= 8) nodes += 1
+if (player.miningLevel >= 16) nodes += 1
 let mined = {}
 
 for (let i = 0; i < nodes; i++) {
 let ore = pickWeighted(pool)
 let minDrop = ore.minDrop
-let maxDrop = ore.maxDrop + (pickaxePower >= 10 ? 1 : 0)
+let maxDrop = ore.maxDrop + (pickaxePower >= 10 ? 1 : 0) + Math.floor(player.miningLevel / 12)
 let qty = Math.floor(Math.random() * (maxDrop - minDrop + 1)) + minDrop
 if (qty < 1) qty = 1
 
@@ -145,7 +148,8 @@ if (leveled) text += `\nMining Level Up! Lv.${player.miningLevel}`
 
 if (player.pickaxe && itemDB[player.pickaxe] && player.durability[player.pickaxe] > 0) {
 let active = player.pickaxe
-let d = useDurability(player, active, 1)
+let d = { broken: false }
+if (Math.random() < 0.7) d = useDurability(player, active, 1)
 if (d.broken) {
 text += `\n${itemDB[active].name} rusak!`
 } else {

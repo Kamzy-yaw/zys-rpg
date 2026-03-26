@@ -34,7 +34,7 @@ function battleScore(player) {
 let wAtk = weaponAtk(player)
 let a = armorStats(player)
 let totalTough = player.toughness + a.tough
-let base = (player.level * 3) + (player.str * 2) + player.agi + Math.floor(player.int / 2) + (wAtk * 3) + (a.def * 2) + totalTough
+let base = (player.level * 3) + Math.floor(player.str * 0.8) + player.agi + Math.floor(player.int / 2) + (wAtk * 4) + (a.def * 2) + totalTough
 let luck = Math.floor(Math.random() * 16) + 1
 return base + luck
 }
@@ -71,7 +71,8 @@ let crit1 = Math.random() * 100 < p1CritChance
 let dodge2 = Math.random() * 100 < p2DodgeChance
 if (!dodge2) {
 let atk1 = weaponAtk(p1)
-let dmg1 = Math.max(1, (p1.str + atk1 + Math.floor(Math.random() * 4)) - p2Armor.def)
+let base1 = atk1 > 0 ? (atk1 * (1 + (Number(p1.str || 0) / 130))) : (2 + (Number(p1.str || 0) * 0.2))
+let dmg1 = Math.max(1, Math.floor(base1 + Math.floor(Math.random() * 3)) - p2Armor.def)
 if (Math.random() * 100 < p2ReductionChance) dmg1 = Math.max(1, Math.floor(dmg1 * 0.7))
 if (crit1) dmg1 = Math.floor(dmg1 * 1.5)
 hp2 -= dmg1
@@ -83,7 +84,8 @@ let crit2 = Math.random() * 100 < p2CritChance
 let dodge1 = Math.random() * 100 < p1DodgeChance
 if (!dodge1) {
 let atk2 = weaponAtk(p2)
-let dmg2 = Math.max(1, (p2.str + atk2 + Math.floor(Math.random() * 4)) - p1Armor.def)
+let base2 = atk2 > 0 ? (atk2 * (1 + (Number(p2.str || 0) / 130))) : (2 + (Number(p2.str || 0) * 0.2))
+let dmg2 = Math.max(1, Math.floor(base2 + Math.floor(Math.random() * 3)) - p1Armor.def)
 if (Math.random() * 100 < p1ReductionChance) dmg2 = Math.max(1, Math.floor(dmg2 * 0.7))
 if (crit2) dmg2 = Math.floor(dmg2 * 1.5)
 hp1 -= dmg2

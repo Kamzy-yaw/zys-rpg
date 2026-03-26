@@ -21,6 +21,7 @@ if (!Array.isArray(player.inventory)) player.inventory = []
 if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
 if (typeof player.toughness !== 'number') player.toughness = 0
+if (typeof player.maidOwned !== 'boolean') player.maidOwned = false
 ensureDurabilityState(player)
 if (!player.area || !areaDB[player.area]) player.area = "field"
 if (!player.quest || typeof player.quest !== 'object') player.quest = {}
@@ -50,6 +51,19 @@ let area = areaDB[player.area]
 let monsterList = area.monsters
 let pick = monsterList[Math.floor(Math.random() * monsterList.length)]
 let mob = monster[pick]
+let baseLevel = Number(mob.level ?? area.level ?? 1)
+let playerLevel = Number(player.level || 1)
+let scaledLevel = baseLevel
+let levelDiff = 0
+
+// Scaling hanya aktif kalau level player lebih tinggi dari base monster.
+if (playerLevel > baseLevel) {
+scaledLevel = Math.floor(baseLevel + (playerLevel - baseLevel) * 0.6)
+levelDiff = Math.max(0, scaledLevel - baseLevel)
+}
+let mobHPMax = Math.max(1, Math.floor((Number(mob.hp || 1)) * (1 + levelDiff * 0.12)))
+let mobAtkScaled = Math.max(1, Math.floor((Number(mob.atk || 1)) * (1 + levelDiff * 0.08)))
+let mobDefense = Math.max(1, Math.floor((scaledLevel * 0.7) + (mobHPMax / 140)))
 
 let weaponAtk = 0
 let armorDef = 0
@@ -67,7 +81,7 @@ armorTough = Number(itemDB[player.armor].tough || 0)
 
 if (typeof player.hp !== 'number') player.hp = player.maxhp
 
-let mobHP = mob.hp
+let mobHP = mobHPMax
 let rounds = 0
 let battleLog = []
 
@@ -79,8 +93,13 @@ while (mobHP > 0 && player.hp > 0 && rounds < 20) {
 rounds += 1
 
 let isCrit = Math.random() * 100 < critChance
-let basePlayerDamage = Math.max(1, player.str + weaponAtk + Math.floor(Math.random() * 5))
-let playerDamage = isCrit ? Math.floor(basePlayerDamage * 1.5) : basePlayerDamage
+let strValue = Number(player.str || 0)
+let baseFromWeapon = weaponAtk > 0
+? (weaponAtk * (1 + (Math.min(strValue, 200) / 250)))
+: (1 + (strValue * 0.15))
+let rawPlayerDamage = Math.max(1, Math.floor(baseFromWeapon) + Math.floor(Math.random() * 3))
+let playerDamage = Math.max(1, rawPlayerDamage - mobDefense)
+if (isCrit) playerDamage = Math.floor(playerDamage * 1.35)
 mobHP -= playerDamage
 battleLog.push(`Ronde ${rounds}: kamu hit ${mob.name} -${playerDamage} HP${isCrit ? " (CRIT!)" : ""}`)
 
@@ -92,15 +111,17 @@ if (dodged) {
 battleLog.push(`Ronde ${rounds}: kamu menghindar! (${mob.name} miss)`)
 } else {
 let reduced = Math.random() * 100 < reductionChance
-let mobDamage = Math.max(1, mob.atk + Math.floor(Math.random() * 4) - 1 - armorDef)
+let mobDamage = Math.max(1, mobAtkScaled + Math.floor(Math.random() * 4) - 1 - armorDef)
 if (reduced) mobDamage = Math.max(1, Math.floor(mobDamage * 0.7))
 player.hp -= mobDamage
-battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${reduced ? " (REDUCE!)" : ""}`)
+battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${reduced ? " (REDUCE 30%)" : ""}${!reduced && armorDef > 0 ? ` (DEF -${armorDef})` : ""}`)
 }
 }
 
 let text = `\u2694\uFE0F Kamu bertemu ${mob.name} di ${area.name}
-HP Monster: ${mob.hp}
+Lv Monster: ${scaledLevel}
+HP Monster: ${mobHPMax}
+DEF Monster: ${mobDefense}
 HP Kamu: ${player.hp < 0 ? 0 : player.hp}/${player.maxhp}
 `
 
@@ -112,15 +133,17 @@ if (battleLog.length > 6) text += "\n..."
 
 if (mobHP <= 0) {
 
-player.exp += mob.exp
-player.gold += mob.gold
+let rewardExp = Number(mob.exp || 0) + Math.max(0, Math.floor(levelDiff * 4))
+let rewardGold = Number(mob.gold || 0) + Math.max(0, Math.floor(levelDiff * 1))
+player.exp += rewardExp
+player.gold += rewardGold
 
 text += `
 
 \uD83C\uDF89 Monster kalah!
 Reward:
-+${mob.exp} EXP
-+${mob.gold} Gold`
++${rewardExp} EXP
++${rewardGold} Gold`
 
 let item = dropItem(mob)
 
@@ -197,7 +220,8 @@ HP dipulihkan ke ${player.maxhp}.`
 
 if (player.weapon) {
 let activeWeapon = player.weapon
-let w = useDurability(player, activeWeapon, 1)
+let w = { broken: false }
+if (Math.random() < 0.75) w = useDurability(player, activeWeapon, 1)
 if (w.broken) text += `\n\n\u26A0\uFE0F Senjatamu rusak dan terlepas!`
 else {
 let wd = getDurability(player, activeWeapon)
@@ -207,11 +231,30 @@ if (wd) text += `\n\nDurability senjata: ${wd.current}/${wd.max}`
 
 if (player.armor) {
 let activeArmor = player.armor
-let a = useDurability(player, activeArmor, 1)
+let a = { broken: false }
+if (Math.random() < 0.75) a = useDurability(player, activeArmor, 1)
 if (a.broken) text += `\n\n\u26A0\uFE0F Armor-mu rusak dan terlepas!`
 else {
 let ad = getDurability(player, activeArmor)
 if (ad) text += `\nDurability armor: ${ad.current}/${ad.max}`
+}
+}
+
+if (player.maidOwned) {
+let maidCost = 100
+if (player.gold >= maidCost) {
+player.gold -= maidCost
+player.hp = player.maxhp
+if (player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability) {
+player.durability[player.weapon] = Number(itemDB[player.weapon].durability)
+}
+if (player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
+player.durability[player.armor] = Number(itemDB[player.armor].durability)
+}
+text += `\n\nMaid service aktif: -${maidCost} Gold`
+text += `\nHP dipulihkan penuh & gear aktif diperbaiki.`
+} else {
+text += `\n\nMaid standby: Gold kurang (butuh 100).`
 }
 }
 

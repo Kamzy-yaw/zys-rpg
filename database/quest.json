@@ -19,5 +19,11 @@
 
   "dragon_hunt": { "name": "Dragon Hunt", "target": "dragon", "amount": 1, "rewardGold": 3000, "rewardExp": 1200, "repeat": 1, "minLevel": 30 },
   "demon_lord": { "name": "Demon Lord Hunt", "target": "demon_lord", "amount": 1, "rewardGold": 5000, "rewardExp": 2000, "repeat": 1, "minLevel": 40 },
-  "phoenix_trial": { "name": "Phoenix Trial", "target": "phoenix", "amount": 1, "rewardGold": 6000, "rewardExp": 2500, "repeat": 1, "minLevel": 45 }
+  "phoenix_trial": { "name": "Phoenix Trial", "target": "phoenix", "amount": 1, "rewardGold": 6000, "rewardExp": 2500, "repeat": 1, "minLevel": 45 },
+  "shadow_knight_sweep": { "name": "Shadow Knight Sweep", "target": "shadow_knight", "amount": 3, "rewardGold": 900, "rewardExp": 620, "repeat": 2, "minLevel": 20 },
+  "treant_harvest": { "name": "Treant Harvest", "target": "ancient_treant", "amount": 3, "rewardGold": 980, "rewardExp": 700, "repeat": 2, "minLevel": 22 },
+  "revenant_breaker": { "name": "Revenant Breaker", "target": "frost_revenant", "amount": 3, "rewardGold": 1100, "rewardExp": 820, "repeat": 2, "minLevel": 25 },
+  "void_reaper_hunt": { "name": "Void Reaper Hunt", "target": "void_reaper", "amount": 2, "rewardGold": 1400, "rewardExp": 1050, "repeat": 2, "minLevel": 30 },
+  "elder_drake_slayer": { "name": "Elder Drake Slayer", "target": "elder_drake", "amount": 2, "rewardGold": 1700, "rewardExp": 1300, "repeat": 1, "minLevel": 34 },
+  "abyss_overlord_trial": { "name": "Abyss Overlord Trial", "target": "abyss_overlord", "amount": 1, "rewardGold": 2500, "rewardExp": 2200, "repeat": 1, "minLevel": 40 }
 }
