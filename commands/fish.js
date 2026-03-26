@@ -87,22 +87,22 @@ text += `\uD83D\uDC1F Kamu menangkap ikan besar!\nDrop: + 1 ${itemName('big_fish
 player.inventory.push('treasure_chest')
 text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\nDrop: + 1 ${itemName('treasure_chest')}`
 } else {
-// Legendary jackpot 0.5%
-let lucky = Math.random() * 100 < 0.5
+// Legendary jackpot 1%
+let lucky = Math.random() * 100 < 1
 if (lucky) {
 let id = pick(LEGENDARY)
 player.inventory.push(id)
 text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 } else {
-// Tier distribution: Common 75%, Mid 20%, Rare 5%
+// Tier distribution: Common 65%, Mid 25%, Rare 10%
 let tierRoll = Math.random() * 100
 let tier = 'Common'
 let list = COMMON
-if (tierRoll >= 75 && tierRoll < 95) {
+if (tierRoll >= 65 && tierRoll < 90) {
 tier = 'Mid'
 list = MID
 }
-if (tierRoll >= 95) {
+if (tierRoll >= 90) {
 tier = 'Rare'
 list = RARE
 }

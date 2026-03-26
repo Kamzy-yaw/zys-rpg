@@ -25,7 +25,6 @@ let aD = p.armor ? getDurability(p, p.armor) : null
 let pD = p.pickaxe ? getDurability(p, p.pickaxe) : null
 if (typeof p.miningExp !== 'number') p.miningExp = 0
 if (typeof p.miningLevel !== 'number') p.miningLevel = 1
-if (typeof p.maidOwned !== 'boolean') p.maidOwned = false
 let armorTough = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].tough || 0) : 0
 let armorDef = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].def || 0) : 0
 let effectiveTough = Number(p.toughness || 0) + armorTough
@@ -58,7 +57,6 @@ Armor: ${armorName}
 Pickaxe: ${pickaxeName}
 Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"} | ${pD ? `Pickaxe ${pD.current}/${pD.max}` : "Pickaxe -"}
 Mining: Lv.${p.miningLevel} (${p.miningExp} EXP)
-Maid: ${p.maidOwned ? "Aktif (auto heal+fix, -100 Gold/battle)" : "Belum dibeli"}
 Rank: ${rank.grade} (${rank.wins} win)
 PVP: ${p.pvpWins}W/${p.pvpLosses}L
 `

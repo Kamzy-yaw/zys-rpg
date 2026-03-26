@@ -46,7 +46,6 @@ plantedAt: 0
 },
 pvpWins: 0,
 pvpLosses: 0,
-maidOwned: false,
 lastHunt: 0
 }
 

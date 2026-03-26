@@ -26,12 +26,5 @@
   "sand_wyrm": { "name": "Sand Wyrm", "hp": 160, "atk": 22, "exp": 95, "gold": 65, "drops": [{ "item": "ore_gold", "chance": 35 }, { "item": "ore_diamond", "chance": 15 }], "rarity": 4 },
   "frost_golem": { "name": "Frost Golem", "hp": 210, "atk": 27, "exp": 130, "gold": 90, "drops": [{ "item": "ore_mythril", "chance": 20 }, { "item": "diamond_armor", "chance": 5 }], "rarity": 3 },
   "lava_behemoth": { "name": "Lava Behemoth", "hp": 260, "atk": 33, "exp": 180, "gold": 130, "drops": [{ "item": "ore_titanium", "chance": 25 }, { "item": "mythril_sword", "chance": 5 }], "rarity": 2 },
-  "storm_seraph": { "name": "Storm Seraph", "hp": 320, "atk": 40, "exp": 240, "gold": 180, "drops": [{ "item": "titanium_armor", "chance": 4 }, { "item": "full_hp_potion", "chance": 20 }], "rarity": 1 },
-
-  "shadow_knight": { "name": "Shadow Knight", "level": 20, "hp": 360, "atk": 43, "exp": 270, "gold": 120, "drops": [{ "item": "ore_mythril", "chance": 22 }, { "item": "mythril_sword", "chance": 4 }], "rarity": 2 },
-  "ancient_treant": { "name": "Ancient Treant", "level": 22, "hp": 410, "atk": 45, "exp": 290, "gold": 130, "drops": [{ "item": "ancient_wood", "chance": 45 }, { "item": "spirit_gem", "chance": 10 }], "rarity": 2 },
-  "frost_revenant": { "name": "Frost Revenant", "level": 25, "hp": 460, "atk": 49, "exp": 340, "gold": 145, "drops": [{ "item": "ice_crystal", "chance": 40 }, { "item": "ore_adamantite", "chance": 12 }], "rarity": 2 },
-  "void_reaper": { "name": "Void Reaper", "level": 30, "hp": 540, "atk": 56, "exp": 420, "gold": 170, "drops": [{ "item": "void_stone", "chance": 9 }, { "item": "shadow_crystal", "chance": 20 }], "rarity": 1 },
-  "elder_drake": { "name": "Elder Drake", "level": 34, "hp": 640, "atk": 63, "exp": 520, "gold": 200, "drops": [{ "item": "ore_dragon_steel", "chance": 22 }, { "item": "dragon_heart_ore", "chance": 8 }], "rarity": 1 },
-  "abyss_overlord": { "name": "Abyss Overlord", "level": 40, "hp": 820, "atk": 74, "exp": 700, "gold": 230, "drops": [{ "item": "celestial_gem", "chance": 6 }, { "item": "ancient_ocean_relic", "chance": 10 }], "rarity": 1 }
+  "storm_seraph": { "name": "Storm Seraph", "hp": 320, "atk": 40, "exp": 240, "gold": 180, "drops": [{ "item": "titanium_armor", "chance": 4 }, { "item": "full_hp_potion", "chance": 20 }], "rarity": 1 }
 }

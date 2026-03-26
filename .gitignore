@@ -2,5 +2,3 @@ node_modules
 .npm
 session
 database/player.json
-database/arena.json
-database/duel.json

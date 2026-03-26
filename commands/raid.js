@@ -4,11 +4,11 @@ const levelUp = require('../system/level')
 const { ensureDurabilityState, ensureItemDurability, useDurability } = require('../system/equipment')
 
 const bosses = {
-1: { name: "Ancient Colossus", minLevel: 20, hp: 700, atk: 36, def: 2, critRes: 5, rewardGold: 500, rewardExp: 500 },
-2: { name: "Void Tyrant", minLevel: 24, hp: 1050, atk: 48, def: 4, critRes: 8, rewardGold: 750, rewardExp: 1000 },
-3: { name: "Abyss Behemoth", minLevel: 28, hp: 1450, atk: 58, def: 6, critRes: 10, rewardGold: 1100, rewardExp: 1600 },
-4: { name: "Hellfire Warden", minLevel: 33, hp: 1900, atk: 70, def: 8, critRes: 12, rewardGold: 1500, rewardExp: 2400 },
-5: { name: "World Eater", minLevel: 40, hp: 2600, atk: 85, def: 12, critRes: 15, rewardGold: 2100, rewardExp: 3400 }
+1: { name: "Ancient Colossus", minLevel: 20, hp: 700, atk: 36, rewardGold: 500, rewardExp: 500 },
+2: { name: "Void Tyrant", minLevel: 24, hp: 1050, atk: 48, rewardGold: 750, rewardExp: 1000 },
+3: { name: "Abyss Behemoth", minLevel: 28, hp: 1450, atk: 58, rewardGold: 1100, rewardExp: 1600 },
+4: { name: "Hellfire Warden", minLevel: 33, hp: 1900, atk: 70, rewardGold: 1500, rewardExp: 2400 },
+5: { name: "World Eater", minLevel: 40, hp: 2600, atk: 85, rewardGold: 2100, rewardExp: 3400 }
 }
 
 module.exports = async (m, { sender, args }) => {
@@ -24,7 +24,6 @@ if (typeof player.str !== 'number') player.str = 5
 if (typeof player.agi !== 'number') player.agi = 5
 if (typeof player.int !== 'number') player.int = 5
 if (typeof player.toughness !== 'number') player.toughness = 0
-if (typeof player.maidOwned !== 'boolean') player.maidOwned = false
 if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.exp !== 'number') player.exp = 0
 if (player.weapon === undefined) player.weapon = null
@@ -34,7 +33,7 @@ ensureDurabilityState(player)
 if ((args[0] || '').toLowerCase() === 'list') {
 let list = Object.keys(bosses).map((id) => {
 let b = bosses[id]
-return `Lv.${id} - ${b.name}\nReq Level: ${b.minLevel}\nHP: ${b.hp} | ATK: ${b.atk} | DEF: ${b.def}\nReward: +${b.rewardGold} Gold, +${b.rewardExp} EXP`
+return `Lv.${id} - ${b.name}\nReq Level: ${b.minLevel}\nHP: ${b.hp} | ATK: ${b.atk}\nReward: +${b.rewardGold} Gold, +${b.rewardExp} EXP`
 }).join('\n\n')
 return m.reply(`📜 RAID LIST\n\n${list}\n\nPakai: .raid <level>`)
 }
@@ -86,12 +85,8 @@ let reductionChance = Math.min(25, (Number(player.toughness || 0) + armorTough) 
 
 while (bossHp > 0 && player.hp > 0 && rounds < 25) {
 rounds += 1
-let crit = Math.random() * 100 < Math.max(0, critChance - Number(boss.critRes || 0))
-let strValue = Number(player.str || 0)
-let baseFromWeapon = weaponAtk > 0
-? (weaponAtk * (1 + (strValue / 140)))
-: (2 + (strValue * 0.2))
-let dmg = Math.max(1, Math.floor(baseFromWeapon + Math.floor(Math.random() * 3)) - Number(boss.def || 0))
+let crit = Math.random() * 100 < critChance
+let dmg = Math.max(1, player.str + weaponAtk + Math.floor(Math.random() * 6))
 if (crit) dmg = Math.floor(dmg * 1.5)
 bossHp -= dmg
 logs.push(`Ronde ${rounds}: kamu hit boss -${dmg}${crit ? " (CRIT)" : ""}`)
@@ -105,7 +100,7 @@ let reduced = Math.random() * 100 < reductionChance
 let taken = Math.max(1, boss.atk + Math.floor(Math.random() * 5) - armorDef)
 if (reduced) taken = Math.max(1, Math.floor(taken * 0.7))
 player.hp -= taken
-logs.push(`Ronde ${rounds}: boss hit kamu -${taken}${reduced ? " (REDUCE 30%)" : ""}${!reduced && armorDef > 0 ? ` (DEF -${armorDef})` : ""}`)
+logs.push(`Ronde ${rounds}: boss hit kamu -${taken}${reduced ? " (REDUCE!)" : ""}`)
 }
 }
 
@@ -133,29 +128,12 @@ text += `\n\n\uD83D\uDC80 Raid gagal.\nReward:\n-${penalty} Gold\nHP jadi 1\nDro
 }
 
 if (player.weapon) {
-let w = useDurability(player, player.weapon, 1.5)
+let w = useDurability(player, player.weapon, 2)
 if (w.broken) text += `\n\u26A0\uFE0F Senjata rusak!`
 }
 if (player.armor) {
-let a = useDurability(player, player.armor, 1.5)
+let a = useDurability(player, player.armor, 2)
 if (a.broken) text += `\n\u26A0\uFE0F Armor rusak!`
-}
-
-if (player.maidOwned) {
-let maidCost = 100
-if (player.gold >= maidCost) {
-player.gold -= maidCost
-player.hp = player.maxhp
-if (player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability) {
-player.durability[player.weapon] = Number(itemDB[player.weapon].durability)
-}
-if (player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
-player.durability[player.armor] = Number(itemDB[player.armor].durability)
-}
-text += `\nMaid service aktif: -${maidCost} Gold (heal + repair).`
-} else {
-text += `\nMaid standby: Gold kurang (butuh 100).`
-}
 }
 
 player.lastRaid = now

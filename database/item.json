@@ -2,18 +2,14 @@
   "wood_sword": { "name": "Wooden Sword", "type": "weapon", "atk": 2, "price": 90, "durability": 70 },
   "stone_sword": { "name": "Stone Sword", "type": "weapon", "atk": 4, "price": 170, "durability": 85 },
   "iron_sword": { "name": "Iron Sword", "type": "weapon", "atk": 6, "price": 280, "durability": 110 },
-  "steel_sword": { "name": "Steel Sword", "type": "weapon", "atk": 7, "price": 420, "durability": 125 },
   "mythril_sword": { "name": "Mythril Sword", "type": "weapon", "atk": 8, "craftOnly": true, "durability": 130 },
   "diamond_sword": { "name": "Diamond Sword", "type": "weapon", "atk": 10, "craftOnly": true, "durability": 160 },
-  "dragon_sword": { "name": "Dragon Sword", "type": "weapon", "atk": 12, "craftOnly": true, "durability": 190 },
   "netherite_sword": { "name": "Netherite Sword", "type": "weapon", "atk": 14, "craftOnly": true, "durability": 220 },
 
   "iron_armor": { "name": "Iron Armor", "type": "armor", "def": 3, "tough": 1, "craftOnly": true, "durability": 140 },
-  "steel_armor": { "name": "Steel Armor", "type": "armor", "def": 5, "tough": 2, "craftOnly": true, "durability": 170 },
   "gold_armor": { "name": "Gold Armor", "type": "armor", "def": 4, "tough": 1, "craftOnly": true, "durability": 150 },
   "diamond_armor": { "name": "Diamond Armor", "type": "armor", "def": 6, "tough": 2, "craftOnly": true, "durability": 200 },
   "mythril_armor": { "name": "Mythril Armor", "type": "armor", "def": 8, "tough": 3, "craftOnly": true, "durability": 240 },
-  "dragon_armor": { "name": "Dragon Armor", "type": "armor", "def": 9, "tough": 4, "craftOnly": true, "durability": 260 },
   "titanium_armor": { "name": "Titanium Armor", "type": "armor", "def": 10, "tough": 4, "craftOnly": true, "durability": 280 },
 
   "wood_pickaxe": { "name": "Wooden Pickaxe", "type": "pickaxe", "miningPower": 2, "price": 150, "durability": 90 },

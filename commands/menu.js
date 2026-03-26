@@ -32,7 +32,6 @@ let text = `*RPG v2 COMMAND CENTER*
 .fish
 .mine
 .mining
-.maid [status/buy]
 .craft
 .sell <no> [jumlah]
 .fix <no>
