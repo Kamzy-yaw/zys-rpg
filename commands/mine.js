@@ -46,7 +46,6 @@ let player = db[sender]
 if (!Array.isArray(player.inventory)) player.inventory = []
 if (typeof player.lastMine !== 'number') player.lastMine = 0
 if (typeof player.level !== 'number') player.level = 1
-if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
 if (typeof player.maxhp !== 'number') player.maxhp = 100
 if (typeof player.miningExp !== 'number') player.miningExp = 0
@@ -75,27 +74,30 @@ let effectiveLevel = player.level + Math.floor(pickaxePower / 2)
 let pool = ORES.filter((o) => effectiveLevel >= o.minLevel)
 if (pool.length === 0) return m.reply("Kamu belum bisa mining ore apapun.")
 
-let text = "⛏️ Kamu mulai menambang...\n\n"
+let text = "Kamu mulai menambang...\n\n"
 text += `Tool: ${pickaxeName} (Power +${pickaxePower})\n`
 
-// collapse event
 let eventRoll = Math.random()
 if (eventRoll < 0.03) {
 let dmg = 20 + Math.floor(Math.random() * 11)
 player.hp = Math.max(1, player.hp - dmg)
 player.lastMine = now
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
-return m.reply(`⚠️ Tambang runtuh!\nHP -${dmg}\nHP sekarang: ${player.hp}/${player.maxhp}`)
+return m.reply(`Tambang runtuh!\nReward: HP -${dmg}\nHP sekarang: ${player.hp}/${player.maxhp}\nDrop: Tidak ada`)
 }
 
-// mine monster event
 if (eventRoll >= 0.03 && eventRoll < 0.11) {
 let dmg = 10 + Math.floor(Math.random() * 11)
 player.hp = Math.max(1, player.hp - dmg)
-if (Math.random() < 0.35) player.inventory.push('ore_iron')
+let bonus = null
+if (Math.random() < 0.35) {
+bonus = 'ore_iron'
+player.inventory.push(bonus)
+}
 player.lastMine = now
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
-return m.reply(`👾 Monster muncul di tambang!\nKamu menang tapi HP -${dmg}\n+ Resource tambahan`)
+let bonusText = bonus ? `+ 1 ${itemDB[bonus] ? itemDB[bonus].name : bonus}` : "Tidak ada"
+return m.reply(`Monster muncul di tambang!\nReward: HP -${dmg}\nDrop: ${bonusText}`)
 }
 
 let luckyLegendary = eventRoll >= 0.11 && eventRoll < 0.15
@@ -104,8 +106,7 @@ let legPool = ORES.filter((o) => o.tier === 'LEGENDARY' && player.level >= o.min
 if (legPool.length > 0) {
 let jackpot = legPool[Math.floor(Math.random() * legPool.length)]
 player.inventory.push(jackpot.id)
-text += "💎 Jackpot!\n"
-text += `+ ${jackpot.name} (1)\n`
+text += `Jackpot!\nDrop: + 1 ${jackpot.name}\n`
 }
 }
 
@@ -126,7 +127,7 @@ mined[ore.id].qty += qty
 }
 
 for (let id of Object.keys(mined)) {
-text += `+ ${mined[id].name} (${mined[id].qty})\n`
+text += `Drop: + ${mined[id].qty} ${mined[id].name}\n`
 }
 
 let expGain = 5 + Math.floor(pickaxePower / 2)
@@ -139,14 +140,14 @@ player.miningLevel += 1
 leveled = true
 need = player.miningLevel * 40
 }
-text += `\nEXP Mining +${expGain}`
-if (leveled) text += `\n🎉 Mining Level Up! Lv.${player.miningLevel}`
+text += `\nReward: +${expGain} EXP Mining`
+if (leveled) text += `\nMining Level Up! Lv.${player.miningLevel}`
 
 if (player.pickaxe && itemDB[player.pickaxe] && player.durability[player.pickaxe] > 0) {
 let active = player.pickaxe
 let d = useDurability(player, active, 1)
 if (d.broken) {
-text += `\n⚠️ ${itemDB[active].name} rusak!`
+text += `\n${itemDB[active].name} rusak!`
 } else {
 let dv = getDurability(player, active)
 if (dv) text += `\nDurability Pickaxe: ${dv.current}/${dv.max}`

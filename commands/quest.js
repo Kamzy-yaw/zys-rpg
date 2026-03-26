@@ -35,7 +35,7 @@ text += `Quest aktif: ${q.name}\nTarget: ${q.target}\nProgress: ${player.quest.p
 if (player.quest.claimable) {
 text += "\nStatus: SIAP CLAIM\nKetik .claim untuk ambil reward.\n"
 } else {
-text += "\nStatus: ON GOING\n"
+text += "\nStatus: ON GOING\nKetik .cancel untuk batalkan quest aktif.\n"
 }
 text += "\n"
 } else {

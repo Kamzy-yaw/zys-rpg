@@ -53,6 +53,6 @@ let itemName = itemDB[picked] ? itemDB[picked].name : picked
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`\uD83C\uDFB0 Gacha dibuka!\nKamu dapat: ${itemName}\nBiaya: ${cost} Gold`)
+m.reply(`\uD83C\uDFB0 Gacha dibuka!\nReward: Tidak ada\nDrop: + 1 ${itemName}\nBiaya: ${cost} Gold`)
 
 }

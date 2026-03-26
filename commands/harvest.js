@@ -31,5 +31,5 @@ for (let i = 0; i < amount; i++) p.inventory.push(crop)
 p.farm = { crop: null, plantedAt: 0 }
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`🌾 Panen berhasil: ${data.name} x${amount}`)
+m.reply(`Panen berhasil!\nReward: Tidak ada\nDrop: + ${amount} ${data.name}`)
 }

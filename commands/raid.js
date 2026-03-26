@@ -4,8 +4,11 @@ const levelUp = require('../system/level')
 const { ensureDurabilityState, ensureItemDurability, useDurability } = require('../system/equipment')
 
 const bosses = {
-1: { name: "Ancient Colossus", hp: 420, atk: 34, rewardGold: 500, rewardExp: 500 },
-2: { name: "Void Tyrant", hp: 620, atk: 46, rewardGold: 750, rewardExp: 1000 }
+1: { name: "Ancient Colossus", minLevel: 20, hp: 700, atk: 36, rewardGold: 500, rewardExp: 500 },
+2: { name: "Void Tyrant", minLevel: 24, hp: 1050, atk: 48, rewardGold: 750, rewardExp: 1000 },
+3: { name: "Abyss Behemoth", minLevel: 28, hp: 1450, atk: 58, rewardGold: 1100, rewardExp: 1600 },
+4: { name: "Hellfire Warden", minLevel: 33, hp: 1900, atk: 70, rewardGold: 1500, rewardExp: 2400 },
+5: { name: "World Eater", minLevel: 40, hp: 2600, atk: 85, rewardGold: 2100, rewardExp: 3400 }
 }
 
 module.exports = async (m, { sender, args }) => {
@@ -27,6 +30,14 @@ if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
 ensureDurabilityState(player)
 
+if ((args[0] || '').toLowerCase() === 'list') {
+let list = Object.keys(bosses).map((id) => {
+let b = bosses[id]
+return `Lv.${id} - ${b.name}\nReq Level: ${b.minLevel}\nHP: ${b.hp} | ATK: ${b.atk}\nReward: +${b.rewardGold} Gold, +${b.rewardExp} EXP`
+}).join('\n\n')
+return m.reply(`📜 RAID LIST\n\n${list}\n\nPakai: .raid <level>`)
+}
+
 if (player.level < 20) return m.reply("Raid hanya untuk level 20+.")
 
 let now = Date.now()
@@ -38,8 +49,17 @@ return m.reply(`Raid cooldown, tunggu ${menit} menit lagi.`)
 }
 
 let lv = parseInt(args[0] || "1")
-if (!bosses[lv]) lv = 1
+if (!bosses[lv]) {
+let info = Object.keys(bosses).map((id) => {
+let b = bosses[id]
+return `Lv.${id} - ${b.name} (Req Lv.${b.minLevel})`
+}).join('\n')
+return m.reply(`Pilih level raid yang valid.\n\n${info}`)
+}
 let boss = bosses[lv]
+if (player.level < boss.minLevel) {
+return m.reply(`Raid Lv.${lv} butuh minimal level ${boss.minLevel}.`)
+}
 
 let weaponAtk = 0
 let armorDef = 0
@@ -89,7 +109,7 @@ let text = `\uD83D\uDC79 Raid Lv.${lv}: ${boss.name}\nHP Boss: ${boss.hp}\nHP Ka
 if (bossHp <= 0) {
 player.gold += boss.rewardGold
 player.exp += boss.rewardExp
-text += `\n\n\uD83C\uDFC6 Boss tumbang!\n+${boss.rewardGold} Gold\n+${boss.rewardExp} EXP`
+text += `\n\n\uD83C\uDFC6 Boss tumbang!\nReward:\n+${boss.rewardGold} Gold\n+${boss.rewardExp} EXP\nDrop:\nTidak ada`
 let lvResult = levelUp(player)
 if (lvResult) {
 let g = lvResult.gains
@@ -104,7 +124,7 @@ text += `\n\n\u2728 LEVEL UP!\nLevel sekarang: ${player.level}\nBonus stat: ${ga
 let penalty = Math.min(player.gold, 80)
 player.gold -= penalty
 player.hp = 1
-text += `\n\n\uD83D\uDC80 Raid gagal.\n-${penalty} Gold\nHP jadi 1`
+text += `\n\n\uD83D\uDC80 Raid gagal.\nReward:\n-${penalty} Gold\nHP jadi 1\nDrop:\nTidak ada`
 }
 
 if (player.weapon) {

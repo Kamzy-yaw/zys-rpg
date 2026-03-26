@@ -118,7 +118,7 @@ player.gold += mob.gold
 text += `
 
 \uD83C\uDF89 Monster kalah!
-
+Reward:
 +${mob.exp} EXP
 +${mob.gold} Gold`
 
@@ -133,8 +133,10 @@ let itemName = itemDB[item] ? itemDB[item].name : item
 text += `
 
 \uD83C\uDF81 Kamu mendapatkan item!
-
-${itemName}`
+Drop:
++ 1 ${itemName}`
+} else {
+text += `\n\nDrop:\nTidak ada`
 }
 
 if (player.quest.active && questDB[player.quest.active]) {
@@ -188,6 +190,7 @@ player.hp = player.maxhp
 text += `
 
 \uD83D\uDC80 Kamu kalah dari ${mob.name}.
+Reward:
 -${penalty} Gold
 HP dipulihkan ke ${player.maxhp}.`
 }

@@ -79,20 +79,20 @@ let text = "\uD83C\uDFA3 Kamu melempar pancing...\n\n"
 if (roll < 8) {
 let dmg = 8 + Math.floor(Math.random() * 15)
 player.hp = Math.max(1, player.hp - dmg)
-text += `\uD83D\uDC09 Sesuatu menarik pancingmu...\nMonster muncul!\nHP -${dmg}`
+text += `\uD83D\uDC09 Sesuatu menarik pancingmu...\nMonster muncul!\nReward: HP -${dmg}\nDrop: Tidak ada`
 } else if (roll < 15) {
 player.inventory.push('big_fish')
-text += `\uD83D\uDC1F Kamu menangkap ikan besar!\n+ 1 ${itemName('big_fish')}`
+text += `\uD83D\uDC1F Kamu menangkap ikan besar!\nDrop: + 1 ${itemName('big_fish')}`
 } else if (roll < 20) {
 player.inventory.push('treasure_chest')
-text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\n+ 1 ${itemName('treasure_chest')}`
+text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\nDrop: + 1 ${itemName('treasure_chest')}`
 } else {
 // Legendary jackpot 1%
 let lucky = Math.random() * 100 < 1
 if (lucky) {
 let id = pick(LEGENDARY)
 player.inventory.push(id)
-text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\n\n+ 1 ${itemName(id)}`
+text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 } else {
 // Tier distribution: Common 65%, Mid 25%, Rare 10%
 let tierRoll = Math.random() * 100
@@ -111,11 +111,11 @@ let id = pick(list)
 player.inventory.push(id)
 
 if (tier === 'Rare') {
-text += `\uD83D\uDC8E Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\n\n+ 1 ${itemName(id)}`
+text += `\uD83D\uDC8E Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 } else if (tier === 'Mid') {
-text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\n\n+ 1 ${itemName(id)}`
+text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 } else {
-text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\n\n+ 1 ${itemName(id)}`
+text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 }
 }
 }
