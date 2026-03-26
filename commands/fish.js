@@ -25,14 +25,15 @@ if (roll < 0.62) {
 player.inventory.push('fish')
 text += "Kamu dapat ikan segar!"
 } else if (roll < 0.87) {
-let gold = Math.floor(Math.random() * 151) + 50
+let gold = Math.floor(Math.random() * 71) + 30
 player.gold = (player.gold || 0) + gold
 if (Math.random() < 0.25) player.inventory.push('hp_potion')
+if (Math.random() < 0.08) player.inventory.push('big_hp_potion')
 text += `Kamu dapat treasure!\n+${gold} Gold`
 } else {
 let dmg = Math.floor(Math.random() * 16) + 8
 player.hp = Math.max(1, player.hp - dmg)
-let gold = Math.floor(Math.random() * 41) + 20
+let gold = Math.floor(Math.random() * 31) + 15
 player.gold = (player.gold || 0) + gold
 text += `Monster laut menyerang!\n-${dmg} HP\nTapi kamu menang dan dapat +${gold} Gold`
 }

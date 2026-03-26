@@ -1,6 +1,7 @@
 const fs = require('fs')
 const recipeDB = require('../database/recipe.json')
 const itemDB = require('../database/item.json')
+const { ensureItemDurability } = require('../system/equipment')
 
 module.exports = async (m, { sender, args }) => {
 
@@ -14,7 +15,7 @@ let ids = Object.keys(recipeDB)
 let input = (args[0] || '').toLowerCase()
 
 if (!input) {
-let text = "??? Crafting Bench\n\n"
+let text = "\uD83D\uDEE0\uFE0F Crafting Bench\n\n"
 ids.forEach((id, i) => {
 let r = recipeDB[id]
 let out = itemDB[r.output] ? itemDB[r.output].name : r.output
@@ -53,10 +54,11 @@ if (idx !== -1) player.inventory.splice(idx, 1)
 }
 
 player.inventory.push(r.output)
+ensureItemDurability(player, r.output)
 
 let outName = itemDB[r.output] ? itemDB[r.output].name : r.output
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`? Craft berhasil: ${outName}`)
+m.reply(`\u2705 Craft berhasil: ${outName}`)
 
 }

@@ -21,6 +21,7 @@ let lock = player.level >= a.level ? "\u2705" : "\uD83D\uDD12"
 text += `${lock} ${id} - ${a.name} (Lv.${a.level})\n`
 }
 
+text += `\nBiaya travel: 25 Gold`
 text += `\nPakai: .travel <nama_area>\nContoh: .travel forest`
 return m.reply(text)
 }
@@ -41,9 +42,16 @@ if (player.area === targetId) {
 return m.reply(`Kamu sudah berada di ${target.name}.`)
 }
 
+if (typeof player.gold !== 'number') player.gold = 0
+let travelCost = 25
+if (player.gold < travelCost) {
+return m.reply(`Gold tidak cukup. Travel butuh ${travelCost} Gold.`)
+}
+
 player.area = targetId
+player.gold -= travelCost
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`\uD83D\uDEB6 Kamu pindah ke ${target.name}.\nMonster di area ini sekarang berbeda.`)
+m.reply(`\uD83D\uDEB6 Kamu pindah ke ${target.name}.\n-${travelCost} Gold\nMonster di area ini sekarang berbeda.`)
 
 }

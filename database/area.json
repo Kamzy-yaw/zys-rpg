@@ -12,22 +12,22 @@
   "desert": {
     "name": "Sunscar Desert",
     "level": 8,
-    "monsters": ["goblin", "wolf"]
+    "monsters": ["goblin", "wolf", "sand_wyrm"]
   },
   "ice_land": {
     "name": "Frostveil Ice Land",
     "level": 12,
-    "monsters": ["wolf", "orc"]
+    "monsters": ["wolf", "orc", "frost_golem"]
   },
   "volcano": {
     "name": "Ashfang Volcano",
     "level": 16,
-    "monsters": ["orc"]
+    "monsters": ["orc", "lava_behemoth"]
   },
   "sky_island": {
     "name": "Aether Sky Island",
     "level": 20,
-    "monsters": ["orc", "wolf"]
+    "monsters": ["storm_seraph", "orc", "wolf"]
   },
   "mine": {
     "name": "Blackstone Mine",

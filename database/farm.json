@@ -1,0 +1,23 @@
+{
+  "wheat": {
+    "name": "Wheat",
+    "growMs": 120000,
+    "yieldMin": 2,
+    "yieldMax": 4,
+    "sellPrice": 12
+  },
+  "berry": {
+    "name": "Berry",
+    "growMs": 180000,
+    "yieldMin": 2,
+    "yieldMax": 5,
+    "sellPrice": 16
+  },
+  "magic_herb": {
+    "name": "Magic Herb",
+    "growMs": 300000,
+    "yieldMin": 1,
+    "yieldMax": 3,
+    "sellPrice": 32
+  }
+}

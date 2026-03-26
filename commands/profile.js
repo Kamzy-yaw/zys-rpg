@@ -2,6 +2,7 @@ const fs = require('fs')
 const areaDB = require('../database/area.json')
 const itemDB = require('../database/item.json')
 const { normalizePvp, getRankGrade } = require('../system/pvp')
+const { getDurability, ensureDurabilityState } = require('../system/equipment')
 
 module.exports = async (m, { sender }) => {
 
@@ -14,9 +15,12 @@ return m.reply("Bikin karakter dulu pakai .start")
 let p = db[sender]
 if (!p.area || !areaDB[p.area]) p.area = "field"
 normalizePvp(p)
+ensureDurabilityState(p)
 let rank = getRankGrade(p)
 let weaponName = (p.weapon && itemDB[p.weapon]) ? itemDB[p.weapon].name : (p.weapon ? p.weapon : "None")
 let armorName = (p.armor && itemDB[p.armor]) ? itemDB[p.armor].name : (p.armor ? p.armor : "None")
+let wD = p.weapon ? getDurability(p, p.weapon) : null
+let aD = p.armor ? getDurability(p, p.armor) : null
 
 let need = p.level * 100
 
@@ -36,6 +40,7 @@ TOUGH: ${p.toughness}
 
 Weapon: ${weaponName}
 Armor: ${armorName}
+Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"}
 Rank: ${rank.grade} (${rank.wins} win)
 PVP: ${p.pvpWins}W/${p.pvpLosses}L
 `

@@ -1,4 +1,4 @@
 node_modules
 .npm
 session
-.env
+.envdatabase/player.json

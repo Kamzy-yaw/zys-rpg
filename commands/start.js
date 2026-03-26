@@ -21,6 +21,7 @@ int: 5,
 toughness: 0,
 weapon: null,
 armor: null,
+durability: {},
 inventory: [],
 area: "field",
 quest: {
@@ -33,6 +34,13 @@ lastTrain: 0,
 lastFish: 0,
 lastMine: 0,
 lastGacha: 0,
+lastExplore: 0,
+pvpCooldown: 0,
+lastRaid: 0,
+farm: {
+crop: null,
+plantedAt: 0
+},
 pvpWins: 0,
 pvpLosses: 0,
 lastHunt: 0

@@ -34,6 +34,9 @@ let data = itemDB[itemId]
 if (!data || typeof data.sellPrice !== 'number') {
 return m.reply("Item ini tidak bisa dijual.")
 }
+if (player.weapon === itemId || player.armor === itemId) {
+return m.reply("Lepas dulu item yang sedang dipakai sebelum dijual.")
+}
 
 for (let i = 0; i < qty; i++) {
 let rm = player.inventory.indexOf(itemId)

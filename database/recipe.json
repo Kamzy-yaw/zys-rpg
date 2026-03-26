@@ -7,6 +7,14 @@
       "ore_gold": 2
     }
   },
+  "mythril_sword": {
+    "name": "Forge Mythril Sword",
+    "output": "mythril_sword",
+    "materials": {
+      "ore_mythril": 4,
+      "ore_gold": 2
+    }
+  },
   "netherite_sword": {
     "name": "Forge Netherite Sword",
     "output": "netherite_sword",

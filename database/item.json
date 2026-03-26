@@ -3,66 +3,83 @@
     "name": "Wooden Sword",
     "type": "weapon",
     "atk": 2,
-    "price": 90
+    "price": 90,
+    "durability": 70
   },
   "stone_sword": {
     "name": "Stone Sword",
     "type": "weapon",
     "atk": 4,
-    "price": 180
+    "price": 170,
+    "durability": 85
   },
   "iron_sword": {
     "name": "Iron Sword",
     "type": "weapon",
     "atk": 6,
-    "price": 320
+    "price": 280,
+    "durability": 110
+  },
+  "mythril_sword": {
+    "name": "Mythril Sword",
+    "type": "weapon",
+    "atk": 8,
+    "craftOnly": true,
+    "durability": 130
   },
   "diamond_sword": {
     "name": "Diamond Sword",
     "type": "weapon",
     "atk": 10,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 160
   },
   "netherite_sword": {
     "name": "Netherite Sword",
     "type": "weapon",
     "atk": 14,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 220
   },
   "iron_armor": {
     "name": "Iron Armor",
     "type": "armor",
     "def": 3,
     "tough": 1,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 140
   },
   "gold_armor": {
     "name": "Gold Armor",
     "type": "armor",
     "def": 4,
     "tough": 1,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 150
   },
   "diamond_armor": {
     "name": "Diamond Armor",
     "type": "armor",
     "def": 6,
     "tough": 2,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 200
   },
   "mythril_armor": {
     "name": "Mythril Armor",
     "type": "armor",
     "def": 8,
     "tough": 3,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 240
   },
   "titanium_armor": {
     "name": "Titanium Armor",
     "type": "armor",
     "def": 10,
     "tough": 4,
-    "craftOnly": true
+    "craftOnly": true,
+    "durability": 280
   },
   "hp_potion": {
     "name": "HP Potion",
@@ -70,10 +87,37 @@
     "heal": 50,
     "price": 30
   },
+  "big_hp_potion": {
+    "name": "Big HP Potion",
+    "type": "potion",
+    "heal": 120,
+    "price": 60
+  },
+  "full_hp_potion": {
+    "name": "Full HP Potion",
+    "type": "potion",
+    "fullHeal": true,
+    "price": 150
+  },
   "fish": {
     "name": "Ikan Segar",
     "type": "resource",
     "sellPrice": 20
+  },
+  "wheat": {
+    "name": "Wheat",
+    "type": "resource",
+    "sellPrice": 12
+  },
+  "berry": {
+    "name": "Berry",
+    "type": "resource",
+    "sellPrice": 16
+  },
+  "magic_herb": {
+    "name": "Magic Herb",
+    "type": "resource",
+    "sellPrice": 32
   },
   "ore_iron": {
     "name": "Iron Ore",

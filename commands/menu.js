@@ -1,7 +1,7 @@
 module.exports = async (m) => {
 
 let text = `*╔═══ RPG v2 COMMAND CENTER ═══╗*
-*╚═ Petualangan, economy, leaderboard ═╝*
+*╚═ update terbaru: pvp, raid, farm, craft ═╝*
 
 *🎮 BASIC*
 • .start
@@ -11,11 +11,19 @@ let text = `*╔═══ RPG v2 COMMAND CENTER ═══╗*
 *⚔️ COMBAT*
 • .hunt
 • .explore
-• .heal
+• .heal [big/full]
 • .train str|agi|int
 • .travel <area>
+• .raid [1/2] (Lv20+)
+
+*🏟️ PVP*
 • .duel @user
-• .arena
+• .duel accept
+• .duel decline
+• .arena join
+• .arena leave
+• .arena list
+• .arena (fight)
 • .rank
 
 *🎲 LOOT & ECONOMY*
@@ -24,7 +32,12 @@ let text = `*╔═══ RPG v2 COMMAND CENTER ═══╗*
 • .fish
 • .mine
 • .craft
-• .sell <no>
+• .sell <no> [jumlah]
+• .fix <no>
+
+*🌾 FARMING*
+• .plant <wheat|berry|magic_herb>
+• .harvest
 
 *🎒 INVENTORY*
 • .inventory
@@ -39,7 +52,10 @@ let text = `*╔═══ RPG v2 COMMAND CENTER ═══╗*
 • .topgold
 • .toplevel
 
-_Tips: .buy ada di .shop, .equip/.sell ada di .inventory._`
+*🗓 WEEKLY*
+• .weeklyreset confirm
+
+_Tips: .buy ada di .shop, .equip/.sell/.fix ada di .inventory._`
 
 m.reply(text)
 

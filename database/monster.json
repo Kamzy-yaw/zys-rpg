@@ -27,6 +27,10 @@
     "atk": 12,
     "exp": 35,
     "gold": 25,
+    "drops": [
+      { "item": "stone_sword", "chance": 8 },
+      { "item": "big_hp_potion", "chance": 20 }
+    ],
     "rarity": 10
   },
 
@@ -37,5 +41,57 @@
     "exp": 60,
     "gold": 40,
     "rarity": 5
+  },
+
+  "sand_wyrm": {
+    "name": "Sand Wyrm",
+    "hp": 160,
+    "atk": 22,
+    "exp": 95,
+    "gold": 65,
+    "drops": [
+      { "item": "ore_gold", "chance": 35 },
+      { "item": "ore_diamond", "chance": 15 }
+    ],
+    "rarity": 4
+  },
+
+  "frost_golem": {
+    "name": "Frost Golem",
+    "hp": 210,
+    "atk": 27,
+    "exp": 130,
+    "gold": 90,
+    "drops": [
+      { "item": "ore_mythril", "chance": 20 },
+      { "item": "diamond_armor", "chance": 5 }
+    ],
+    "rarity": 3
+  },
+
+  "lava_behemoth": {
+    "name": "Lava Behemoth",
+    "hp": 260,
+    "atk": 33,
+    "exp": 180,
+    "gold": 130,
+    "drops": [
+      { "item": "ore_titanium", "chance": 25 },
+      { "item": "mythril_sword", "chance": 5 }
+    ],
+    "rarity": 2
+  },
+
+  "storm_seraph": {
+    "name": "Storm Seraph",
+    "hp": 320,
+    "atk": 40,
+    "exp": 240,
+    "gold": 180,
+    "drops": [
+      { "item": "titanium_armor", "chance": 4 },
+      { "item": "full_hp_potion", "chance": 20 }
+    ],
+    "rarity": 1
   }
 }

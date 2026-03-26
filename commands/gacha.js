@@ -1,5 +1,6 @@
 const fs = require('fs')
 const itemDB = require('../database/item.json')
+const { ensureItemDurability } = require('../system/equipment')
 
 module.exports = async (m, { sender }) => {
 
@@ -45,12 +46,13 @@ break
 
 player.gold -= cost
 player.inventory.push(picked)
+ensureItemDurability(player, picked)
 player.lastGacha = now
 
 let itemName = itemDB[picked] ? itemDB[picked].name : picked
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`?? Gacha dibuka!\nKamu dapat: ${itemName}\nBiaya: ${cost} Gold`)
+m.reply(`\uD83C\uDFB0 Gacha dibuka!\nKamu dapat: ${itemName}\nBiaya: ${cost} Gold`)
 
 }

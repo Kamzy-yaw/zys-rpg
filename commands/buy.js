@@ -1,5 +1,6 @@
 const fs = require('fs')
 const itemDB = require('../database/item.json')
+const { ensureItemDurability } = require('../system/equipment')
 
 module.exports = async (m,{sender,args})=>{
 
@@ -25,6 +26,7 @@ if(player.gold < item.price) return m.reply("Gold tidak cukup")
 player.gold -= item.price
 
 player.inventory.push(id)
+ensureItemDurability(player, id)
 
 fs.writeFileSync('./database/player.json',JSON.stringify(db,null,2))
 

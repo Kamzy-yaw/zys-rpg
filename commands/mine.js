@@ -17,11 +17,11 @@ return m.reply(`Tambang lagi istirahat, tunggu ${sisa} detik lagi.`)
 }
 
 let resources = [
-{ id: 'ore_iron', name: 'Iron Ore', chance: 40 },
+{ id: 'ore_iron', name: 'Iron Ore', chance: 43 },
 { id: 'ore_gold', name: 'Gold Ore', chance: 27 },
-{ id: 'ore_diamond', name: 'Diamond Ore', chance: 16 },
-{ id: 'ore_mythril', name: 'Mythril Ore', chance: 10 },
-{ id: 'ore_titanium', name: 'Titanium Ore', chance: 7 }
+{ id: 'ore_diamond', name: 'Diamond Ore', chance: 15 },
+{ id: 'ore_mythril', name: 'Mythril Ore', chance: 9 },
+{ id: 'ore_titanium', name: 'Titanium Ore', chance: 6 }
 ]
 
 let roll = Math.random() * 100
@@ -36,7 +36,7 @@ break
 }
 
 player.inventory.push(picked.id)
-let bonusGold = Math.floor(Math.random() * 21) + 10
+let bonusGold = Math.floor(Math.random() * 13) + 8
 player.gold = (player.gold || 0) + bonusGold
 player.lastMine = now
 

@@ -44,6 +44,7 @@ text += `${i + 1}. ${name} x${counts[item]}\n`
 text += "\nPakai .equip <nomor> untuk pasang gear."
 text += "\nPakai .sell <nomor> [jumlah] untuk jual item."
 text += "\nPakai .craft untuk lihat resep crafting."
+text += "\nPakai .fix <nomor> untuk repair gear."
 
 m.reply(text)
 
