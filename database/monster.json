@@ -1,97 +1,30 @@
 {
-  "slime": {
-    "name": "Slime",
-    "hp": 30,
-    "atk": 5,
-    "exp": 10,
-    "gold": 8,
-    "rarity": 60
-  },
-
-  "goblin": {
-    "name": "Goblin",
-    "hp": 50,
-    "atk": 8,
-    "exp": 20,
-    "gold": 15,
-    "drops": [
-      { "item": "wood_sword", "chance": 20 },
-      { "item": "hp_potion", "chance": 30 }
-    ],
-    "rarity": 25
-  },
-
-  "wolf": {
-    "name": "Wild Wolf",
-    "hp": 70,
-    "atk": 12,
-    "exp": 35,
-    "gold": 25,
-    "drops": [
-      { "item": "stone_sword", "chance": 8 },
-      { "item": "big_hp_potion", "chance": 20 }
-    ],
-    "rarity": 10
-  },
-
-  "orc": {
-    "name": "Orc Warrior",
-    "hp": 120,
-    "atk": 18,
-    "exp": 60,
-    "gold": 40,
-    "rarity": 5
-  },
-
-  "sand_wyrm": {
-    "name": "Sand Wyrm",
-    "hp": 160,
-    "atk": 22,
-    "exp": 95,
-    "gold": 65,
-    "drops": [
-      { "item": "ore_gold", "chance": 35 },
-      { "item": "ore_diamond", "chance": 15 }
-    ],
-    "rarity": 4
-  },
-
-  "frost_golem": {
-    "name": "Frost Golem",
-    "hp": 210,
-    "atk": 27,
-    "exp": 130,
-    "gold": 90,
-    "drops": [
-      { "item": "ore_mythril", "chance": 20 },
-      { "item": "diamond_armor", "chance": 5 }
-    ],
-    "rarity": 3
-  },
-
-  "lava_behemoth": {
-    "name": "Lava Behemoth",
-    "hp": 260,
-    "atk": 33,
-    "exp": 180,
-    "gold": 130,
-    "drops": [
-      { "item": "ore_titanium", "chance": 25 },
-      { "item": "mythril_sword", "chance": 5 }
-    ],
-    "rarity": 2
-  },
-
-  "storm_seraph": {
-    "name": "Storm Seraph",
-    "hp": 320,
-    "atk": 40,
-    "exp": 240,
-    "gold": 180,
-    "drops": [
-      { "item": "titanium_armor", "chance": 4 },
-      { "item": "full_hp_potion", "chance": 20 }
-    ],
-    "rarity": 1
-  }
+  "slime": { "name": "Slime", "hp": 30, "atk": 5, "exp": 10, "gold": 8, "rarity": 60 },
+  "rat": { "name": "Rat", "hp": 34, "atk": 6, "exp": 12, "gold": 9, "rarity": 45 },
+  "goblin": { "name": "Goblin", "hp": 50, "atk": 8, "exp": 20, "gold": 15, "drops": [{ "item": "wood_sword", "chance": 20 }, { "item": "hp_potion", "chance": 30 }], "rarity": 25 },
+  "wolf": { "name": "Wild Wolf", "hp": 70, "atk": 12, "exp": 35, "gold": 25, "drops": [{ "item": "stone_sword", "chance": 8 }, { "item": "big_hp_potion", "chance": 20 }], "rarity": 16 },
+  "bat": { "name": "Bat", "hp": 44, "atk": 9, "exp": 18, "gold": 13, "rarity": 22 },
+  "spider": { "name": "Spider", "hp": 58, "atk": 11, "exp": 24, "gold": 16, "rarity": 18 },
+  "wild_dog": { "name": "Wild Dog", "hp": 60, "atk": 11, "exp": 26, "gold": 17, "rarity": 14 },
+  "giant_ant": { "name": "Giant Ant", "hp": 66, "atk": 12, "exp": 28, "gold": 18, "rarity": 12 },
+  "cave_worm": { "name": "Cave Worm", "hp": 72, "atk": 13, "exp": 30, "gold": 20, "rarity": 11 },
+  "orc": { "name": "Orc Warrior", "hp": 120, "atk": 18, "exp": 60, "gold": 40, "rarity": 8 },
+  "skeleton": { "name": "Skeleton", "hp": 132, "atk": 20, "exp": 72, "gold": 45, "rarity": 7 },
+  "zombie": { "name": "Zombie", "hp": 140, "atk": 21, "exp": 76, "gold": 48, "rarity": 7 },
+  "bandit": { "name": "Bandit", "hp": 148, "atk": 22, "exp": 82, "gold": 52, "rarity": 6 },
+  "lizardman": { "name": "Lizardman", "hp": 160, "atk": 24, "exp": 90, "gold": 58, "rarity": 6 },
+  "kobold": { "name": "Kobold", "hp": 154, "atk": 23, "exp": 86, "gold": 55, "rarity": 6 },
+  "gnoll": { "name": "Gnoll", "hp": 168, "atk": 25, "exp": 96, "gold": 62, "rarity": 5 },
+  "troll": { "name": "Troll", "hp": 190, "atk": 28, "exp": 120, "gold": 80, "rarity": 4 },
+  "harpy": { "name": "Harpy", "hp": 184, "atk": 27, "exp": 115, "gold": 77, "rarity": 4 },
+  "minotaur": { "name": "Minotaur", "hp": 240, "atk": 33, "exp": 170, "gold": 120, "rarity": 3 },
+  "wyvern": { "name": "Wyvern", "hp": 265, "atk": 36, "exp": 190, "gold": 135, "rarity": 3 },
+  "golem": { "name": "Golem", "hp": 290, "atk": 38, "exp": 210, "gold": 150, "rarity": 2 },
+  "dragon": { "name": "Dragon", "hp": 380, "atk": 48, "exp": 340, "gold": 280, "rarity": 1 },
+  "demon_lord": { "name": "Demon Lord", "hp": 460, "atk": 56, "exp": 450, "gold": 380, "rarity": 1 },
+  "phoenix": { "name": "Phoenix", "hp": 500, "atk": 60, "exp": 520, "gold": 420, "rarity": 1 },
+  "sand_wyrm": { "name": "Sand Wyrm", "hp": 160, "atk": 22, "exp": 95, "gold": 65, "drops": [{ "item": "ore_gold", "chance": 35 }, { "item": "ore_diamond", "chance": 15 }], "rarity": 4 },
+  "frost_golem": { "name": "Frost Golem", "hp": 210, "atk": 27, "exp": 130, "gold": 90, "drops": [{ "item": "ore_mythril", "chance": 20 }, { "item": "diamond_armor", "chance": 5 }], "rarity": 3 },
+  "lava_behemoth": { "name": "Lava Behemoth", "hp": 260, "atk": 33, "exp": 180, "gold": 130, "drops": [{ "item": "ore_titanium", "chance": 25 }, { "item": "mythril_sword", "chance": 5 }], "rarity": 2 },
+  "storm_seraph": { "name": "Storm Seraph", "hp": 320, "atk": 40, "exp": 240, "gold": 180, "drops": [{ "item": "titanium_armor", "chance": 4 }, { "item": "full_hp_potion", "chance": 20 }], "rarity": 1 }
 }

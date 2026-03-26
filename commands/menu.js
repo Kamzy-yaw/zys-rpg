@@ -31,6 +31,8 @@ let text = `*╔═══ RPG v2 COMMAND CENTER ═══╗*
 • .gacha
 • .fish
 • .mine
+• .mining
+• .dig
 • .craft
 • .sell <no> [jumlah]
 • .fix <no>

@@ -1,147 +1,55 @@
 {
-  "wood_sword": {
-    "name": "Wooden Sword",
-    "type": "weapon",
-    "atk": 2,
-    "price": 90,
-    "durability": 70
-  },
-  "stone_sword": {
-    "name": "Stone Sword",
-    "type": "weapon",
-    "atk": 4,
-    "price": 170,
-    "durability": 85
-  },
-  "iron_sword": {
-    "name": "Iron Sword",
-    "type": "weapon",
-    "atk": 6,
-    "price": 280,
-    "durability": 110
-  },
-  "mythril_sword": {
-    "name": "Mythril Sword",
-    "type": "weapon",
-    "atk": 8,
-    "craftOnly": true,
-    "durability": 130
-  },
-  "diamond_sword": {
-    "name": "Diamond Sword",
-    "type": "weapon",
-    "atk": 10,
-    "craftOnly": true,
-    "durability": 160
-  },
-  "netherite_sword": {
-    "name": "Netherite Sword",
-    "type": "weapon",
-    "atk": 14,
-    "craftOnly": true,
-    "durability": 220
-  },
-  "iron_armor": {
-    "name": "Iron Armor",
-    "type": "armor",
-    "def": 3,
-    "tough": 1,
-    "craftOnly": true,
-    "durability": 140
-  },
-  "gold_armor": {
-    "name": "Gold Armor",
-    "type": "armor",
-    "def": 4,
-    "tough": 1,
-    "craftOnly": true,
-    "durability": 150
-  },
-  "diamond_armor": {
-    "name": "Diamond Armor",
-    "type": "armor",
-    "def": 6,
-    "tough": 2,
-    "craftOnly": true,
-    "durability": 200
-  },
-  "mythril_armor": {
-    "name": "Mythril Armor",
-    "type": "armor",
-    "def": 8,
-    "tough": 3,
-    "craftOnly": true,
-    "durability": 240
-  },
-  "titanium_armor": {
-    "name": "Titanium Armor",
-    "type": "armor",
-    "def": 10,
-    "tough": 4,
-    "craftOnly": true,
-    "durability": 280
-  },
-  "hp_potion": {
-    "name": "HP Potion",
-    "type": "potion",
-    "heal": 50,
-    "price": 30
-  },
-  "big_hp_potion": {
-    "name": "Big HP Potion",
-    "type": "potion",
-    "heal": 120,
-    "price": 60
-  },
-  "full_hp_potion": {
-    "name": "Full HP Potion",
-    "type": "potion",
-    "fullHeal": true,
-    "price": 150
-  },
-  "fish": {
-    "name": "Ikan Segar",
-    "type": "resource",
-    "sellPrice": 20
-  },
-  "wheat": {
-    "name": "Wheat",
-    "type": "resource",
-    "sellPrice": 12
-  },
-  "berry": {
-    "name": "Berry",
-    "type": "resource",
-    "sellPrice": 16
-  },
-  "magic_herb": {
-    "name": "Magic Herb",
-    "type": "resource",
-    "sellPrice": 32
-  },
-  "ore_iron": {
-    "name": "Iron Ore",
-    "type": "resource",
-    "sellPrice": 18
-  },
-  "ore_gold": {
-    "name": "Gold Ore",
-    "type": "resource",
-    "sellPrice": 30
-  },
-  "ore_diamond": {
-    "name": "Diamond Ore",
-    "type": "resource",
-    "sellPrice": 55
-  },
-  "ore_mythril": {
-    "name": "Mythril Ore",
-    "type": "resource",
-    "sellPrice": 80
-  },
-  "ore_titanium": {
-    "name": "Titanium Ore",
-    "type": "resource",
-    "sellPrice": 115
-  }
+  "wood_sword": { "name": "Wooden Sword", "type": "weapon", "atk": 2, "price": 90, "durability": 70 },
+  "stone_sword": { "name": "Stone Sword", "type": "weapon", "atk": 4, "price": 170, "durability": 85 },
+  "iron_sword": { "name": "Iron Sword", "type": "weapon", "atk": 6, "price": 280, "durability": 110 },
+  "mythril_sword": { "name": "Mythril Sword", "type": "weapon", "atk": 8, "craftOnly": true, "durability": 130 },
+  "diamond_sword": { "name": "Diamond Sword", "type": "weapon", "atk": 10, "craftOnly": true, "durability": 160 },
+  "netherite_sword": { "name": "Netherite Sword", "type": "weapon", "atk": 14, "craftOnly": true, "durability": 220 },
+
+  "iron_armor": { "name": "Iron Armor", "type": "armor", "def": 3, "tough": 1, "craftOnly": true, "durability": 140 },
+  "gold_armor": { "name": "Gold Armor", "type": "armor", "def": 4, "tough": 1, "craftOnly": true, "durability": 150 },
+  "diamond_armor": { "name": "Diamond Armor", "type": "armor", "def": 6, "tough": 2, "craftOnly": true, "durability": 200 },
+  "mythril_armor": { "name": "Mythril Armor", "type": "armor", "def": 8, "tough": 3, "craftOnly": true, "durability": 240 },
+  "titanium_armor": { "name": "Titanium Armor", "type": "armor", "def": 10, "tough": 4, "craftOnly": true, "durability": 280 },
+
+  "wood_pickaxe": { "name": "Wooden Pickaxe", "type": "pickaxe", "miningPower": 2, "price": 150, "durability": 90 },
+  "iron_pickaxe": { "name": "Iron Pickaxe", "type": "pickaxe", "miningPower": 4, "price": 400, "durability": 140 },
+  "steel_pickaxe": { "name": "Steel Pickaxe", "type": "pickaxe", "miningPower": 6, "price": 900, "durability": 200 },
+  "mythril_pickaxe": { "name": "Mythril Pickaxe", "type": "pickaxe", "miningPower": 10, "price": 2000, "durability": 280 },
+  "dragon_pickaxe": { "name": "Dragon Pickaxe", "type": "pickaxe", "miningPower": 15, "price": 5000, "durability": 380 },
+
+  "hp_potion": { "name": "HP Potion", "type": "potion", "heal": 50, "price": 30 },
+  "big_hp_potion": { "name": "Big HP Potion", "type": "potion", "heal": 120, "price": 60 },
+  "full_hp_potion": { "name": "Full HP Potion", "type": "potion", "fullHeal": true, "price": 150 },
+
+  "fish": { "name": "Ikan Segar", "type": "resource", "sellPrice": 20 },
+  "wheat": { "name": "Wheat", "type": "resource", "sellPrice": 12 },
+  "berry": { "name": "Berry", "type": "resource", "sellPrice": 16 },
+  "magic_herb": { "name": "Magic Herb", "type": "resource", "sellPrice": 32 },
+
+  "ore_stone": { "name": "Stone", "type": "resource", "sellPrice": 6 },
+  "ore_coal": { "name": "Coal", "type": "resource", "sellPrice": 8 },
+  "ore_copper": { "name": "Copper Ore", "type": "resource", "sellPrice": 10 },
+  "ore_tin": { "name": "Tin Ore", "type": "resource", "sellPrice": 11 },
+  "ore_iron": { "name": "Iron Ore", "type": "resource", "sellPrice": 18 },
+
+  "ore_silver": { "name": "Silver Ore", "type": "resource", "sellPrice": 24 },
+  "ore_gold": { "name": "Gold Ore", "type": "resource", "sellPrice": 30 },
+  "ore_platinum": { "name": "Platinum Ore", "type": "resource", "sellPrice": 45 },
+  "crystal_shard": { "name": "Crystal Shard", "type": "resource", "sellPrice": 50 },
+  "magic_crystal": { "name": "Magic Crystal", "type": "resource", "sellPrice": 62 },
+
+  "ore_mythril": { "name": "Mythril Ore", "type": "resource", "sellPrice": 80 },
+  "ore_adamantite": { "name": "Adamantite Ore", "type": "resource", "sellPrice": 96 },
+  "ore_dragon_steel": { "name": "Dragon Steel Ore", "type": "resource", "sellPrice": 110 },
+  "shadow_crystal": { "name": "Shadow Crystal", "type": "resource", "sellPrice": 120 },
+  "spirit_gem": { "name": "Spirit Gem", "type": "resource", "sellPrice": 130 },
+
+  "ancient_crystal": { "name": "Ancient Crystal", "type": "resource", "sellPrice": 180 },
+  "dragon_heart_ore": { "name": "Dragon Heart Ore", "type": "resource", "sellPrice": 220 },
+  "celestial_gem": { "name": "Celestial Gem", "type": "resource", "sellPrice": 260 },
+  "void_stone": { "name": "Void Stone", "type": "resource", "sellPrice": 300 },
+
+  "ore_diamond": { "name": "Diamond Ore", "type": "resource", "sellPrice": 55 },
+  "ore_titanium": { "name": "Titanium Ore", "type": "resource", "sellPrice": 115 }
 }

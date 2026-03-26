@@ -34,7 +34,7 @@ let data = itemDB[itemId]
 if (!data || typeof data.sellPrice !== 'number') {
 return m.reply("Item ini tidak bisa dijual.")
 }
-if (player.weapon === itemId || player.armor === itemId) {
+if (player.weapon === itemId || player.armor === itemId || player.pickaxe === itemId) {
 return m.reply("Lepas dulu item yang sedang dipakai sebelum dijual.")
 }
 

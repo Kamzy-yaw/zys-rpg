@@ -19,8 +19,12 @@ ensureDurabilityState(p)
 let rank = getRankGrade(p)
 let weaponName = (p.weapon && itemDB[p.weapon]) ? itemDB[p.weapon].name : (p.weapon ? p.weapon : "None")
 let armorName = (p.armor && itemDB[p.armor]) ? itemDB[p.armor].name : (p.armor ? p.armor : "None")
+let pickaxeName = (p.pickaxe && itemDB[p.pickaxe]) ? itemDB[p.pickaxe].name : (p.pickaxe ? p.pickaxe : "None")
 let wD = p.weapon ? getDurability(p, p.weapon) : null
 let aD = p.armor ? getDurability(p, p.armor) : null
+let pD = p.pickaxe ? getDurability(p, p.pickaxe) : null
+if (typeof p.miningExp !== 'number') p.miningExp = 0
+if (typeof p.miningLevel !== 'number') p.miningLevel = 1
 
 let need = p.level * 100
 
@@ -40,7 +44,9 @@ TOUGH: ${p.toughness}
 
 Weapon: ${weaponName}
 Armor: ${armorName}
-Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"}
+Pickaxe: ${pickaxeName}
+Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"} | ${pD ? `Pickaxe ${pD.current}/${pD.max}` : "Pickaxe -"}
+Mining: Lv.${p.miningLevel} (${p.miningExp} EXP)
 Rank: ${rank.grade} (${rank.wins} win)
 PVP: ${p.pvpWins}W/${p.pvpLosses}L
 `

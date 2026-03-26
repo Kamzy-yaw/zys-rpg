@@ -45,7 +45,9 @@ text += "Daftar quest:\n"
 for (let id of Object.keys(questDB)) {
 let q = questDB[id]
 let done = Number(player.quest.completed[id] || 0)
-text += `- ${id}: ${q.name} (${q.amount} ${q.target}) | ${q.rewardExp} EXP + ${q.rewardGold} Gold | selesai ${done}x\n`
+let repeatMax = Number(q.repeat || 1)
+let remain = Math.max(0, repeatMax - done)
+text += `- ${id}: ${q.name} (${q.amount} ${q.target}) | ${q.rewardExp} EXP + ${q.rewardGold} Gold | selesai ${done}/${repeatMax}x | sisa ${remain}\n`
 }
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))

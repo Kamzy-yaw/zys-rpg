@@ -51,8 +51,14 @@ player.quest.progress = 0
 player.quest.claimable = false
 
 let q = questDB[picked]
+let done = Number(player.quest.completed[picked] || 0)
+let repeatMax = Number(q.repeat || 1)
+if (done >= repeatMax) {
+return m.reply(`Quest ${q.name} sudah mencapai batas repeat (${repeatMax}x).`)
+}
+
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`\uD83D\uDCE5 Quest diterima: ${q.name}\nTarget: bunuh ${q.amount} ${q.target}\nReward: ${q.rewardExp} EXP + ${q.rewardGold} Gold`)
+m.reply(`\uD83D\uDCE5 Quest diterima: ${q.name}\nTarget: bunuh ${q.amount} ${q.target}\nReward: ${q.rewardExp} EXP + ${q.rewardGold} Gold\nRepeat: ${done}/${repeatMax}`)
 
 }
