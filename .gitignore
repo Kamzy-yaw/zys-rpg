@@ -1,4 +1,4 @@
 node_modules
-.npm
+.npm-cache
 session
 database/player.json
