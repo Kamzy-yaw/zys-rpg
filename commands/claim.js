@@ -2,6 +2,16 @@ const fs = require('fs')
 const questDB = require('../database/quest.json')
 const levelUp = require('../system/level')
 
+function getQuestDailyKey() {
+let d = new Date()
+if (d.getHours() < 7) d.setDate(d.getDate() - 1)
+d.setHours(7, 0, 0, 0)
+let y = d.getFullYear()
+let m = String(d.getMonth() + 1).padStart(2, '0')
+let day = String(d.getDate()).padStart(2, '0')
+return `${y}-${m}-${day}`
+}
+
 function normalizeQuest(player) {
 if (!player.quest || typeof player.quest !== 'object') player.quest = {}
 if (player.quest.id && !player.quest.active) {
@@ -17,6 +27,11 @@ if (typeof player.quest.completed !== 'object' || player.quest.completed === nul
 player.quest.completed = {}
 }
 if (player.quest.active && !questDB[player.quest.active]) player.quest.active = null
+let dailyKey = getQuestDailyKey()
+if (player.quest.dailyKey !== dailyKey) {
+player.quest.completed = {}
+player.quest.dailyKey = dailyKey
+}
 }
 
 module.exports = async (m, { sender }) => {

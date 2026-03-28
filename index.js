@@ -5,6 +5,21 @@ fetchLatestBaileysVersion,
 DisconnectReason
 } = require("@whiskeysockets/baileys")
 const P = require("pino")
+const readline = require("readline")
+
+function ask(question) {
+return new Promise((resolve) => {
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+rl.question(question, (answer) => {
+rl.close()
+resolve(answer)
+})
+})
+}
+
+function normalizePhone(input) {
+return String(input || "").replace(/[^\d]/g, "")
+}
 
 async function startBot() {
 const { state, saveCreds } = await useMultiFileAuthState("./session")
@@ -16,18 +31,29 @@ auth: state,
 version,
 browser: ["Windows", "Chrome", "122.0.0.0"],
 markOnlineOnConnect: false,
-syncFullHistory: false
+syncFullHistory: false,
+printQRInTerminal: false
 })
+
+if (!state.creds.registered) {
+let phoneNumber = normalizePhone(process.env.PHONE_NUMBER)
+if (!phoneNumber) {
+phoneNumber = normalizePhone(await ask("Masukkan nomor WhatsApp (format 62xxx): "))
+}
+
+if (!phoneNumber) {
+throw new Error("Nomor tidak valid. Isi PHONE_NUMBER atau input nomor saat start.")
+}
+
+const code = await sock.requestPairingCode(phoneNumber)
+console.log("\nPairing code kamu:")
+console.log(code?.match(/.{1,4}/g)?.join("-") || code)
+console.log("Masukkan code ini di WhatsApp > Linked Devices > Link with phone number.")
+}
 
 sock.ev.on("creds.update", saveCreds)
 sock.ev.on("connection.update", (update) => {
-const { connection, qr, lastDisconnect } = update
-
-if (qr) {
-const qrLink = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`
-console.log("\nScan QR di link ini:")
-console.log(qrLink)
-}
+const { connection, lastDisconnect } = update
 
 if (connection === "open") {
 console.log("Bot connected.")
@@ -40,7 +66,7 @@ console.log(`Connection closed: ${reason}`)
 console.log(`Status code: ${statusCode || "n/a"}`)
 
 if (statusCode === DisconnectReason.loggedOut) {
-console.log("Session logout. Hapus folder session lalu scan ulang.")
+console.log("Session logout. Hapus folder session lalu pair ulang pakai nomor.")
 return
 }
 

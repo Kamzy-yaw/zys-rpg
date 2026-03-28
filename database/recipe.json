@@ -1,10 +1,29 @@
 {
+  "steel_sword": {
+    "name": "Forge Steel Sword",
+    "output": "steel_sword",
+    "materials": {
+      "ore_iron": 3,
+      "ore_coal": 3,
+      "ore_tin": 2
+    }
+  },
+  "platinum_sword": {
+    "name": "Forge Platinum Sword",
+    "output": "platinum_sword",
+    "materials": {
+      "ore_platinum": 3,
+      "ore_silver": 2,
+      "crystal_shard": 1
+    }
+  },
   "diamond_sword": {
     "name": "Forge Diamond Sword",
     "output": "diamond_sword",
     "materials": {
       "ore_diamond": 4,
-      "ore_gold": 2
+      "ore_gold": 2,
+      "magic_crystal": 1
     }
   },
   "mythril_sword": {
@@ -12,7 +31,8 @@
     "output": "mythril_sword",
     "materials": {
       "ore_mythril": 4,
-      "ore_gold": 2
+      "ore_gold": 2,
+      "ore_adamantite": 1
     }
   },
   "netherite_sword": {
@@ -20,7 +40,35 @@
     "output": "netherite_sword",
     "materials": {
       "ore_titanium": 4,
-      "ore_mythril": 2
+      "ore_mythril": 2,
+      "ore_dragon_steel": 1
+    }
+  },
+  "dragon_sword": {
+    "name": "Forge Dragon Sword",
+    "output": "dragon_sword",
+    "materials": {
+      "ore_dragon_steel": 4,
+      "dragon_heart_ore": 1,
+      "spirit_gem": 2
+    }
+  },
+  "voidblade": {
+    "name": "Forge Voidblade",
+    "output": "voidblade",
+    "materials": {
+      "void_stone": 2,
+      "shadow_crystal": 3,
+      "ancient_crystal": 1
+    }
+  },
+  "celestial_blade": {
+    "name": "Forge Celestial Blade",
+    "output": "celestial_blade",
+    "materials": {
+      "celestial_gem": 2,
+      "ancient_crystal": 2,
+      "spirit_gem": 2
     }
   },
   "iron_armor": {

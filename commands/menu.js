@@ -14,6 +14,7 @@ let text = `*RPG v2 COMMAND CENTER*
 .train str|agi|int
 .travel <area>
 .raid <1-5> (Lv20+)
+.raid test
 .raid list
 
 *PVP*
@@ -48,6 +49,7 @@ let text = `*RPG v2 COMMAND CENTER*
 .accept <id_quest>
 .claim
 .cancel / .cancelquest
+Quest reset: tiap hari jam 07:00
 
 *LEADERBOARD*
 .top

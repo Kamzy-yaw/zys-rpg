@@ -20,11 +20,14 @@
   "minotaur": { "name": "Minotaur", "hp": 240, "atk": 33, "exp": 170, "gold": 120, "rarity": 3 },
   "wyvern": { "name": "Wyvern", "hp": 265, "atk": 36, "exp": 190, "gold": 135, "rarity": 3 },
   "golem": { "name": "Golem", "hp": 290, "atk": 38, "exp": 210, "gold": 150, "rarity": 2 },
-  "dragon": { "name": "Dragon", "hp": 380, "atk": 48, "exp": 340, "gold": 280, "rarity": 1 },
-  "demon_lord": { "name": "Demon Lord", "hp": 460, "atk": 56, "exp": 450, "gold": 380, "rarity": 1 },
-  "phoenix": { "name": "Phoenix", "hp": 500, "atk": 60, "exp": 520, "gold": 420, "rarity": 1 },
+  "dragon": { "name": "Dragon", "hp": 380, "atk": 48, "exp": 340, "gold": 170, "rarity": 1 },
+  "demon_lord": { "name": "Demon Lord", "hp": 460, "atk": 56, "exp": 450, "gold": 220, "rarity": 1 },
+  "phoenix": { "name": "Phoenix", "hp": 500, "atk": 60, "exp": 520, "gold": 260, "rarity": 1 },
   "sand_wyrm": { "name": "Sand Wyrm", "hp": 160, "atk": 22, "exp": 95, "gold": 65, "drops": [{ "item": "ore_gold", "chance": 35 }, { "item": "ore_diamond", "chance": 15 }], "rarity": 4 },
   "frost_golem": { "name": "Frost Golem", "hp": 210, "atk": 27, "exp": 130, "gold": 90, "drops": [{ "item": "ore_mythril", "chance": 20 }, { "item": "diamond_armor", "chance": 5 }], "rarity": 3 },
   "lava_behemoth": { "name": "Lava Behemoth", "hp": 260, "atk": 33, "exp": 180, "gold": 130, "drops": [{ "item": "ore_titanium", "chance": 25 }, { "item": "mythril_sword", "chance": 5 }], "rarity": 2 },
-  "storm_seraph": { "name": "Storm Seraph", "hp": 320, "atk": 40, "exp": 240, "gold": 180, "drops": [{ "item": "titanium_armor", "chance": 4 }, { "item": "full_hp_potion", "chance": 20 }], "rarity": 1 }
+  "storm_seraph": { "name": "Storm Seraph", "hp": 320, "atk": 40, "exp": 240, "gold": 180, "drops": [{ "item": "titanium_armor", "chance": 4 }, { "item": "full_hp_potion", "chance": 20 }], "rarity": 1 },
+  "void_knight": { "name": "Void Knight", "hp": 420, "atk": 52, "exp": 410, "gold": 200, "drops": [{ "item": "shadow_crystal", "chance": 20 }, { "item": "void_stone", "chance": 8 }], "rarity": 2 },
+  "elder_drake": { "name": "Elder Drake", "hp": 560, "atk": 66, "exp": 560, "gold": 260, "drops": [{ "item": "dragon_heart_ore", "chance": 14 }, { "item": "dragon_sword", "chance": 3 }], "rarity": 1 },
+  "abyss_overlord": { "name": "Abyss Overlord", "hp": 760, "atk": 78, "exp": 760, "gold": 320, "drops": [{ "item": "ancient_crystal", "chance": 12 }, { "item": "celestial_gem", "chance": 6 }], "rarity": 1 }
 }

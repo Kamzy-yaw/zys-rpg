@@ -7,6 +7,16 @@ const levelUp = require('../system/level')
 const dropItem = require('../system/drop')
 const { ensureDurabilityState, ensureItemDurability, useDurability, getDurability } = require('../system/equipment')
 
+function getQuestDailyKey() {
+let d = new Date()
+if (d.getHours() < 7) d.setDate(d.getDate() - 1)
+d.setHours(7, 0, 0, 0)
+let y = d.getFullYear()
+let m = String(d.getMonth() + 1).padStart(2, '0')
+let day = String(d.getDate()).padStart(2, '0')
+return `${y}-${m}-${day}`
+}
+
 module.exports = async (m, { sender }) => {
 
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
@@ -36,6 +46,11 @@ if (typeof player.quest.completed !== 'object' || player.quest.completed === nul
 player.quest.completed = {}
 }
 if (player.quest.active && !questDB[player.quest.active]) player.quest.active = null
+let questDailyKey = getQuestDailyKey()
+if (player.quest.dailyKey !== questDailyKey) {
+player.quest.completed = {}
+player.quest.dailyKey = questDailyKey
+}
 if (typeof player.quest.progress !== 'number') player.quest.progress = 0
 if (typeof player.quest.claimable !== 'boolean') player.quest.claimable = false
 let now = Date.now()
@@ -79,7 +94,12 @@ while (mobHP > 0 && player.hp > 0 && rounds < 20) {
 rounds += 1
 
 let isCrit = Math.random() * 100 < critChance
-let basePlayerDamage = Math.max(1, player.str + weaponAtk + Math.floor(Math.random() * 5))
+let strValue = Number(player.str || 0)
+let weaponBase = weaponAtk > 0
+? (weaponAtk * (1 + (Math.min(strValue, 180) / 220)))
+: (1 + (strValue * 0.5))
+let statBonus = Math.floor(Math.max(0, strValue - 20) * 0.08)
+let basePlayerDamage = Math.max(1, Math.floor(weaponBase) + statBonus + Math.floor(Math.random() * 4))
 let playerDamage = isCrit ? Math.floor(basePlayerDamage * 1.5) : basePlayerDamage
 mobHP -= playerDamage
 battleLog.push(`Ronde ${rounds}: kamu hit ${mob.name} -${playerDamage} HP${isCrit ? " (CRIT!)" : ""}`)
@@ -92,16 +112,21 @@ if (dodged) {
 battleLog.push(`Ronde ${rounds}: kamu menghindar! (${mob.name} miss)`)
 } else {
 let reduced = Math.random() * 100 < reductionChance
-let mobDamage = Math.max(1, mob.atk + Math.floor(Math.random() * 4) - 1 - armorDef)
+let rawMobDamage = Math.max(1, mob.atk + Math.floor(Math.random() * 4) - 1)
+let mobDamage = Math.max(1, rawMobDamage - armorDef)
 if (reduced) mobDamage = Math.max(1, Math.floor(mobDamage * 0.7))
 player.hp -= mobDamage
-battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${reduced ? " (REDUCE!)" : ""}`)
+battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${reduced ? " (REDUCE 30%)" : ""}${armorDef > 0 ? ` (DEF -${armorDef})` : ""}`)
 }
 }
 
 let text = `\u2694\uFE0F Kamu bertemu ${mob.name} di ${area.name}
 HP Monster: ${mob.hp}
 HP Kamu: ${player.hp < 0 ? 0 : player.hp}/${player.maxhp}
+Combat Stats:
+ATK Senjata: ${weaponAtk}
+DEF Armor: ${armorDef}
+Crit: ${critChance.toFixed(1)}% | Dodge: ${dodgeChance.toFixed(1)}% | Reduce: ${reductionChance.toFixed(1)}%
 `
 
 let shortLog = battleLog.slice(0, 6).join("\n")
