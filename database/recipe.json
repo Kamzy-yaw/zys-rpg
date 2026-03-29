@@ -108,5 +108,114 @@
       "ore_titanium": 5,
       "ore_mythril": 3
     }
+  },
+  "dragon_armor": {
+    "name": "Forge Dragon Armor",
+    "output": "dragon_armor",
+    "materials": {
+      "ore_dragon_steel": 5,
+      "dragon_heart_ore": 1,
+      "spirit_gem": 2
+    }
+  },
+  "celestial_armor": {
+    "name": "Forge Celestial Armor",
+    "output": "celestial_armor",
+    "materials": {
+      "celestial_gem": 2,
+      "ancient_crystal": 2,
+      "void_stone": 1
+    }
+  },
+  "void_armor": {
+    "name": "Forge Void Armor",
+    "output": "void_armor",
+    "materials": {
+      "void_stone": 3,
+      "shadow_crystal": 4,
+      "ancient_crystal": 2
+    }
+  },
+  "hunter_earring": {
+    "name": "Craft Hunter Earring",
+    "output": "hunter_earring",
+    "materials": {
+      "hunter_ring": 2,
+      "silver_necklace": 1,
+      "ore_silver": 2
+    }
+  },
+  "sage_talisman": {
+    "name": "Craft Sage Talisman",
+    "output": "sage_talisman",
+    "materials": {
+      "magic_crystal": 2,
+      "ancient_relic": 1,
+      "ore_gold": 2
+    }
+  },
+  "guardian_charm": {
+    "name": "Craft Guardian Charm",
+    "output": "guardian_charm",
+    "materials": {
+      "spirit_gem": 2,
+      "dragon_scale": 1,
+      "ore_mythril": 2
+    }
+  },
+  "berserker_ring": {
+    "name": "Craft Berserker Ring",
+    "output": "berserker_ring",
+    "materials": {
+      "kings_ring": 1,
+      "ore_adamantite": 2,
+      "ore_gold": 2
+    }
+  },
+  "swift_feather": {
+    "name": "Craft Swift Feather",
+    "output": "swift_feather",
+    "materials": {
+      "snow_wolf_fang": 2,
+      "legendary_pearl": 1,
+      "ore_platinum": 2
+    }
+  },
+  "rune_eye": {
+    "name": "Craft Rune Eye",
+    "output": "rune_eye",
+    "materials": {
+      "magic_crystal": 3,
+      "ancient_relic": 1,
+      "ore_mythril": 2
+    }
+  },
+  "ironheart_badge": {
+    "name": "Craft Ironheart Badge",
+    "output": "ironheart_badge",
+    "materials": {
+      "ore_titanium": 2,
+      "ore_adamantite": 2,
+      "spirit_gem": 1
+    }
+  },
+  "warrior_medallion": {
+    "name": "Craft Warrior Medallion",
+    "output": "warrior_medallion",
+    "materials": {
+      "dragon_scale": 1,
+      "ore_dragon_steel": 2,
+      "gold_nugget": 2
+    }
+  },
+  "void_emblem": {
+    "name": "Craft Void Emblem",
+    "output": "void_emblem",
+    "materials": {
+      "void_stone": 2,
+      "celestial_gem": 1,
+      "ancient_artifact": 1,
+      "spirit_gem": 2
+    }
   }
 }

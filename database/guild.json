@@ -1,0 +1,31 @@
+{
+  "eternal_guardian": {
+    "id": "eternal_guardian",
+    "name": "Eternal Guardian",
+    "leader": "38784091566207@lid",
+    "members": [
+      "38784091566207@lid",
+      "220083016171622@lid",
+      "231013590548638@lid"
+    ],
+    "maxMembers": 5,
+    "createdAt": 1774760351832,
+    "roles": {
+      "38784091566207@lid": "leader",
+      "220083016171622@lid": "member",
+      "231013590548638@lid": "member"
+    },
+    "contribution": {
+      "38784091566207@lid": 0,
+      "220083016171622@lid": 0,
+      "231013590548638@lid": 0
+    },
+    "raid": {
+      "level": 1,
+      "bossName": "Guild Colossus",
+      "maxHp": 12000,
+      "hp": 12000,
+      "lastRaid": 0
+    }
+  }
+}

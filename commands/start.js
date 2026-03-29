@@ -1,21 +1,12 @@
 const fs = require('fs')
-
-function getQuestDailyKey() {
-let d = new Date()
-if (d.getHours() < 7) d.setDate(d.getDate() - 1)
-d.setHours(7, 0, 0, 0)
-let y = d.getFullYear()
-let m = String(d.getMonth() + 1).padStart(2, '0')
-let day = String(d.getDate()).padStart(2, '0')
-return `${y}-${m}-${day}`
-}
+const { getQuestDailyKeyWIB } = require('../system/questreset')
 
 module.exports = async (m, { sender }) => {
 
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
 
 if (db[sender]) {
-return m.reply("Kamu udah punya karakter.")
+return m.reply("Kamu sudah punya karakter.\nCek status pakai .profile")
 }
 
 db[sender] = {
@@ -31,16 +22,23 @@ int: 5,
 toughness: 0,
 weapon: null,
 armor: null,
+accessory: null,
+accessories: [null, null],
 pickaxe: null,
 durability: {},
+enhance: {
+weapon: 0,
+armor: 0,
+pickaxe: 0
+},
 inventory: [],
 area: "field",
 quest: {
 active: null,
- progress: 0,
- claimable: false,
- completed: {},
- dailyKey: getQuestDailyKey()
+progress: 0,
+claimable: false,
+completed: {},
+dailyKey: getQuestDailyKeyWIB()
 },
 lastTrain: 0,
 lastFish: 0,
@@ -57,19 +55,48 @@ plantedAt: 0
 },
 pvpWins: 0,
 pvpLosses: 0,
+stats: {
+hunts: 0,
+monstersKilled: 0,
+mineRuns: 0,
+fishRuns: 0,
+dungeonRuns: 0,
+dungeonClears: 0,
+maxGold: 100
+},
+achievements: {
+completed: []
+},
+titles: {
+unlocked: ['Novice'],
+equipped: 'Novice'
+},
+dungeon: {
+dailyKey: '',
+cleared: false
+},
+guildId: null,
+maid: {
+owned: false,
+active: false,
+autoFix: true,
+autoHeal: true
+},
 lastHunt: 0
 }
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
-m.reply(`🏰 Selamat datang petualang!
+m.reply(`Selamat datang, petualang!
 
 Karakter berhasil dibuat.
-
 Level: 1
 Gold: 100
 HP: 100
 
-Gunakan .hunt untuk berburu monster.`)
+Langkah awal:
+1) .hunt
+2) .profile
+3) .menu`)
 
 }

@@ -3,19 +3,13 @@ const monster = require('../database/monster.json')
 const areaDB = require('../database/area.json')
 const itemDB = require('../database/item.json')
 const questDB = require('../database/quest.json')
+const achievementDB = require('../database/achievement.json')
 const levelUp = require('../system/level')
 const dropItem = require('../system/drop')
 const { ensureDurabilityState, ensureItemDurability, useDurability, getDurability } = require('../system/equipment')
-
-function getQuestDailyKey() {
-let d = new Date()
-if (d.getHours() < 7) d.setDate(d.getDate() - 1)
-d.setHours(7, 0, 0, 0)
-let y = d.getFullYear()
-let m = String(d.getMonth() + 1).padStart(2, '0')
-let day = String(d.getDate()).padStart(2, '0')
-return `${y}-${m}-${day}`
-}
+const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
+const { getQuestDailyKeyWIB } = require('../system/questreset')
+const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
 
 module.exports = async (m, { sender }) => {
 
@@ -30,7 +24,18 @@ if (typeof player.lastHunt !== 'number') player.lastHunt = 0
 if (!Array.isArray(player.inventory)) player.inventory = []
 if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
+if (player.accessory === undefined) player.accessory = null
 if (typeof player.toughness !== 'number') player.toughness = 0
+ensureEnhanceState(player)
+normalizeAccessories(player)
+ensureAchievementState(player)
+if (!player.maid || typeof player.maid !== 'object') {
+player.maid = { owned: false, active: false, autoFix: true, autoHeal: true }
+}
+if (typeof player.maid.owned !== 'boolean') player.maid.owned = false
+if (typeof player.maid.active !== 'boolean') player.maid.active = false
+if (typeof player.maid.autoFix !== 'boolean') player.maid.autoFix = true
+if (typeof player.maid.autoHeal !== 'boolean') player.maid.autoHeal = true
 ensureDurabilityState(player)
 if (!player.area || !areaDB[player.area]) player.area = "field"
 if (!player.quest || typeof player.quest !== 'object') player.quest = {}
@@ -46,7 +51,7 @@ if (typeof player.quest.completed !== 'object' || player.quest.completed === nul
 player.quest.completed = {}
 }
 if (player.quest.active && !questDB[player.quest.active]) player.quest.active = null
-let questDailyKey = getQuestDailyKey()
+let questDailyKey = getQuestDailyKeyWIB()
 if (player.quest.dailyKey !== questDailyKey) {
 player.quest.completed = {}
 player.quest.dailyKey = questDailyKey
@@ -65,18 +70,20 @@ let area = areaDB[player.area]
 let monsterList = area.monsters
 let pick = monsterList[Math.floor(Math.random() * monsterList.length)]
 let mob = monster[pick]
+incrementStat(player, 'hunts', 1)
 
 let weaponAtk = 0
 let armorDef = 0
 let armorTough = 0
+let accessoryBonus = getAccessoryBonuses(player)
 
 if (player.weapon && itemDB[player.weapon]) {
 ensureItemDurability(player, player.weapon)
-weaponAtk = itemDB[player.weapon].atk
+weaponAtk = getWeaponAtk(player)
 }
 if (player.armor && itemDB[player.armor]) {
 ensureItemDurability(player, player.armor)
-armorDef = Number(itemDB[player.armor].def || 0)
+armorDef = getArmorDef(player)
 armorTough = Number(itemDB[player.armor].tough || 0)
 }
 
@@ -86,20 +93,24 @@ let mobHP = mob.hp
 let rounds = 0
 let battleLog = []
 
-let critChance = Math.min(50, Number(player.int || 0) * 0.1)
-let dodgeChance = Math.min(50, Number(player.agi || 0) * 0.1)
-let reductionChance = Math.min(25, (Number(player.toughness || 0) + armorTough) * 0.1)
+let maidStatBuff = (player.maid.owned && player.maid.active) ? 10 : 0
+let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff
+let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff
+let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff
+let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff
+
+let critChance = Math.min(50, (effectiveInt * 0.1) + Number(accessoryBonus.crit || 0))
+let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0))
+let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0))
 
 while (mobHP > 0 && player.hp > 0 && rounds < 20) {
 rounds += 1
 
 let isCrit = Math.random() * 100 < critChance
-let strValue = Number(player.str || 0)
-let weaponBase = weaponAtk > 0
-? (weaponAtk * (1 + (Math.min(strValue, 180) / 220)))
-: (1 + (strValue * 0.5))
-let statBonus = Math.floor(Math.max(0, strValue - 20) * 0.08)
-let basePlayerDamage = Math.max(1, Math.floor(weaponBase) + statBonus + Math.floor(Math.random() * 4))
+let strValue = effectiveStr
+let basePlayerDamage = weaponAtk > 0
+? Math.max(1, Math.floor(weaponAtk * (1 + (strValue / 120))))
+: Math.max(1, Math.floor(1 + (strValue * 0.3)))
 let playerDamage = isCrit ? Math.floor(basePlayerDamage * 1.5) : basePlayerDamage
 mobHP -= playerDamage
 battleLog.push(`Ronde ${rounds}: kamu hit ${mob.name} -${playerDamage} HP${isCrit ? " (CRIT!)" : ""}`)
@@ -127,6 +138,9 @@ Combat Stats:
 ATK Senjata: ${weaponAtk}
 DEF Armor: ${armorDef}
 Crit: ${critChance.toFixed(1)}% | Dodge: ${dodgeChance.toFixed(1)}% | Reduce: ${reductionChance.toFixed(1)}%
+Accessory 1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'}
+Accessory 2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'}
+Maid Buff: ${maidStatBuff > 0 ? '+10 ALL STAT' : 'OFF'}
 `
 
 let shortLog = battleLog.slice(0, 6).join("\n")
@@ -136,16 +150,31 @@ if (battleLog.length > 6) text += "\n..."
 }
 
 if (mobHP <= 0) {
+incrementStat(player, 'monstersKilled', 1)
+let rewardExp = Number(mob.exp || 0)
+let rewardGold = Number(mob.gold || 0)
+let bonusResource = null
+if (Number(mob.rarity || 99) <= 3) {
+rewardGold = Math.floor(rewardGold * 0.6)
+let rarePool = ['ore_mythril', 'ore_adamantite', 'ore_dragon_steel', 'shadow_crystal', 'spirit_gem', 'ancient_crystal', 'void_stone']
+bonusResource = rarePool[Math.floor(Math.random() * rarePool.length)]
+player.inventory.push(bonusResource)
+}
 
-player.exp += mob.exp
-player.gold += mob.gold
+player.exp += rewardExp
+player.gold += rewardGold
 
 text += `
 
 \uD83C\uDF89 Monster kalah!
 Reward:
-+${mob.exp} EXP
-+${mob.gold} Gold`
++${rewardExp} EXP
++${rewardGold} Gold`
+
+if (bonusResource) {
+let resName = itemDB[bonusResource] ? itemDB[bonusResource].name : bonusResource
+text += `\nResource Bonus:\n+ 1 ${resName}`
+}
 
 let item = dropItem(mob)
 
@@ -238,6 +267,42 @@ else {
 let ad = getDurability(player, activeArmor)
 if (ad) text += `\nDurability armor: ${ad.current}/${ad.max}`
 }
+}
+
+if (player.maid.owned && player.maid.active) {
+let maidLogs = []
+let hpLow = Number(player.hp) <= Math.floor(Number(player.maxhp) * 0.5)
+let weaponNeedFix = !!(player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability && player.durability[player.weapon] < Number(itemDB[player.weapon].durability))
+let armorNeedFix = !!(player.armor && itemDB[player.armor] && itemDB[player.armor].durability && player.durability[player.armor] < Number(itemDB[player.armor].durability))
+let gearNeedFix = weaponNeedFix || armorNeedFix
+
+if (player.maid.autoFix && hpLow && gearNeedFix && player.gold >= 100) {
+let fixedAny = false
+if (player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability) {
+player.durability[player.weapon] = Number(itemDB[player.weapon].durability)
+fixedAny = true
+}
+if (player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
+player.durability[player.armor] = Number(itemDB[player.armor].durability)
+fixedAny = true
+}
+if (fixedAny) {
+player.gold -= 100
+maidLogs.push("Fix gear: -100 Gold")
+}
+}
+if (player.maid.autoHeal && hpLow && player.gold >= 150) {
+player.gold -= 150
+player.hp = player.maxhp
+maidLogs.push("Heal full: -150 Gold")
+}
+if (maidLogs.length) text += `\n\nMaid Service Aktif:\n${maidLogs.join('\n')}`
+}
+
+let unlocked = evaluateAchievements(player, achievementDB)
+if (unlocked.length) {
+let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`).join('\n')
+text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 }
 
 player.lastHunt = now

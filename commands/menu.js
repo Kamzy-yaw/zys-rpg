@@ -1,11 +1,20 @@
 module.exports = async (m) => {
-let text = `*RPG v2 COMMAND CENTER*
+let text = `*RPG v2 MENU*
+
+Mulai cepat:
+1) .start
+2) .hunt
+3) .profile
+4) .inventory
 
 *BASIC*
 .start
 .profile
+.ach
+.title
 .menu
 .channel
+.maid
 
 *COMBAT*
 .hunt
@@ -16,6 +25,7 @@ let text = `*RPG v2 COMMAND CENTER*
 .raid <1-5> (Lv20+)
 .raid test
 .raid list
+.dungeon
 
 *PVP*
 .duel @user
@@ -26,16 +36,21 @@ let text = `*RPG v2 COMMAND CENTER*
 .arena list
 .arena (fight)
 .rank
+.party
 
 *LOOT & ECONOMY*
 .shop
+.buy <no> [jumlah]
 .gacha
 .fish
+.open [jumlah]
 .mine
 .mining
 .craft
+.enhance <weapon|armor|pickaxe>
 .sell <no> [jumlah]
 .fix <no>
+.market
 
 *FARMING*
 .plant <wheat|berry|magic_herb>
@@ -43,6 +58,9 @@ let text = `*RPG v2 COMMAND CENTER*
 
 *INVENTORY*
 .inventory
+.inventory gear
+.inventory resource
+.inventory consumable
 
 *QUEST*
 .quest
@@ -56,10 +74,31 @@ Quest reset: tiap hari jam 07:00
 .topgold
 .toplevel
 
-*WEEKLY*
-.weeklyreset confirm
+*SEASON RESET (ADMIN)*
+.seasonreset confirm
 
-Tips: .buy ada di .shop, .equip/.sell/.fix ada di .inventory.`
+*GUILD*
+.guild
+.guild list
+.guild create <nama>
+.guild join <nama>
+.guild leave
+.guild upgrade
+.guild promote @user
+.guild demote @user
+.guild kick @user
+.guild contrib
+.guildraid
+
+Tips:
+- .buy ada di .shop
+- .equip/.sell/.fix ada di .inventory
+- aksesori 2 slot: .equip <nomor> 1 atau .equip <nomor> 2
+- title: .title | achievement: .ach
+- party: .party | market: .market
+- market cancel: .market cancel <id>
+Format kategori: .sell equipment|resource|consumable <no> [jumlah]
+.fix equipment <no>`
 
 m.reply(text)
 }

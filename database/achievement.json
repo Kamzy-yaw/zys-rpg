@@ -1,0 +1,63 @@
+{
+  "first_hunt": {
+    "name": "Langkah Pertama",
+    "desc": "Lakukan 1x hunt",
+    "type": "stat",
+    "stat": "hunts",
+    "target": 1,
+    "rewardTitle": "Rookie Hunter"
+  },
+  "mob_slayer_50": {
+    "name": "Monster Slayer I",
+    "desc": "Kalahkan 50 monster",
+    "type": "stat",
+    "stat": "monstersKilled",
+    "target": 50,
+    "rewardTitle": "Monster Slayer"
+  },
+  "miner_30": {
+    "name": "Penambang Tekun",
+    "desc": "Lakukan 30x mining",
+    "type": "stat",
+    "stat": "mineRuns",
+    "target": 30,
+    "rewardTitle": "Stone Digger"
+  },
+  "angler_30": {
+    "name": "Pemancing Aktif",
+    "desc": "Lakukan 30x fishing",
+    "type": "stat",
+    "stat": "fishRuns",
+    "target": 30,
+    "rewardTitle": "Angler"
+  },
+  "pvp_10": {
+    "name": "Arena Fighter",
+    "desc": "Menang 10x PvP",
+    "type": "pvpWins",
+    "target": 10,
+    "rewardTitle": "Arena Fighter"
+  },
+  "dungeon_5": {
+    "name": "Dungeon Explorer",
+    "desc": "Clear dungeon 5x",
+    "type": "stat",
+    "stat": "dungeonClears",
+    "target": 5,
+    "rewardTitle": "Dungeon Explorer"
+  },
+  "level_30": {
+    "name": "Adventurer Veteran",
+    "desc": "Capai level 30",
+    "type": "level",
+    "target": 30,
+    "rewardTitle": "Veteran"
+  },
+  "level_80": {
+    "name": "Mythic Adventurer",
+    "desc": "Capai level 80",
+    "type": "level",
+    "target": 80,
+    "rewardTitle": "Mythic"
+  }
+}

@@ -113,6 +113,18 @@ return sock.sendMessage(msg.key.remoteJid, message, { quoted: msg })
 }
 
 return sock.sendMessage(msg.key.remoteJid, { text: String(payload || '') }, { quoted: msg })
+},
+send: (jid, payload) => {
+if (!jid) return Promise.resolve()
+if (typeof payload === 'string') {
+return sock.sendMessage(jid, { text: payload })
+}
+if (payload && typeof payload === 'object') {
+let message = { text: payload.text || '' }
+if (Array.isArray(payload.mentions)) message.mentions = payload.mentions
+return sock.sendMessage(jid, message)
+}
+return sock.sendMessage(jid, { text: String(payload || '') })
 }
 }, {
 sender,

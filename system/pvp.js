@@ -1,4 +1,5 @@
 const itemDB = require('../database/item.json')
+const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('./gearstats')
 
 function normalizePvp(player) {
 if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
@@ -13,19 +14,19 @@ if (typeof player.pvpWins !== 'number') player.pvpWins = 0
 if (typeof player.pvpLosses !== 'number') player.pvpLosses = 0
 if (typeof player.weapon === 'undefined') player.weapon = null
 if (typeof player.armor === 'undefined') player.armor = null
+if (typeof player.accessory === 'undefined') player.accessory = null
+normalizeAccessories(player)
 }
 
 function weaponAtk(player) {
-if (!player.weapon) return 0
-if (!itemDB[player.weapon]) return 0
-return Number(itemDB[player.weapon].atk || 0)
+ensureEnhanceState(player)
+return getWeaponAtk(player)
 }
 
 function armorStats(player) {
-if (!player.armor) return { def: 0, tough: 0 }
-if (!itemDB[player.armor]) return { def: 0, tough: 0 }
+if (!player.armor || !itemDB[player.armor]) return { def: 0, tough: 0 }
 return {
-def: Number(itemDB[player.armor].def || 0),
+def: getArmorDef(player),
 tough: Number(itemDB[player.armor].tough || 0)
 }
 }
@@ -33,8 +34,12 @@ tough: Number(itemDB[player.armor].tough || 0)
 function battleScore(player) {
 let wAtk = weaponAtk(player)
 let a = armorStats(player)
-let totalTough = player.toughness + a.tough
-let base = (player.level * 3) + (player.str * 2) + player.agi + Math.floor(player.int / 2) + (wAtk * 3) + (a.def * 2) + totalTough
+let acc = getAccessoryBonuses(player)
+let totalTough = player.toughness + a.tough + Number(acc.tough || 0)
+let totalStr = Number(player.str || 0) + Number(acc.str || 0)
+let totalAgi = Number(player.agi || 0) + Number(acc.agi || 0)
+let totalInt = Number(player.int || 0) + Number(acc.int || 0)
+let base = (player.level * 3) + (totalStr * 2) + totalAgi + Math.floor(totalInt / 2) + (wAtk * 3) + (a.def * 2) + totalTough
 let luck = Math.floor(Math.random() * 16) + 1
 return base + luck
 }
@@ -56,13 +61,15 @@ let score1 = battleScore(p1)
 let score2 = battleScore(p2)
 let p1Armor = armorStats(p1)
 let p2Armor = armorStats(p2)
+let p1Acc = getAccessoryBonuses(p1)
+let p2Acc = getAccessoryBonuses(p2)
 
-let p1CritChance = Math.min(50, Number(p1.int || 0) * 0.1)
-let p2CritChance = Math.min(50, Number(p2.int || 0) * 0.1)
-let p1DodgeChance = Math.min(50, Number(p1.agi || 0) * 0.1)
-let p2DodgeChance = Math.min(50, Number(p2.agi || 0) * 0.1)
-let p1ReductionChance = Math.min(25, (Number(p1.toughness || 0) + p1Armor.tough) * 0.1)
-let p2ReductionChance = Math.min(25, (Number(p2.toughness || 0) + p2Armor.tough) * 0.1)
+let p1CritChance = Math.min(50, ((Number(p1.int || 0) + Number(p1Acc.int || 0)) * 0.1) + Number(p1Acc.crit || 0))
+let p2CritChance = Math.min(50, ((Number(p2.int || 0) + Number(p2Acc.int || 0)) * 0.1) + Number(p2Acc.crit || 0))
+let p1DodgeChance = Math.min(50, ((Number(p1.agi || 0) + Number(p1Acc.agi || 0)) * 0.1) + Number(p1Acc.dodge || 0))
+let p2DodgeChance = Math.min(50, ((Number(p2.agi || 0) + Number(p2Acc.agi || 0)) * 0.1) + Number(p2Acc.dodge || 0))
+let p1ReductionChance = Math.min(25, ((Number(p1.toughness || 0) + p1Armor.tough + Number(p1Acc.tough || 0)) * 0.1) + Number(p1Acc.reduce || 0))
+let p2ReductionChance = Math.min(25, ((Number(p2.toughness || 0) + p2Armor.tough + Number(p2Acc.tough || 0)) * 0.1) + Number(p2Acc.reduce || 0))
 
 while (hp1 > 0 && hp2 > 0 && rounds < 12) {
 rounds += 1
@@ -71,7 +78,10 @@ let crit1 = Math.random() * 100 < p1CritChance
 let dodge2 = Math.random() * 100 < p2DodgeChance
 if (!dodge2) {
 let atk1 = weaponAtk(p1)
-let dmg1 = Math.max(1, (p1.str + atk1 + Math.floor(Math.random() * 4)) - p2Armor.def)
+let base1 = atk1 > 0
+? Math.max(1, Math.floor(atk1 * (1 + ((Number(p1.str || 0) + Number(p1Acc.str || 0)) / 120))))
+: Math.max(1, Math.floor(1 + ((Number(p1.str || 0) + Number(p1Acc.str || 0)) * 0.3)))
+let dmg1 = Math.max(1, base1 - p2Armor.def)
 if (Math.random() * 100 < p2ReductionChance) dmg1 = Math.max(1, Math.floor(dmg1 * 0.7))
 if (crit1) dmg1 = Math.floor(dmg1 * 1.5)
 hp2 -= dmg1
@@ -83,7 +93,10 @@ let crit2 = Math.random() * 100 < p2CritChance
 let dodge1 = Math.random() * 100 < p1DodgeChance
 if (!dodge1) {
 let atk2 = weaponAtk(p2)
-let dmg2 = Math.max(1, (p2.str + atk2 + Math.floor(Math.random() * 4)) - p1Armor.def)
+let base2 = atk2 > 0
+? Math.max(1, Math.floor(atk2 * (1 + ((Number(p2.str || 0) + Number(p2Acc.str || 0)) / 120))))
+: Math.max(1, Math.floor(1 + ((Number(p2.str || 0) + Number(p2Acc.str || 0)) * 0.3)))
+let dmg2 = Math.max(1, base2 - p1Armor.def)
 if (Math.random() * 100 < p1ReductionChance) dmg2 = Math.max(1, Math.floor(dmg2 * 0.7))
 if (crit2) dmg2 = Math.floor(dmg2 * 1.5)
 hp1 -= dmg2

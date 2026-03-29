@@ -1,5 +1,7 @@
 const fs = require('fs')
 const itemDB = require('../database/item.json')
+const achievementDB = require('../database/achievement.json')
+const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
 
 const COMMON = [
 'old_coin',
@@ -64,6 +66,7 @@ if (!Array.isArray(player.inventory)) player.inventory = []
 if (typeof player.lastFish !== 'number') player.lastFish = 0
 if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
 if (typeof player.maxhp !== 'number') player.maxhp = 100
+ensureAchievementState(player)
 
 let now = Date.now()
 let cooldown = 30000
@@ -74,6 +77,7 @@ return m.reply(`Joran masih basah, tunggu ${sisa} detik lagi.`)
 
 let roll = Math.random() * 100
 let text = "\uD83C\uDFA3 Kamu melempar pancing...\n\n"
+incrementStat(player, 'fishRuns', 1)
 
 // Random event block
 if (roll < 8) {
@@ -118,6 +122,12 @@ text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: 
 text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 }
 }
+}
+
+let unlocked = evaluateAchievements(player, achievementDB)
+if (unlocked.length) {
+let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`).join('\n')
+text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 }
 
 player.lastFish = now

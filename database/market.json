@@ -1,0 +1,37 @@
+{
+  "nextId": 14,
+  "listings": [
+    {
+      "id": 6,
+      "seller": "220083016171622@lid",
+      "itemId": "celestial_gem",
+      "qty": 19,
+      "price": 200,
+      "createdAt": 1774774227246
+    },
+    {
+      "id": 7,
+      "seller": "220083016171622@lid",
+      "itemId": "ore_titanium",
+      "qty": 20,
+      "price": 150,
+      "createdAt": 1774774305962
+    },
+    {
+      "id": 8,
+      "seller": "220083016171622@lid",
+      "itemId": "ore_mythril",
+      "qty": 49,
+      "price": 100,
+      "createdAt": 1774774478495
+    },
+    {
+      "id": 9,
+      "seller": "220083016171622@lid",
+      "itemId": "ancient_crystal",
+      "qty": 20,
+      "price": 100,
+      "createdAt": 1774774503645
+    }
+  ]
+}

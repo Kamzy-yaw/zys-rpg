@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const { normalizePvp, runPvp, applyPvpResult, getRankGrade } = require('../system/pvp')
 const { useDurability } = require('../system/equipment')
+const achievementDB = require('../database/achievement.json')
+const { ensureAchievementState, evaluateAchievements } = require('../system/achievement')
 
 const arenaPath = path.join(__dirname, '..', 'database', 'arena.json')
 
@@ -24,7 +26,7 @@ return `@${num}`
 
 module.exports = async (m, { sender, args }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
-if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
+if (!db[sender]) return m.reply('Bikin karakter dulu pakai .start')
 
 if (typeof db[sender].pvpCooldown !== 'number') db[sender].pvpCooldown = 0
 let now = Date.now()
@@ -36,18 +38,18 @@ let arena = readArena()
 if (action === 'join') {
 if (!arena.members.includes(sender)) arena.members.push(sender)
 saveArena(arena)
-return m.reply("✅ Kamu join arena queue.")
+return m.reply('Kamu join arena queue.')
 }
 
 if (action === 'leave') {
 arena.members = arena.members.filter((id) => id !== sender)
 saveArena(arena)
-return m.reply("👋 Kamu keluar dari arena queue.")
+return m.reply('Kamu keluar dari arena queue.')
 }
 
 if (action === 'list') {
-if (arena.members.length === 0) return m.reply("Arena kosong.")
-let text = "🏟️ Arena Queue\n\n"
+if (arena.members.length === 0) return m.reply('Arena kosong.')
+let text = 'Arena Queue\n\n'
 let mentions = []
 arena.members.forEach((id, i) => {
 text += `${i + 1}. ${asTag(id, db[id]?.name || id)}\n`
@@ -57,7 +59,7 @@ return m.reply({ text, mentions })
 }
 
 if (!arena.members.includes(sender)) {
-return m.reply("Kamu belum join arena. Pakai .arena join")
+return m.reply('Kamu belum join arena. Pakai .arena join')
 }
 
 if (now - db[sender].pvpCooldown < cooldown) {
@@ -67,7 +69,7 @@ return m.reply(`Arena cooldown. Tunggu ${sisa} detik.`)
 
 let candidates = arena.members.filter((id) => id !== sender && db[id])
 if (candidates.length === 0) {
-return m.reply("Belum ada lawan di queue. Ajak teman pakai .arena join")
+return m.reply('Belum ada lawan di queue. Ajak teman pakai .arena join')
 }
 
 let enemyId = candidates[Math.floor(Math.random() * candidates.length)]
@@ -75,6 +77,8 @@ let me = db[sender]
 let enemy = db[enemyId]
 normalizePvp(me)
 normalizePvp(enemy)
+ensureAchievementState(me)
+ensureAchievementState(enemy)
 
 let result = runPvp(me, enemy)
 let statUp = applyPvpResult(result.winner, result.loser)
@@ -90,6 +94,9 @@ if (db[loserId].weapon) useDurability(db[loserId], db[loserId].weapon, 1)
 if (db[loserId].armor) useDurability(db[loserId], db[loserId].armor, 1)
 
 let winnerRank = getRankGrade(result.winner)
+let winnerUnlocked = evaluateAchievements(db[winnerId], achievementDB)
+let loserUnlocked = evaluateAchievements(db[loserId], achievementDB)
+
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 
 let winnerName = asTag(winnerId, db[winnerId].name || winnerId)
@@ -97,8 +104,11 @@ let loserName = asTag(loserId, db[loserId].name || loserId)
 let enemyName = asTag(enemyId, db[enemyId].name || enemyId)
 let mentions = [winnerId, loserId].filter((id, i, arr) => String(id).includes('@') && arr.indexOf(id) === i)
 
-m.reply({
-text: `🏟️ Arena Battle!\n\nLawan: ${enemyName}\nWinner: ${winnerName}\nLoser: ${loserName}\n\n🎁 Winner: +50 Gold, +1 ${statUp.toUpperCase()}\n💀 Loser: -50 Gold, HP jadi 1\n\nRank winner: ${winnerRank.grade} (${winnerRank.wins} win)`,
-mentions
-})
+let text = `Arena Battle!\n\nLawan: ${enemyName}\nWinner: ${winnerName}\nLoser: ${loserName}\n\nWinner: +50 Gold, +1 ${statUp.toUpperCase()}\nLoser: -50 Gold, HP jadi 1\n\nRank winner: ${winnerRank.grade} (${winnerRank.wins} win)`
+let unlockLines = []
+for (let x of winnerUnlocked || []) unlockLines.push(`- ${winnerName}: ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`)
+for (let x of loserUnlocked || []) unlockLines.push(`- ${loserName}: ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`)
+if (unlockLines.length) text += `\n\nAchievement Unlocked:\n${unlockLines.join('\n')}`
+
+m.reply({ text, mentions })
 }

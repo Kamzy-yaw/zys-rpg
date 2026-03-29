@@ -2,6 +2,7 @@ const fs = require('fs')
 const itemDB = require('../database/item.json')
 const levelUp = require('../system/level')
 const { ensureDurabilityState, ensureItemDurability, useDurability } = require('../system/equipment')
+const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 
 const bosses = {
 0: { name: "Training Titan", minLevel: 1, hp: 5000, atk: 18, def: 10, critRes: 20, rewardGold: 80, rewardExp: 120 },
@@ -36,7 +37,13 @@ if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.exp !== 'number') player.exp = 0
 if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
+if (player.accessory === undefined) player.accessory = null
+if (!player.maid || typeof player.maid !== 'object') player.maid = { owned: false, active: false, autoFix: true, autoHeal: true }
+if (typeof player.maid.owned !== 'boolean') player.maid.owned = false
+if (typeof player.maid.active !== 'boolean') player.maid.active = false
 ensureDurabilityState(player)
+ensureEnhanceState(player)
+normalizeAccessories(player)
 
 let firstArg = (args[0] || '').toLowerCase()
 if (firstArg === 'list') {
@@ -67,14 +74,15 @@ return m.reply(`Raid Lv.${lv} butuh minimal level ${boss.minLevel}.`)
 let weaponAtk = 0
 let armorDef = 0
 let armorTough = 0
+let accessoryBonus = getAccessoryBonuses(player)
 
 if (player.weapon && itemDB[player.weapon]) {
 ensureItemDurability(player, player.weapon)
-weaponAtk = Number(itemDB[player.weapon].atk || 0)
+weaponAtk = getWeaponAtk(player)
 }
 if (player.armor && itemDB[player.armor]) {
 ensureItemDurability(player, player.armor)
-armorDef = Number(itemDB[player.armor].def || 0)
+armorDef = getArmorDef(player)
 armorTough = Number(itemDB[player.armor].tough || 0)
 }
 
@@ -82,20 +90,23 @@ let bossHp = boss.hp
 let rounds = 0
 let logs = []
 
-let critChance = Math.min(50, Number(player.int || 0) * 0.1)
-let dodgeChance = Math.min(50, Number(player.agi || 0) * 0.1)
-let reductionChance = Math.min(25, (Number(player.toughness || 0) + armorTough) * 0.1)
+let maidStatBuff = (player.maid.owned && player.maid.active) ? 10 : 0
+let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff
+let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff
+let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff
+let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff
+let critChance = Math.min(50, (effectiveInt * 0.1) + Number(accessoryBonus.crit || 0))
+let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0))
+let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0))
 
 while (bossHp > 0 && player.hp > 0 && rounds < 25) {
 rounds += 1
 
 let crit = Math.random() * 100 < Math.max(0, critChance - Number(boss.critRes || 0))
-let strValue = Number(player.str || 0)
-let weaponBase = weaponAtk > 0
-? (weaponAtk * (1 + (Math.min(strValue, 180) / 220)))
-: (1 + (strValue * 0.5))
-let statBonus = Math.floor(Math.max(0, strValue - 20) * 0.08)
-let dmg = Math.max(1, Math.floor(weaponBase) + statBonus + Math.floor(Math.random() * 5) - Number(boss.def || 0))
+let base = weaponAtk > 0
+? Math.max(1, Math.floor(weaponAtk * (1 + (effectiveStr / 120))))
+: Math.max(1, Math.floor(1 + (effectiveStr * 0.3)))
+let dmg = Math.max(1, base - Number(boss.def || 0))
 if (crit) dmg = Math.floor(dmg * 1.5)
 bossHp -= dmg
 logs.push(`Ronde ${rounds}: kamu hit boss -${dmg}${crit ? " (CRIT)" : ""}`)
@@ -114,7 +125,7 @@ logs.push(`Ronde ${rounds}: boss hit kamu -${taken}${reduced ? " (REDUCE 30%)" :
 }
 }
 
-let text = `Raid Lv.${lv}: ${boss.name}\nHP Boss: ${boss.hp}\nHP Kamu: ${Math.max(0, player.hp)}/${player.maxhp}\nStats: Weapon ATK ${weaponAtk} | Armor DEF ${armorDef}\n\n${logs.slice(0, 8).join('\n')}${logs.length > 8 ? '\n...' : ''}`
+let text = `Raid Lv.${lv}: ${boss.name}\nHP Boss: ${boss.hp}\nHP Kamu: ${Math.max(0, player.hp)}/${player.maxhp}\nStats: Weapon ATK ${weaponAtk} | Armor DEF ${armorDef} | Acc1 ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'} | Acc2 ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'} | Maid Buff ${maidStatBuff > 0 ? '+10 ALL' : 'OFF'}\n\n${logs.slice(0, 8).join('\n')}${logs.length > 8 ? '\n...' : ''}`
 
 if (bossHp <= 0) {
 player.gold += boss.rewardGold

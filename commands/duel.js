@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const { normalizePvp, runPvp, applyPvpResult, getRankGrade } = require('../system/pvp')
 const { useDurability } = require('../system/equipment')
+const achievementDB = require('../database/achievement.json')
+const { ensureAchievementState, evaluateAchievements } = require('../system/achievement')
 
 const duelPath = path.join(__dirname, '..', 'database', 'duel.json')
 
@@ -48,6 +50,9 @@ let p1 = db[challenger]
 let p2 = db[defender]
 normalizePvp(p1)
 normalizePvp(p2)
+ensureAchievementState(p1)
+ensureAchievementState(p2)
+
 let result = runPvp(p1, p2)
 let statUp = applyPvpResult(result.winner, result.loser)
 
@@ -60,12 +65,15 @@ if (db[loserId].weapon) useDurability(db[loserId], db[loserId].weapon, 1)
 if (db[loserId].armor) useDurability(db[loserId], db[loserId].armor, 1)
 
 let winnerRank = getRankGrade(result.winner)
-return { winnerId, loserId, statUp, winnerRank }
+let winnerUnlocked = evaluateAchievements(db[winnerId], achievementDB)
+let loserUnlocked = evaluateAchievements(db[loserId], achievementDB)
+
+return { winnerId, loserId, statUp, winnerRank, winnerUnlocked, loserUnlocked }
 }
 
 module.exports = async (m, { sender, args, mentionedJid }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
-if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
+if (!db[sender]) return m.reply('Bikin karakter dulu pakai .start')
 
 if (typeof db[sender].pvpCooldown !== 'number') db[sender].pvpCooldown = 0
 let now = Date.now()
@@ -76,19 +84,19 @@ let pending = readPending()
 
 if (action === 'accept') {
 let req = pending[sender]
-if (!req) return m.reply("Tidak ada duel challenge yang pending.")
+if (!req) return m.reply('Tidak ada duel challenge yang pending.')
 let challenger = req.from
 if (!db[challenger]) {
 delete pending[sender]
 savePending(pending)
-return m.reply("Challenger tidak ditemukan.")
+return m.reply('Challenger tidak ditemukan.')
 }
 
 if (typeof db[challenger].pvpCooldown !== 'number') db[challenger].pvpCooldown = 0
 if (now - db[sender].pvpCooldown < cooldown || now - db[challenger].pvpCooldown < cooldown) {
 delete pending[sender]
 savePending(pending)
-return m.reply("Salah satu player masih cooldown duel.")
+return m.reply('Salah satu player masih cooldown duel.')
 }
 
 let result = runAndApplyDuel(db, challenger, sender)
@@ -103,17 +111,20 @@ let winnerName = asTag(result.winnerId, db[result.winnerId].name || result.winne
 let loserName = asTag(result.loserId, db[result.loserId].name || result.loserId)
 let mentions = [result.winnerId, result.loserId].filter((id, i, arr) => String(id).includes('@') && arr.indexOf(id) === i)
 
-return m.reply({
-text: `⚔️ Duel dimulai!\n\nWinner: ${winnerName}\nLoser: ${loserName}\n\n🎁 Winner: +50 Gold, +1 ${result.statUp.toUpperCase()}\n💀 Loser: -50 Gold, HP jadi 1\n\nRank winner: ${result.winnerRank.grade} (${result.winnerRank.wins} win)`,
-mentions
-})
+let text = `Duel dimulai!\n\nWinner: ${winnerName}\nLoser: ${loserName}\n\nWinner: +50 Gold, +1 ${result.statUp.toUpperCase()}\nLoser: -50 Gold, HP jadi 1\n\nRank winner: ${result.winnerRank.grade} (${result.winnerRank.wins} win)`
+let unlockLines = []
+for (let x of result.winnerUnlocked || []) unlockLines.push(`- ${winnerName}: ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`)
+for (let x of result.loserUnlocked || []) unlockLines.push(`- ${loserName}: ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`)
+if (unlockLines.length) text += `\n\nAchievement Unlocked:\n${unlockLines.join('\n')}`
+
+return m.reply({ text, mentions })
 }
 
 if (action === 'decline') {
-if (!pending[sender]) return m.reply("Tidak ada duel challenge yang pending.")
+if (!pending[sender]) return m.reply('Tidak ada duel challenge yang pending.')
 delete pending[sender]
 savePending(pending)
-return m.reply("❌ Duel challenge ditolak.")
+return m.reply('Duel challenge ditolak.')
 }
 
 if (now - db[sender].pvpCooldown < cooldown) {
@@ -122,12 +133,12 @@ return m.reply(`Duel cooldown. Tunggu ${sisa} detik.`)
 }
 
 let targetRaw = (mentionedJid && mentionedJid[0]) || args[0]
-if (!targetRaw) return m.reply("Tag lawan dulu. Contoh: .duel @user\nAtau: .duel accept / .duel decline")
+if (!targetRaw) return m.reply('Tag lawan dulu. Contoh: .duel @user\nAtau: .duel accept / .duel decline')
 
 let targetNorm = normalizeTarget(targetRaw)
 let targetId = findPlayerKey(db, targetNorm)
-if (!targetId || !db[targetId]) return m.reply("Player target belum punya karakter.")
-if (targetId === sender) return m.reply("Ngelawan diri sendiri? cari musuh lain.")
+if (!targetId || !db[targetId]) return m.reply('Player target belum punya karakter.')
+if (targetId === sender) return m.reply('Ngelawan diri sendiri? cari musuh lain.')
 
 pending[targetId] = { from: sender, at: now }
 savePending(pending)
@@ -137,7 +148,7 @@ let targetTag = asTag(targetId, db[targetId].name || targetId)
 let mentions = [sender, targetId].filter((id, i, arr) => String(id).includes('@') && arr.indexOf(id) === i)
 
 m.reply({
-text: `📨 Duel challenge!\n${senderTag} menantang ${targetTag}\n\nTarget, ketik:\n.duel accept\natau\n.duel decline`,
+text: `Duel challenge!\n${senderTag} menantang ${targetTag}\n\nTarget, ketik:\n.duel accept\natau\n.duel decline`,
 mentions
 })
 }

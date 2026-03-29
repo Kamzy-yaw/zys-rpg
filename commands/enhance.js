@@ -1,0 +1,79 @@
+const fs = require('fs')
+const itemDB = require('../database/item.json')
+const { ensureEnhanceState } = require('../system/gearstats')
+
+const MAX_ENHANCE = 15
+
+function countItem(inv, id) {
+return inv.filter((x) => x === id).length
+}
+
+function takeItem(inv, id, qty) {
+for (let i = 0; i < qty; i++) {
+let idx = inv.indexOf(id)
+if (idx !== -1) inv.splice(idx, 1)
+}
+}
+
+function reqByLevel(nextLevel) {
+if (nextLevel <= 4) return { ore_iron: 2 }
+if (nextLevel <= 8) return { ore_gold: 2, crystal_shard: 1 }
+if (nextLevel <= 12) return { ore_mythril: 2, ore_titanium: 1 }
+return { spirit_gem: 1, ancient_crystal: 1 }
+}
+
+module.exports = async (m, { sender, args }) => {
+let db = JSON.parse(fs.readFileSync('./database/player.json'))
+if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
+
+let p = db[sender]
+if (!Array.isArray(p.inventory)) p.inventory = []
+if (typeof p.gold !== 'number') p.gold = 0
+if (typeof p.weapon === 'undefined') p.weapon = null
+if (typeof p.armor === 'undefined') p.armor = null
+if (typeof p.pickaxe === 'undefined') p.pickaxe = null
+ensureEnhanceState(p)
+
+let target = (args[0] || '').toLowerCase()
+if (!target) {
+return m.reply(
+`Enhance Gear
+Weapon: +${p.enhance.weapon} (${p.weapon ? (itemDB[p.weapon]?.name || p.weapon) : 'None'})
+Armor: +${p.enhance.armor} (${p.armor ? (itemDB[p.armor]?.name || p.armor) : 'None'})
+Pickaxe: +${p.enhance.pickaxe} (${p.pickaxe ? (itemDB[p.pickaxe]?.name || p.pickaxe) : 'None'})
+
+Command:
+.enhance weapon
+.enhance armor
+.enhance pickaxe`
+)
+}
+
+if (!['weapon', 'armor', 'pickaxe'].includes(target)) {
+return m.reply("Pilih target: weapon / armor / pickaxe")
+}
+
+let equipped = p[target]
+if (!equipped || !itemDB[equipped]) return m.reply(`Kamu belum equip ${target}.`)
+let current = Number(p.enhance[target] || 0)
+if (current >= MAX_ENHANCE) return m.reply(`${target} sudah max +${MAX_ENHANCE}.`)
+
+let next = current + 1
+let costGold = 500 * next
+let mats = reqByLevel(next)
+
+if (p.gold < costGold) return m.reply(`Gold kurang. Butuh ${costGold} Gold.`)
+for (let id of Object.keys(mats)) {
+let need = mats[id]
+let have = countItem(p.inventory, id)
+if (have < need) return m.reply(`Material kurang: ${(itemDB[id]?.name || id)} ${have}/${need}`)
+}
+
+p.gold -= costGold
+for (let id of Object.keys(mats)) takeItem(p.inventory, id, mats[id])
+p.enhance[target] = next
+
+fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+let matTxt = Object.entries(mats).map(([id, qty]) => `${itemDB[id]?.name || id} x${qty}`).join(', ')
+return m.reply(`Enhance sukses: ${itemDB[equipped].name} +${next}\nBiaya: ${costGold} Gold\nMaterial: ${matTxt}`)
+}

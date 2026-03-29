@@ -25,7 +25,7 @@ i++
 
 }
 
-text += "\n\u255A\u2550 Ketik .buy <nomor> untuk beli item \u2550\u255D"
+text += "\n\u255A\u2550 Ketik .buy <nomor> [jumlah] untuk beli item \u2550\u255D"
 
 m.reply(text)
 
