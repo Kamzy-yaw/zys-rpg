@@ -1,4 +1,8 @@
 node_modules
 .npm-cache
+.git
 session
 database/player.json
+database/guild.json
+database/market.json
+database/party.json

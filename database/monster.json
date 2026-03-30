@@ -17,10 +17,10 @@
   },
   "goblin": {
     "name": "Goblin",
-    "hp": 42,
-    "atk": 5,
-    "exp": 18,
-    "gold": 13,
+    "hp": 44,
+    "atk": 6,
+    "exp": 20,
+    "gold": 15,
     "drops": [
       {
         "item": "wood_sword",

@@ -58,9 +58,6 @@ Mulai cepat:
 
 *INVENTORY*
 .inventory
-.inventory gear
-.inventory resource
-.inventory consumable
 
 *QUEST*
 .quest
