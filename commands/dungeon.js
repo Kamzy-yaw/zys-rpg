@@ -21,9 +21,9 @@ hpScale: 10.2,
 atkScale: 0.92,
 defScale: 0.21,
 rewardExpBase: 420,
-rewardExpScale: 23,
-rewardGoldBase: 50,
-rewardGoldScale: 2.8
+rewardExpScale: 17,
+rewardGoldBase: 36,
+rewardGoldScale: 2
 }
 }
 if (level >= 40) {
@@ -33,10 +33,10 @@ floors: 5,
 hpScale: 8.8,
 atkScale: 0.8,
 defScale: 0.18,
-rewardExpBase: 340,
-rewardExpScale: 21,
-rewardGoldBase: 44,
-rewardGoldScale: 2.4
+rewardExpBase: 270,
+rewardExpScale: 15,
+rewardGoldBase: 30,
+rewardGoldScale: 1.8
 }
 }
 return {
@@ -45,10 +45,10 @@ floors: 4,
 hpScale: 7.6,
 atkScale: 0.7,
 defScale: 0.15,
-rewardExpBase: 270,
-rewardExpScale: 19,
-rewardGoldBase: 35,
-rewardGoldScale: 2
+rewardExpBase: 220,
+rewardExpScale: 13,
+rewardGoldBase: 24,
+rewardGoldScale: 1.4
 }
 }
 
@@ -86,7 +86,6 @@ let key = getQuestDailyKeyWIB()
 if (player.dungeon.dailyKey !== key) {
 player.dungeon.dailyKey = key
 player.dungeon.cleared = false
-player.dungeon.expCleared = false
 }
 
 let mode = (args && args[0] ? String(args[0]).toLowerCase() : '')
@@ -99,12 +98,8 @@ let expCfg = getExpDungeonConfig(player.level)
 if (!isExpMode && player.dungeon.cleared) {
 return m.reply('Dungeon harian sudah kamu clear.\nReset tiap hari jam 07:00 WIB.')
 }
-if (isExpMode && player.dungeon.expCleared) {
-return m.reply('Dungeon EXP harian sudah kamu clear.\nReset tiap hari jam 07:00 WIB.')
-}
-
 let now = Date.now()
-let cooldown = isExpMode ? (24 * 60 * 60 * 1000) : 30000
+let cooldown = isExpMode ? (2 * 60 * 60 * 1000) : 30000
 let lastRun = isExpMode ? player.lastExpDungeon : player.lastDungeon
 if (now - lastRun < cooldown) {
 let sisa = Math.ceil((cooldown - (now - lastRun)) / 1000)
@@ -200,7 +195,6 @@ let rewardExp = isExpMode
 player.gold += rewardGold
 player.exp += rewardExp
 if (!isExpMode) player.dungeon.cleared = true
-if (isExpMode) player.dungeon.expCleared = true
 incrementStat(player, 'dungeonClears', 1)
 
 text += `\n\nDungeon clear!\nReward:\n+${rewardExp} EXP\n+${rewardGold} Gold`

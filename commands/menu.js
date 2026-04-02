@@ -50,7 +50,7 @@ Mulai cepat:
 .craft
 .enhance <weapon|armor|pickaxe|rod>
 .sell <no> [jumlah]
-.fix <no>
+.fix <armor|pickaxe|rod|sword>
 .market
 
 *FARMING*
@@ -96,7 +96,7 @@ Tips:
 - party: .party | market: .market
 - market cancel: .market cancel <id>
 Format kategori: .sell equipment|resource|consumable <no> [jumlah]
-.fix equipment <no>`
+.fix armor`
 
 m.reply(text)
 }

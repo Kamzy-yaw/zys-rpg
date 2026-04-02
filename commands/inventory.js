@@ -109,7 +109,7 @@ text += "\nContoh cepat:"
 text += "\n- Equip senjata/armor/pickaxe/rod: .equip 5"
 text += "\n- Equip aksesoris slot 1/2: .equip 8 1"
 text += "\n- Jual item: .sell 3 10"
-text += "\n- Repair gear: .fix 2"
+text += "\n- Repair gear: .fix armor | .fix pickaxe | .fix rod | .fix sword"
 text += "\n- Lihat resep crafting: .craft"
 text += "\n- Buka treasure chest: .open 1"
 
