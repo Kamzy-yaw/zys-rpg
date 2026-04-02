@@ -26,6 +26,7 @@ Mulai cepat:
 .raid test
 .raid list
 .dungeon
+.dungeon exp
 
 *PVP*
 .duel @user

@@ -11,9 +11,49 @@ function rand(min, max) {
 return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-module.exports = async (m, { sender }) => {
+function getExpDungeonConfig(level) {
+if (level >= 60) {
+return {
+cooldownMs: 70000,
+floors: 6,
+hpScale: 10.2,
+atkScale: 0.92,
+defScale: 0.21,
+rewardExpBase: 420,
+rewardExpScale: 23,
+rewardGoldBase: 50,
+rewardGoldScale: 2.8
+}
+}
+if (level >= 40) {
+return {
+cooldownMs: 60000,
+floors: 5,
+hpScale: 8.8,
+atkScale: 0.8,
+defScale: 0.18,
+rewardExpBase: 340,
+rewardExpScale: 21,
+rewardGoldBase: 44,
+rewardGoldScale: 2.4
+}
+}
+return {
+cooldownMs: 45000,
+floors: 4,
+hpScale: 7.6,
+atkScale: 0.7,
+defScale: 0.15,
+rewardExpBase: 270,
+rewardExpScale: 19,
+rewardGoldBase: 35,
+rewardGoldScale: 2
+}
+}
+
+module.exports = async (m, { sender, args }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
-if (!db[sender]) return m.reply("Karakter belum ada.\nKetik .start dulu ya.")
+if (!db[sender]) return m.reply('Karakter belum ada.\nKetik .start dulu ya.')
 
 let player = db[sender]
 if (typeof player.level !== 'number') player.level = 1
@@ -26,12 +66,14 @@ if (typeof player.toughness !== 'number') player.toughness = 0
 if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.exp !== 'number') player.exp = 0
 if (typeof player.lastDungeon !== 'number') player.lastDungeon = 0
+if (typeof player.lastExpDungeon !== 'number') player.lastExpDungeon = 0
 if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
 if (!player.maid || typeof player.maid !== 'object') player.maid = { owned: false, active: false, autoFix: true, autoHeal: true }
 if (typeof player.maid.owned !== 'boolean') player.maid.owned = false
 if (typeof player.maid.active !== 'boolean') player.maid.active = false
-if (!player.dungeon || typeof player.dungeon !== 'object') player.dungeon = { dailyKey: '', cleared: false }
+if (!player.dungeon || typeof player.dungeon !== 'object') player.dungeon = { dailyKey: '', cleared: false, expCleared: false }
+if (typeof player.dungeon.expCleared !== 'boolean') player.dungeon.expCleared = false
 
 ensureDurabilityState(player)
 ensureEnhanceState(player)
@@ -42,16 +84,28 @@ let key = getQuestDailyKeyWIB()
 if (player.dungeon.dailyKey !== key) {
 player.dungeon.dailyKey = key
 player.dungeon.cleared = false
+player.dungeon.expCleared = false
 }
 
-if (player.dungeon.cleared) {
-return m.reply("Dungeon harian sudah kamu clear.\nReset tiap hari jam 07:00 WIB.")
+let mode = (args && args[0] ? String(args[0]).toLowerCase() : '')
+if (mode && !['exp', 'daily'].includes(mode)) {
+return m.reply('Mode dungeon tidak valid.\nPakai: .dungeon (harian) atau .dungeon exp')
+}
+let isExpMode = mode === 'exp'
+let expCfg = getExpDungeonConfig(player.level)
+
+if (!isExpMode && player.dungeon.cleared) {
+return m.reply('Dungeon harian sudah kamu clear.\nReset tiap hari jam 07:00 WIB.')
+}
+if (isExpMode && player.dungeon.expCleared) {
+return m.reply('Dungeon EXP harian sudah kamu clear.\nReset tiap hari jam 07:00 WIB.')
 }
 
 let now = Date.now()
-let cooldown = 30000
-if (now - player.lastDungeon < cooldown) {
-let sisa = Math.ceil((cooldown - (now - player.lastDungeon)) / 1000)
+let cooldown = isExpMode ? (24 * 60 * 60 * 1000) : 30000
+let lastRun = isExpMode ? player.lastExpDungeon : player.lastDungeon
+if (now - lastRun < cooldown) {
+let sisa = Math.ceil((cooldown - (now - lastRun)) / 1000)
 return m.reply(`Dungeon cooldown, tunggu ${sisa} detik lagi.`)
 }
 
@@ -79,15 +133,21 @@ let reduceChance = Math.min(25, (effectiveTough * 0.1) + Number(acc.reduce || 0)
 
 incrementStat(player, 'dungeonRuns', 1)
 
-let floors = 3
+let floors = isExpMode ? expCfg.floors : 3
 let logs = []
 let cleared = true
 
 for (let floor = 1; floor <= floors; floor++) {
-let enemyName = `Guardian Lantai ${floor}`
-let enemyHp = 70 + (floor * 45) + Math.floor(player.level * 6.5)
-let enemyAtk = 10 + (floor * 6) + Math.floor(player.level * 0.6)
-let enemyDef = 1 + floor + Math.floor(player.level * 0.12)
+let enemyName = isExpMode ? `Echo Warden ${floor}` : `Guardian Lantai ${floor}`
+let enemyHp = isExpMode
+? 90 + (floor * 58) + Math.floor(player.level * expCfg.hpScale)
+: 70 + (floor * 45) + Math.floor(player.level * 6.5)
+let enemyAtk = isExpMode
+? 13 + (floor * 8) + Math.floor(player.level * expCfg.atkScale)
+: 10 + (floor * 6) + Math.floor(player.level * 0.6)
+let enemyDef = isExpMode
+? 2 + floor + Math.floor(player.level * expCfg.defScale)
+: 1 + floor + Math.floor(player.level * 0.12)
 let turn = 0
 
 logs.push(`Lantai ${floor}: ${enemyName} (HP ${enemyHp} | ATK ${enemyAtk} | DEF ${enemyDef})`)
@@ -106,7 +166,7 @@ if (enemyHp <= 0) break
 
 let dodged = Math.random() * 100 < dodgeChance
 if (dodged) {
-if (turn <= 2) logs.push(`- Kamu menghindar`)
+if (turn <= 2) logs.push('- Kamu menghindar')
 continue
 }
 let reduced = Math.random() * 100 < reduceChance
@@ -118,25 +178,30 @@ if (turn <= 2) logs.push(`- ${enemyName} hit kamu -${enemyDmg}${reduced ? ' (RED
 
 if (player.hp <= 0) {
 cleared = false
-logs.push(`❌ Gagal di lantai ${floor}.`)
+logs.push(`Gagal di lantai ${floor}.`)
 break
 }
 
-logs.push(`✅ Lantai ${floor} clear.`)
+logs.push(`Lantai ${floor} clear.`)
 }
 
-let text = `🏰 Dungeon Harian\n\n${logs.slice(0, 12).join('\n')}`
-if (logs.length > 12) text += `\n...`
+let text = `${isExpMode ? 'Dungeon EXP Grind' : 'Dungeon Harian'}\n\n${logs.slice(0, 12).join('\n')}`
+if (logs.length > 12) text += '\n...'
 
 if (cleared) {
-let rewardGold = 120 + (player.level * 8)
-let rewardExp = 150 + (player.level * 10)
+let rewardGold = isExpMode
+? Math.floor(expCfg.rewardGoldBase + (player.level * expCfg.rewardGoldScale))
+: (120 + (player.level * 8))
+let rewardExp = isExpMode
+? Math.floor(expCfg.rewardExpBase + (player.level * expCfg.rewardExpScale))
+: (150 + (player.level * 10))
 player.gold += rewardGold
 player.exp += rewardExp
-player.dungeon.cleared = true
+if (!isExpMode) player.dungeon.cleared = true
+if (isExpMode) player.dungeon.expCleared = true
 incrementStat(player, 'dungeonClears', 1)
 
-text += `\n\n🎉 Dungeon clear!\nReward:\n+${rewardExp} EXP\n+${rewardGold} Gold`
+text += `\n\nDungeon clear!\nReward:\n+${rewardExp} EXP\n+${rewardGold} Gold`
 let lvResult = levelUp(player)
 if (lvResult) {
 let g = lvResult.gains
@@ -145,13 +210,15 @@ if (g.str) gainText.push(`STR +${g.str}`)
 if (g.agi) gainText.push(`AGI +${g.agi}`)
 if (g.int) gainText.push(`INT +${g.int}`)
 if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
-text += `\n\n✨ LEVEL UP!\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
+text += `\n\nLEVEL UP!\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
 }
 } else {
 player.hp = 1
-let penalty = Math.min(player.gold, Math.floor(player.gold * 0.03))
+let penalty = isExpMode
+? Math.min(player.gold, Math.floor(player.gold * 0.01))
+: Math.min(player.gold, Math.floor(player.gold * 0.03))
 player.gold -= penalty
-text += `\n\n💀 Dungeon gagal.\nPenalty: -${penalty} Gold\nHP jadi 1`
+text += `\n\nDungeon gagal.\nPenalty: -${penalty} Gold\nHP jadi 1`
 }
 
 if (player.weapon) useDurability(player, player.weapon, 2)
@@ -160,10 +227,12 @@ if (player.armor) useDurability(player, player.armor, 2)
 let unlocked = evaluateAchievements(player, achievementDB)
 if (unlocked.length) {
 let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`).join('\n')
-text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
+text += `\n\nAchievement Unlocked:\n${unlockText}`
 }
 
-player.lastDungeon = now
+if (isExpMode) player.lastExpDungeon = now
+else player.lastDungeon = now
+
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 return m.reply(text)
 }
