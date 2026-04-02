@@ -10,7 +10,12 @@ const bosses = {
 2: { name: "Void Tyrant", minLevel: 24, hp: 1050, atk: 48, def: 4, critRes: 7, rewardGold: 750, rewardExp: 1000 },
 3: { name: "Abyss Behemoth", minLevel: 28, hp: 1450, atk: 58, def: 6, critRes: 10, rewardGold: 1100, rewardExp: 1600 },
 4: { name: "Hellfire Warden", minLevel: 33, hp: 1900, atk: 70, def: 8, critRes: 12, rewardGold: 1500, rewardExp: 2400 },
-5: { name: "World Eater", minLevel: 40, hp: 2600, atk: 85, def: 12, critRes: 15, rewardGold: 2100, rewardExp: 3400 }
+5: { name: "World Eater", minLevel: 40, hp: 2600, atk: 85, def: 12, critRes: 15, rewardGold: 2100, rewardExp: 3400 },
+6: { name: "Chrono Ravager", minLevel: 45, hp: 3300, atk: 98, def: 15, critRes: 17, rewardGold: 2800, rewardExp: 4600 },
+7: { name: "Nether Leviathan", minLevel: 50, hp: 4200, atk: 112, def: 18, critRes: 20, rewardGold: 3600, rewardExp: 6200 },
+8: { name: "Astral Juggernaut", minLevel: 55, hp: 5200, atk: 127, def: 22, critRes: 23, rewardGold: 4600, rewardExp: 8200 },
+9: { name: "Eclipse Monarch", minLevel: 60, hp: 6400, atk: 145, def: 26, critRes: 26, rewardGold: 5800, rewardExp: 10800 },
+10: { name: "Origin Devourer", minLevel: 65, hp: 7800, atk: 165, def: 30, critRes: 30, rewardGold: 7200, rewardExp: 14000 }
 }
 
 function formatRaidList() {

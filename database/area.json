@@ -6,7 +6,7 @@
   "volcano": { "name": "Ashfang Volcano", "level": 16, "monsters": ["orc", "lizardman", "kobold", "gnoll", "lava_behemoth"] },
   "sky_island": { "name": "Aether Sky Island", "level": 20, "monsters": ["harpy", "wyvern", "storm_seraph"] },
   "mine": { "name": "Blackstone Mine", "level": 10, "monsters": ["cave_worm", "kobold", "bandit", "orc"] },
-  "ruins": { "name": "Ancient Ruins", "level": 25, "monsters": ["minotaur", "golem", "troll"] },
-  "dragon_peak": { "name": "Dragon Peak", "level": 30, "monsters": ["dragon", "wyvern", "golem", "elder_drake"] },
-  "void_gate": { "name": "Void Gate", "level": 40, "monsters": ["demon_lord", "phoenix", "void_knight", "abyss_overlord"] }
+  "ruins": { "name": "Ancient Ruins", "level": 25, "monsters": ["minotaur", "golem", "troll", "ruin_revenant"] },
+  "dragon_peak": { "name": "Dragon Peak", "level": 30, "monsters": ["dragon", "wyvern", "golem", "elder_drake", "shadow_hydra"] },
+  "void_gate": { "name": "Void Gate", "level": 40, "monsters": ["demon_lord", "phoenix", "void_knight", "abyss_overlord", "shadow_hydra", "celestial_sentinel"] }
 }

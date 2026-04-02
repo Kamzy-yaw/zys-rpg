@@ -2,7 +2,7 @@ const fs = require('fs')
 const itemDB = require('../database/item.json')
 const { ensureEnhanceState } = require('../system/gearstats')
 
-const MAX_ENHANCE = 15
+const MAX_ENHANCE = 25
 
 function countItem(inv, id) {
 return inv.filter((x) => x === id).length
@@ -19,7 +19,29 @@ function reqByLevel(nextLevel) {
 if (nextLevel <= 4) return { ore_iron: 2 }
 if (nextLevel <= 8) return { ore_gold: 2, crystal_shard: 1 }
 if (nextLevel <= 12) return { ore_mythril: 2, ore_titanium: 1 }
-return { spirit_gem: 1, ancient_crystal: 1 }
+if (nextLevel <= 15) return { spirit_gem: 1, ancient_crystal: 1 }
+if (nextLevel === 16) return { ore_adamantite: 2, ore_dragon_steel: 1, magic_crystal: 2 }
+if (nextLevel === 17) return { ore_adamantite: 2, shadow_crystal: 1, dragon_scale: 1 }
+if (nextLevel === 18) return { ore_dragon_steel: 2, shadow_crystal: 1, ancient_relic: 1 }
+if (nextLevel === 19) return { dragon_heart_ore: 1, shadow_crystal: 2, phoenix_feather: 1 }
+if (nextLevel === 20) return { dragon_heart_ore: 1, void_stone: 1, celestial_gem: 1 }
+if (nextLevel === 21) return { void_stone: 1, celestial_gem: 1, ocean_heart: 1 }
+if (nextLevel === 22) return { void_stone: 2, celestial_gem: 1, sea_king_crown: 1 }
+if (nextLevel === 23) return { void_stone: 2, celestial_gem: 2, leviathan_scale: 1 }
+if (nextLevel === 24) return { void_stone: 3, celestial_gem: 2, ancient_ocean_relic: 1 }
+return { void_stone: 3, celestial_gem: 3, ancient_artifact: 1 }
+}
+
+function goldCostByLevel(nextLevel) {
+if (nextLevel <= 10) return 220 * nextLevel
+if (nextLevel <= 15) return 320 * nextLevel
+if (nextLevel <= 20) return 400 * nextLevel
+return 480 * nextLevel
+}
+
+function successChanceByLevel(nextLevel) {
+if (nextLevel <= 15) return 100
+return Math.max(10, 100 - ((nextLevel - 15) * 10))
 }
 
 module.exports = async (m, { sender, args }) => {
@@ -59,8 +81,9 @@ let current = Number(p.enhance[target] || 0)
 if (current >= MAX_ENHANCE) return m.reply(`${target} sudah max +${MAX_ENHANCE}.`)
 
 let next = current + 1
-let costGold = 500 * next
+let costGold = goldCostByLevel(next)
 let mats = reqByLevel(next)
+let successChance = successChanceByLevel(next)
 
 if (p.gold < costGold) return m.reply(`Gold kurang. Butuh ${costGold} Gold.`)
 for (let id of Object.keys(mats)) {
@@ -71,9 +94,13 @@ if (have < need) return m.reply(`Material kurang: ${(itemDB[id]?.name || id)} ${
 
 p.gold -= costGold
 for (let id of Object.keys(mats)) takeItem(p.inventory, id, mats[id])
-p.enhance[target] = next
+let success = Math.random() * 100 < successChance
+if (success) p.enhance[target] = next
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 let matTxt = Object.entries(mats).map(([id, qty]) => `${itemDB[id]?.name || id} x${qty}`).join(', ')
-return m.reply(`Enhance sukses: ${itemDB[equipped].name} +${next}\nBiaya: ${costGold} Gold\nMaterial: ${matTxt}`)
+if (!success) {
+return m.reply(`Enhance gagal: ${itemDB[equipped].name} tetap +${current}\nChance: ${successChance}%\nBiaya: ${costGold} Gold\nMaterial terpakai: ${matTxt}`)
+}
+return m.reply(`Enhance sukses: ${itemDB[equipped].name} +${next}\nChance: ${successChance}%\nBiaya: ${costGold} Gold\nMaterial: ${matTxt}`)
 }

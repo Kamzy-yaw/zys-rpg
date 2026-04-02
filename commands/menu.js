@@ -20,9 +20,9 @@ Mulai cepat:
 .hunt
 .explore
 .heal [big/full]
-.train str|agi|int
+.train str|agi|int|random
 .travel <area>
-.raid <1-5> (Lv20+)
+.raid <1-10> (Lv20+)
 .raid test
 .raid list
 .dungeon

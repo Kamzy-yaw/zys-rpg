@@ -4,7 +4,7 @@
     "hp": 26,
     "atk": 4,
     "exp": 10,
-    "gold": 8,
+    "gold": 11,
     "rarity": 60
   },
   "rat": {
@@ -12,7 +12,7 @@
     "hp": 29,
     "atk": 4,
     "exp": 12,
-    "gold": 9,
+    "gold": 12,
     "rarity": 45
   },
   "goblin": {
@@ -20,7 +20,7 @@
     "hp": 44,
     "atk": 6,
     "exp": 20,
-    "gold": 15,
+    "gold": 18,
     "drops": [
       {
         "item": "wood_sword",
@@ -165,50 +165,50 @@
   },
   "minotaur": {
     "name": "Minotaur",
-    "hp": 211,
-    "atk": 26,
-    "exp": 170,
-    "gold": 120,
+    "hp": 258,
+    "atk": 33,
+    "exp": 245,
+    "gold": 160,
     "rarity": 3
   },
   "wyvern": {
     "name": "Wyvern",
-    "hp": 233,
-    "atk": 28,
-    "exp": 190,
-    "gold": 135,
+    "hp": 282,
+    "atk": 35,
+    "exp": 275,
+    "gold": 180,
     "rarity": 3
   },
   "golem": {
     "name": "Golem",
-    "hp": 255,
-    "atk": 30,
-    "exp": 210,
-    "gold": 150,
+    "hp": 305,
+    "atk": 37,
+    "exp": 305,
+    "gold": 205,
     "rarity": 2
   },
   "dragon": {
     "name": "Dragon",
-    "hp": 334,
-    "atk": 38,
-    "exp": 340,
-    "gold": 170,
+    "hp": 420,
+    "atk": 49,
+    "exp": 450,
+    "gold": 245,
     "rarity": 1
   },
   "demon_lord": {
     "name": "Demon Lord",
-    "hp": 404,
-    "atk": 44,
-    "exp": 450,
-    "gold": 220,
+    "hp": 515,
+    "atk": 57,
+    "exp": 600,
+    "gold": 310,
     "rarity": 1
   },
   "phoenix": {
     "name": "Phoenix",
-    "hp": 440,
-    "atk": 48,
-    "exp": 520,
-    "gold": 260,
+    "hp": 560,
+    "atk": 63,
+    "exp": 690,
+    "gold": 360,
     "rarity": 1
   },
   "sand_wyrm": {
@@ -267,10 +267,10 @@
   },
   "storm_seraph": {
     "name": "Storm Seraph",
-    "hp": 281,
-    "atk": 32,
-    "exp": 240,
-    "gold": 180,
+    "hp": 355,
+    "atk": 41,
+    "exp": 330,
+    "gold": 235,
     "drops": [
       {
         "item": "titanium_armor",
@@ -285,10 +285,10 @@
   },
   "void_knight": {
     "name": "Void Knight",
-    "hp": 369,
-    "atk": 41,
-    "exp": 410,
-    "gold": 200,
+    "hp": 480,
+    "atk": 56,
+    "exp": 560,
+    "gold": 305,
     "drops": [
       {
         "item": "shadow_crystal",
@@ -303,10 +303,10 @@
   },
   "elder_drake": {
     "name": "Elder Drake",
-    "hp": 492,
-    "atk": 52,
-    "exp": 560,
-    "gold": 260,
+    "hp": 635,
+    "atk": 68,
+    "exp": 760,
+    "gold": 390,
     "drops": [
       {
         "item": "dragon_heart_ore",
@@ -321,10 +321,10 @@
   },
   "abyss_overlord": {
     "name": "Abyss Overlord",
-    "hp": 668,
-    "atk": 62,
-    "exp": 760,
-    "gold": 320,
+    "hp": 860,
+    "atk": 82,
+    "exp": 1020,
+    "gold": 500,
     "drops": [
       {
         "item": "ancient_crystal",
@@ -336,5 +336,59 @@
       }
     ],
     "rarity": 1
+  },
+  "shadow_hydra": {
+    "name": "Shadow Hydra",
+    "hp": 760,
+    "atk": 74,
+    "exp": 900,
+    "gold": 430,
+    "drops": [
+      {
+        "item": "shadow_crystal",
+        "chance": 26
+      },
+      {
+        "item": "void_stone",
+        "chance": 12
+      }
+    ],
+    "rarity": 1
+  },
+  "celestial_sentinel": {
+    "name": "Celestial Sentinel",
+    "hp": 940,
+    "atk": 88,
+    "exp": 1140,
+    "gold": 560,
+    "drops": [
+      {
+        "item": "celestial_gem",
+        "chance": 14
+      },
+      {
+        "item": "ancient_crystal",
+        "chance": 18
+      }
+    ],
+    "rarity": 1
+  },
+  "ruin_revenant": {
+    "name": "Ruin Revenant",
+    "hp": 520,
+    "atk": 54,
+    "exp": 620,
+    "gold": 285,
+    "drops": [
+      {
+        "item": "ore_titanium",
+        "chance": 22
+      },
+      {
+        "item": "ore_dragon_steel",
+        "chance": 8
+      }
+    ],
+    "rarity": 2
   }
 }

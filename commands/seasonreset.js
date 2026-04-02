@@ -3,7 +3,7 @@ const path = require('path')
 const { getRankGrade, normalizePvp } = require('../system/pvp')
 
 const rewards = { D: 100, C: 200, B: 300, A: 400, S: 500 }
-const allowedNumbers = new Set(['6285871325275', '6281287345836'])
+const allowedNumbers = new Set(['6285624899426', '6281287345836'])
 
 function normalizeSender(sender) {
 return String(sender || '').split('@')[0].replace(/[^\d]/g, '')
