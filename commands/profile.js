@@ -4,7 +4,7 @@ const itemDB = require('../database/item.json')
 const achievementDB = require('../database/achievement.json')
 const { normalizePvp, getRankGrade } = require('../system/pvp')
 const { getDurability, ensureDurabilityState } = require('../system/equipment')
-const { ensureEnhanceState, getWeaponAtk, getArmorDef, getPickaxePower, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
+const { ensureEnhanceState, getWeaponAtk, getArmorDef, getPickaxePower, getRodPower, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 const { ensureAchievementState, evaluateAchievements } = require('../system/achievement')
 
 module.exports = async (m, { sender }) => {
@@ -27,6 +27,7 @@ let rank = getRankGrade(p)
 let weaponName = (p.weapon && itemDB[p.weapon]) ? itemDB[p.weapon].name : (p.weapon ? p.weapon : "None")
 let armorName = (p.armor && itemDB[p.armor]) ? itemDB[p.armor].name : (p.armor ? p.armor : "None")
 let pickaxeName = (p.pickaxe && itemDB[p.pickaxe]) ? itemDB[p.pickaxe].name : (p.pickaxe ? p.pickaxe : "None")
+let rodName = (p.rod && itemDB[p.rod]) ? itemDB[p.rod].name : (p.rod ? p.rod : "None")
 let accessory1 = (p.accessories[0] && itemDB[p.accessories[0]]) ? itemDB[p.accessories[0]].name : (p.accessories[0] ? p.accessories[0] : "None")
 let accessory2 = (p.accessories[1] && itemDB[p.accessories[1]]) ? itemDB[p.accessories[1]].name : (p.accessories[1] ? p.accessories[1] : "None")
 let accessory1Detail = ''
@@ -58,6 +59,7 @@ accessory2Detail = parts.length ? ` (${parts.join(' | ')})` : ''
 let wD = p.weapon ? getDurability(p, p.weapon) : null
 let aD = p.armor ? getDurability(p, p.armor) : null
 let pD = p.pickaxe ? getDurability(p, p.pickaxe) : null
+let rD = p.rod ? getDurability(p, p.rod) : null
 if (typeof p.miningExp !== 'number') p.miningExp = 0
 if (typeof p.miningLevel !== 'number') p.miningLevel = 1
 let armorTough = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].tough || 0) : 0
@@ -65,6 +67,7 @@ let accessoryBonus = getAccessoryBonuses(p)
 let armorDef = getArmorDef(p)
 let effectiveWeaponAtk = getWeaponAtk(p)
 let effectivePickaxe = getPickaxePower(p)
+let effectiveRod = getRodPower(p)
 let effectiveTough = Number(p.toughness || 0) + armorTough + Number(accessoryBonus.tough || 0)
 let totalStr = Number(p.str || 0) + Number(accessoryBonus.str || 0)
 let totalAgi = Number(p.agi || 0) + Number(accessoryBonus.agi || 0)
@@ -102,9 +105,10 @@ Armor: ${armorName}
 Accessory 1: ${accessory1}${accessory1Detail}
 Accessory 2: ${accessory2}${accessory2Detail}
 Pickaxe: ${pickaxeName}
-Enhance: Weapon +${p.enhance.weapon} | Armor +${p.enhance.armor} | Pickaxe +${p.enhance.pickaxe}
-Effective Stats: STR ${totalStr} | AGI ${totalAgi} | INT ${totalInt} | Weapon ATK ${effectiveWeaponAtk} | Armor DEF ${armorDef} | Pickaxe Power ${effectivePickaxe}
-Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"} | ${pD ? `Pickaxe ${pD.current}/${pD.max}` : "Pickaxe -"}
+Rod: ${rodName}
+Enhance: Weapon +${p.enhance.weapon} | Armor +${p.enhance.armor} | Pickaxe +${p.enhance.pickaxe} | Rod +${p.enhance.rod}
+Effective Stats: STR ${totalStr} | AGI ${totalAgi} | INT ${totalInt} | Weapon ATK ${effectiveWeaponAtk} | Armor DEF ${armorDef} | Pickaxe Power ${effectivePickaxe} | Rod Power ${effectiveRod}
+Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"} | ${pD ? `Pickaxe ${pD.current}/${pD.max}` : "Pickaxe -"} | ${rD ? `Rod ${rD.current}/${rD.max}` : "Rod -"}
 Mining: Lv.${p.miningLevel} (${p.miningExp} EXP)
 Rank: ${rank.grade} (${rank.wins} win)
 PVP: ${p.pvpWins}W/${p.pvpLosses}L

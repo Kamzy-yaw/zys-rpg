@@ -35,6 +35,11 @@
   "steel_pickaxe": { "name": "Steel Pickaxe", "type": "pickaxe", "miningPower": 6, "price": 900, "durability": 200 },
   "mythril_pickaxe": { "name": "Mythril Pickaxe", "type": "pickaxe", "miningPower": 10, "price": 2000, "durability": 280 },
   "dragon_pickaxe": { "name": "Dragon Pickaxe", "type": "pickaxe", "miningPower": 15, "price": 5000, "durability": 380 },
+  "bamboo_rod": { "name": "Bamboo Rod", "type": "rod", "fishingPower": 2, "price": 180, "durability": 95 },
+  "iron_rod": { "name": "Iron Rod", "type": "rod", "fishingPower": 4, "price": 520, "durability": 150 },
+  "mythril_rod": { "name": "Mythril Rod", "type": "rod", "fishingPower": 7, "price": 1400, "durability": 230 },
+  "dragon_rod": { "name": "Dragon Rod", "type": "rod", "fishingPower": 11, "price": 3600, "durability": 320 },
+  "leviathan_rod": { "name": "Leviathan Rod", "type": "rod", "fishingPower": 15, "price": 7800, "durability": 430 },
 
   "hp_potion": { "name": "HP Potion", "type": "potion", "heal": 50, "price": 30 },
   "big_hp_potion": { "name": "Big HP Potion", "type": "potion", "heal": 120, "price": 60 },
@@ -113,6 +118,9 @@
   "sea_king_crown": { "name": "Sea King Crown", "type": "resource", "sellPrice": 300 },
   "leviathan_scale": { "name": "Leviathan Scale", "type": "resource", "sellPrice": 340 },
   "ancient_ocean_relic": { "name": "Ancient Ocean Relic", "type": "resource", "sellPrice": 380 },
+  "fisherman_thread": { "name": "Fisherman Thread", "type": "resource", "sellPrice": 58 },
+  "coral_gem": { "name": "Coral Gem", "type": "resource", "sellPrice": 95 },
+  "abyss_pearl": { "name": "Abyss Pearl", "type": "resource", "sellPrice": 165 },
 
   "fish": { "name": "Ikan Segar", "type": "resource", "sellPrice": 20 },
   "wheat": { "name": "Wheat", "type": "resource", "sellPrice": 12 },

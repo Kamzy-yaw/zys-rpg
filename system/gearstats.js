@@ -2,11 +2,12 @@ const itemDB = require('../database/item.json')
 
 function ensureEnhanceState(player) {
 if (!player.enhance || typeof player.enhance !== 'object' || Array.isArray(player.enhance)) {
-player.enhance = { weapon: 0, armor: 0, pickaxe: 0 }
+player.enhance = { weapon: 0, armor: 0, pickaxe: 0, rod: 0 }
 }
 if (typeof player.enhance.weapon !== 'number') player.enhance.weapon = 0
 if (typeof player.enhance.armor !== 'number') player.enhance.armor = 0
 if (typeof player.enhance.pickaxe !== 'number') player.enhance.pickaxe = 0
+if (typeof player.enhance.rod !== 'number') player.enhance.rod = 0
 }
 
 function normalizeAccessories(player) {
@@ -78,11 +79,21 @@ let bonus = Math.floor(lv / 3)
 return base + bonus
 }
 
+function getRodPower(player) {
+ensureEnhanceState(player)
+if (!player.rod || !itemDB[player.rod]) return 0
+let base = Number(itemDB[player.rod].fishingPower || 0)
+let lv = Math.max(0, Number(player.enhance.rod || 0))
+let bonus = Math.floor(lv / 3)
+return base + bonus
+}
+
 module.exports = {
 ensureEnhanceState,
 getWeaponAtk,
 getArmorDef,
 getPickaxePower,
+getRodPower,
 normalizeAccessories,
 getAccessoryBonuses
 }

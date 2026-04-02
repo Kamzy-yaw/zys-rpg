@@ -177,7 +177,7 @@ if (!itemId) return m.reply('Nomor inventory tidak valid. Cek .inventory')
 let have = player.inventory.filter((x) => x === itemId).length
 if (have < qty) return m.reply(`Jumlah item tidak cukup. Kamu punya ${have}.`)
 
-if (player.weapon === itemId || player.armor === itemId || player.pickaxe === itemId || player.accessories.includes(itemId)) {
+if (player.weapon === itemId || player.armor === itemId || player.pickaxe === itemId || player.rod === itemId || player.accessories.includes(itemId)) {
 return m.reply('Item yang sedang dipakai tidak bisa dijual di market.')
 }
 

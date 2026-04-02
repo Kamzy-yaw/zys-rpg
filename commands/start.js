@@ -25,11 +25,13 @@ armor: null,
 accessory: null,
 accessories: [null, null],
 pickaxe: null,
+rod: null,
 durability: {},
 enhance: {
 weapon: 0,
 armor: 0,
-pickaxe: 0
+pickaxe: 0,
+rod: 0
 },
 inventory: [],
 area: "field",

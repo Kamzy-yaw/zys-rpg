@@ -23,7 +23,7 @@ return out
 function equipmentOnly(order) {
 return order.filter((id) => {
 let t = itemDB[id] ? itemDB[id].type : ''
-return t === 'weapon' || t === 'armor' || t === 'pickaxe'
+return t === 'weapon' || t === 'armor' || t === 'pickaxe' || t === 'rod'
 })
 }
 
@@ -54,7 +54,7 @@ return m.reply("Pilih item gear di inventory. Contoh: .fix 1 atau .fix equipment
 }
 
 let data = itemDB[itemId]
-if (!['weapon', 'armor', 'pickaxe'].includes(data.type)) return m.reply("Item ini tidak bisa di-fix.")
+if (!['weapon', 'armor', 'pickaxe', 'rod'].includes(data.type)) return m.reply("Item ini tidak bisa di-fix.")
 
 let d = getDurability(player, itemId)
 if (!d) return m.reply("Item ini tidak punya durability.")

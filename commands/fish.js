@@ -2,6 +2,8 @@ const fs = require('fs')
 const itemDB = require('../database/item.json')
 const achievementDB = require('../database/achievement.json')
 const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
+const { ensureEnhanceState, getRodPower } = require('../system/gearstats')
+const { ensureDurabilityState, ensureItemDurability, useDurability, getDurability } = require('../system/equipment')
 
 const COMMON = [
 'old_coin',
@@ -26,7 +28,9 @@ const MID = [
 'gold_nugget',
 'crystal_shard',
 'silver_necklace',
-'lucky_charm'
+'lucky_charm',
+'fisherman_thread',
+'coral_gem'
 ]
 
 const RARE = [
@@ -39,7 +43,8 @@ const RARE = [
 'kings_ring',
 'ancient_artifact',
 'treasure_chest',
-'lost_royal_necklace'
+'lost_royal_necklace',
+'abyss_pearl'
 ]
 
 const LEGENDARY = [
@@ -66,17 +71,32 @@ if (!Array.isArray(player.inventory)) player.inventory = []
 if (typeof player.lastFish !== 'number') player.lastFish = 0
 if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
 if (typeof player.maxhp !== 'number') player.maxhp = 100
+if (typeof player.rod === 'undefined') player.rod = null
 ensureAchievementState(player)
+ensureEnhanceState(player)
+ensureDurabilityState(player)
+
+let rodPower = 0
+let rodName = 'Tanpa rod'
+if (player.rod && itemDB[player.rod]) {
+ensureItemDurability(player, player.rod)
+if (Number(player.durability[player.rod] || 0) > 0) {
+rodPower = getRodPower(player)
+rodName = itemDB[player.rod].name
+} else {
+player.rod = null
+}
+}
 
 let now = Date.now()
-let cooldown = 30000
+let cooldown = Math.max(15000, 30000 - (rodPower * 700))
 if (now - player.lastFish < cooldown) {
 let sisa = Math.ceil((cooldown - (now - player.lastFish)) / 1000)
 return m.reply(`Joran masih basah, tunggu ${sisa} detik lagi.`)
 }
 
 let roll = Math.random() * 100
-let text = "\uD83C\uDFA3 Kamu melempar pancing...\n\n"
+let text = `\uD83C\uDFA3 Kamu melempar pancing...\nRod: ${rodName} (Power +${rodPower})\n\n`
 incrementStat(player, 'fishRuns', 1)
 
 // Random event block
@@ -91,22 +111,25 @@ text += `\uD83D\uDC1F Kamu menangkap ikan besar!\nDrop: + 1 ${itemName('big_fish
 player.inventory.push('treasure_chest')
 text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\nDrop: + 1 ${itemName('treasure_chest')}`
 } else {
-// Legendary jackpot 1%
-let lucky = Math.random() * 100 < 1
+// Legendary jackpot naik seiring rod power
+let luckyChance = Math.min(5, 1 + (rodPower * 0.25))
+let lucky = Math.random() * 100 < luckyChance
 if (lucky) {
 let id = pick(LEGENDARY)
 player.inventory.push(id)
 text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 } else {
-// Tier distribution: Common 65%, Mid 25%, Rare 10%
+// Tier distribution: Common turun jika rod power naik
+let commonCap = Math.max(40, 65 - Math.floor(rodPower * 2))
+let midCap = Math.min(92, commonCap + 25 + Math.floor(rodPower * 1.2))
 let tierRoll = Math.random() * 100
 let tier = 'Common'
 let list = COMMON
-if (tierRoll >= 65 && tierRoll < 90) {
+if (tierRoll >= commonCap && tierRoll < midCap) {
 tier = 'Mid'
 list = MID
 }
-if (tierRoll >= 90) {
+if (tierRoll >= midCap) {
 tier = 'Rare'
 list = RARE
 }
@@ -121,6 +144,16 @@ text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: 
 } else {
 text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
 }
+}
+}
+
+if (player.rod && itemDB[player.rod]) {
+let activeRod = player.rod
+let r = useDurability(player, activeRod, 1)
+if (r.broken) text += `\n\n\u26A0\uFE0F Rod kamu rusak dan terlepas!`
+else {
+let rd = getDurability(player, activeRod)
+if (rd) text += `\n\nDurability rod: ${rd.current}/${rd.max}`
 }
 }
 

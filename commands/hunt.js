@@ -11,6 +11,18 @@ const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, norm
 const { getQuestDailyKeyWIB } = require('../system/questreset')
 const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
 
+const DEATH_LOOT_POOL = [
+'hp_potion',
+'big_fish',
+'old_coin',
+'magic_pearl',
+'fisherman_thread',
+'coral_gem',
+'ore_iron',
+'ore_gold',
+'crystal_shard'
+]
+
 module.exports = async (m, { sender }) => {
 
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
@@ -247,6 +259,38 @@ text += `
 Reward:
 -${penalty} Gold
 HP dipulihkan ke ${player.maxhp}.`
+
+let salvageChance = 65
+if (Math.random() * 100 < salvageChance) {
+let salvageRoll = Math.random() * 100
+if (salvageRoll < 40) {
+let salvageExp = Math.max(5, Math.floor((Number(mob.exp || 0) || 10) * 0.25))
+player.exp += salvageExp
+text += `\nSalvage: +${salvageExp} EXP`
+let lvResult = levelUp(player)
+if (lvResult) {
+let g = lvResult.gains
+let gainText = []
+if (g.str) gainText.push(`STR +${g.str}`)
+if (g.agi) gainText.push(`AGI +${g.agi}`)
+if (g.int) gainText.push(`INT +${g.int}`)
+if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
+text += `\nLEVEL UP!\nLevel sekarang: ${player.level}\nBonus stat: ${gainText.join(", ")}`
+}
+} else if (salvageRoll < 75) {
+let salvageGold = Math.max(6, Math.floor((Number(mob.gold || 0) || 12) * 0.2))
+player.gold += salvageGold
+text += `\nSalvage: +${salvageGold} Gold`
+} else {
+let salvageItem = DEATH_LOOT_POOL[Math.floor(Math.random() * DEATH_LOOT_POOL.length)]
+player.inventory.push(salvageItem)
+if (itemDB[salvageItem] && ['weapon', 'armor', 'pickaxe', 'rod'].includes(itemDB[salvageItem].type)) {
+ensureItemDurability(player, salvageItem)
+}
+let salvageName = itemDB[salvageItem] ? itemDB[salvageItem].name : salvageItem
+text += `\nSalvage: +1 ${salvageName}`
+}
+}
 }
 
 if (player.weapon) {
@@ -274,21 +318,32 @@ let maidLogs = []
 let hpLow = Number(player.hp) <= Math.floor(Number(player.maxhp) * 0.5)
 let weaponNeedFix = !!(player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability && player.durability[player.weapon] < Number(itemDB[player.weapon].durability))
 let armorNeedFix = !!(player.armor && itemDB[player.armor] && itemDB[player.armor].durability && player.durability[player.armor] < Number(itemDB[player.armor].durability))
-let gearNeedFix = weaponNeedFix || armorNeedFix
+let rodNeedFix = false
+if (player.rod && itemDB[player.rod] && itemDB[player.rod].durability) {
+let rodMax = Number(itemDB[player.rod].durability)
+let rodCurrent = Number(player.durability[player.rod] ?? rodMax)
+rodNeedFix = rodCurrent <= Math.floor(rodMax * 0.5)
+}
+let gearNeedFix = weaponNeedFix || armorNeedFix || rodNeedFix
+let fixTrigger = hpLow || rodNeedFix
 
-if (player.maid.autoFix && hpLow && gearNeedFix && player.gold >= 100) {
+if (player.maid.autoFix && fixTrigger && gearNeedFix && player.gold >= 100) {
 let fixedAny = false
-if (player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability) {
+if (weaponNeedFix && player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability) {
 player.durability[player.weapon] = Number(itemDB[player.weapon].durability)
 fixedAny = true
 }
-if (player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
+if (armorNeedFix && player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
 player.durability[player.armor] = Number(itemDB[player.armor].durability)
+fixedAny = true
+}
+if (rodNeedFix && player.rod && itemDB[player.rod] && itemDB[player.rod].durability) {
+player.durability[player.rod] = Number(itemDB[player.rod].durability)
 fixedAny = true
 }
 if (fixedAny) {
 player.gold -= 100
-maidLogs.push("Fix gear: -100 Gold")
+maidLogs.push("Fix gear/rod: -100 Gold")
 }
 }
 if (player.maid.autoHeal && hpLow && player.gold >= 150) {

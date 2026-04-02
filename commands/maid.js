@@ -14,6 +14,7 @@ if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
 if (typeof player.maxhp !== 'number') player.maxhp = 100
 if (typeof player.weapon === 'undefined') player.weapon = null
 if (typeof player.armor === 'undefined') player.armor = null
+if (typeof player.rod === 'undefined') player.rod = null
 if (!player.durability || typeof player.durability !== 'object') player.durability = {}
 }
 
@@ -61,21 +62,32 @@ let logs = []
 let hpLow = p.hp <= Math.floor(p.maxhp * 0.5)
 let weaponNeedFix = !!(p.weapon && itemDB[p.weapon] && itemDB[p.weapon].durability && p.durability[p.weapon] < Number(itemDB[p.weapon].durability))
 let armorNeedFix = !!(p.armor && itemDB[p.armor] && itemDB[p.armor].durability && p.durability[p.armor] < Number(itemDB[p.armor].durability))
-let gearNeedFix = weaponNeedFix || armorNeedFix
+let rodNeedFix = false
+if (p.rod && itemDB[p.rod] && itemDB[p.rod].durability) {
+let rodMax = Number(itemDB[p.rod].durability)
+let rodCurrent = Number(p.durability[p.rod] ?? rodMax)
+rodNeedFix = rodCurrent <= Math.floor(rodMax * 0.5)
+}
+let gearNeedFix = weaponNeedFix || armorNeedFix || rodNeedFix
+let fixTrigger = hpLow || rodNeedFix
 
-if (p.maid.autoFix && hpLow && gearNeedFix && p.gold >= 100) {
+if (p.maid.autoFix && fixTrigger && gearNeedFix && p.gold >= 100) {
 let fixedAny = false
-if (p.weapon && itemDB[p.weapon] && itemDB[p.weapon].durability) {
+if (weaponNeedFix && p.weapon && itemDB[p.weapon] && itemDB[p.weapon].durability) {
 p.durability[p.weapon] = Number(itemDB[p.weapon].durability)
 fixedAny = true
 }
-if (p.armor && itemDB[p.armor] && itemDB[p.armor].durability) {
+if (armorNeedFix && p.armor && itemDB[p.armor] && itemDB[p.armor].durability) {
 p.durability[p.armor] = Number(itemDB[p.armor].durability)
+fixedAny = true
+}
+if (rodNeedFix && p.rod && itemDB[p.rod] && itemDB[p.rod].durability) {
+p.durability[p.rod] = Number(itemDB[p.rod].durability)
 fixedAny = true
 }
 if (fixedAny) {
 p.gold -= 100
-logs.push("Fix gear: -100 Gold")
+logs.push("Fix gear/rod: -100 Gold")
 }
 }
 if (p.maid.autoHeal && hpLow && p.gold >= 150) {
@@ -95,7 +107,7 @@ Active: ${p.maid.active ? 'ON' : 'OFF'}
 Buff: +10 ALL STAT saat Active ON
 Auto Fix: ${p.maid.autoFix ? 'ON' : 'OFF'} (100 Gold)
 Auto Heal: ${p.maid.autoHeal ? 'ON' : 'OFF'} (150 Gold)
-Trigger Service: HP <= 50% (fix/heal), dan fix butuh gear rusak
+Trigger Service: HP <= 50% (fix/heal), atau Rod durability <= 50% (fix)
 
 Command:
 .maid buy

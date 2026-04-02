@@ -4,6 +4,8 @@ const levelUp = require('../system/level')
 const { ensureDurabilityState, ensureItemDurability, useDurability } = require('../system/equipment')
 const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 
+const RAID_SALVAGE_POOL = ['crystal_shard', 'ore_mythril', 'ore_titanium', 'shadow_crystal', 'spirit_gem']
+
 const bosses = {
 0: { name: "Training Titan", minLevel: 1, hp: 5000, atk: 18, def: 10, critRes: 20, rewardGold: 80, rewardExp: 120 },
 1: { name: "Ancient Colossus", minLevel: 20, hp: 700, atk: 36, def: 2, critRes: 4, rewardGold: 500, rewardExp: 500 },
@@ -40,6 +42,7 @@ if (typeof player.int !== 'number') player.int = 5
 if (typeof player.toughness !== 'number') player.toughness = 0
 if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.exp !== 'number') player.exp = 0
+if (!Array.isArray(player.inventory)) player.inventory = []
 if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
 if (player.accessory === undefined) player.accessory = null
@@ -151,6 +154,34 @@ let penalty = Math.min(player.gold, 80)
 player.gold -= penalty
 player.hp = 1
 text += `\n\nRaid gagal.\nReward:\n-${penalty} Gold\nHP jadi 1\nDrop:\nTidak ada`
+
+if (Math.random() * 100 < 55) {
+let salvageRoll = Math.random() * 100
+if (salvageRoll < 40) {
+let salvageExp = Math.max(12, Math.floor((Number(boss.rewardExp || 0) || 100) * 0.2))
+player.exp += salvageExp
+text += `\nSalvage: +${salvageExp} EXP`
+let lvResult = levelUp(player)
+if (lvResult) {
+let g = lvResult.gains
+let gainText = []
+if (g.str) gainText.push(`STR +${g.str}`)
+if (g.agi) gainText.push(`AGI +${g.agi}`)
+if (g.int) gainText.push(`INT +${g.int}`)
+if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
+text += `\nLEVEL UP!\nLevel sekarang: ${player.level}\nBonus stat: ${gainText.join(', ')}`
+}
+} else if (salvageRoll < 75) {
+let salvageGold = Math.max(15, Math.floor((Number(boss.rewardGold || 0) || 100) * 0.2))
+player.gold += salvageGold
+text += `\nSalvage: +${salvageGold} Gold`
+} else {
+let salvageItem = RAID_SALVAGE_POOL[Math.floor(Math.random() * RAID_SALVAGE_POOL.length)]
+player.inventory.push(salvageItem)
+let itemName = itemDB[salvageItem] ? itemDB[salvageItem].name : salvageItem
+text += `\nSalvage: +1 ${itemName}`
+}
+}
 }
 
 if (player.weapon) {

@@ -17,6 +17,7 @@ if (player.weapon === undefined) player.weapon = null
 if (player.armor === undefined) player.armor = null
 if (player.accessory === undefined) player.accessory = null
 if (player.pickaxe === undefined) player.pickaxe = null
+if (player.rod === undefined) player.rod = null
 normalizeAccessories(player)
 ensureDurabilityState(player)
 
@@ -41,7 +42,7 @@ if (!data) {
 return m.reply("Data item tidak ditemukan.")
 }
 
-if (data.type !== "weapon" && data.type !== "armor" && data.type !== "pickaxe" && data.type !== "accessory") {
+if (data.type !== "weapon" && data.type !== "armor" && data.type !== "pickaxe" && data.type !== "rod" && data.type !== "accessory") {
 return m.reply("Item ini tidak bisa di-equip.")
 }
 
@@ -61,6 +62,12 @@ if (data.type === "pickaxe") {
 ensureItemDurability(player, item)
 if (player.durability[item] === 0) return m.reply("Item ini rusak.\nPerbaiki dulu pakai .fix <nomor>.")
 player.pickaxe = item
+}
+
+if (data.type === "rod") {
+ensureItemDurability(player, item)
+if (player.durability[item] === 0) return m.reply("Item ini rusak.\nPerbaiki dulu pakai .fix <nomor>.")
+player.rod = item
 }
 
 if (data.type === "accessory") {

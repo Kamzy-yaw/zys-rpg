@@ -48,7 +48,7 @@ Mulai cepat:
 .mine
 .mining
 .craft
-.enhance <weapon|armor|pickaxe>
+.enhance <weapon|armor|pickaxe|rod>
 .sell <no> [jumlah]
 .fix <no>
 .market

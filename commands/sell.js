@@ -27,7 +27,7 @@ let resources = []
 let consumables = []
 for (let id of order) {
 let t = (itemDB[id] && itemDB[id].type) || 'resource'
-if (t === 'weapon' || t === 'armor' || t === 'pickaxe' || t === 'accessory') equipment.push(id)
+if (t === 'weapon' || t === 'armor' || t === 'pickaxe' || t === 'rod' || t === 'accessory') equipment.push(id)
 else if (t === 'potion') consumables.push(id)
 else resources.push(id)
 }
@@ -78,11 +78,11 @@ if (qty > have) qty = have
 
 let data = itemDB[itemId]
 if (!data) return m.reply("Data item tidak ditemukan.")
-if (player.weapon === itemId || player.armor === itemId || player.pickaxe === itemId || player.accessory === itemId || player.accessories.includes(itemId)) {
+if (player.weapon === itemId || player.armor === itemId || player.pickaxe === itemId || player.rod === itemId || player.accessory === itemId || player.accessories.includes(itemId)) {
 return m.reply("Lepas dulu item yang sedang dipakai sebelum dijual.")
 }
 
-let allowedType = ['weapon', 'armor', 'pickaxe', 'accessory', 'potion', 'resource']
+let allowedType = ['weapon', 'armor', 'pickaxe', 'rod', 'accessory', 'potion', 'resource']
 if (!allowedType.includes(data.type)) return m.reply("Item ini tidak bisa dijual.")
 
 let sellPrice = Number(data.sellPrice || 0)

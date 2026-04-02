@@ -17,6 +17,7 @@ if (item.type === "weapon") bonus = `ATK +${item.atk}`
 if (item.type === "armor") bonus = `DEF +${item.def} | TOUGH +${item.tough || 0}`
 if (item.type === "potion") bonus = `Heal ${item.heal} HP`
 if (item.type === "pickaxe") bonus = `Mining Power +${item.miningPower}`
+if (item.type === "rod") bonus = `Fishing Power +${item.fishingPower}`
 if (item.type === "potion" && item.fullHeal) bonus = "Full Heal HP"
 
 text += `${i}. ${item.name}\n   ${bonus} | ${item.price} Gold\n`

@@ -6,6 +6,7 @@ const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, norm
 const { getQuestDailyKeyWIB } = require('../system/questreset')
 const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
 const achievementDB = require('../database/achievement.json')
+const DUNGEON_SALVAGE_POOL = ['hp_potion', 'big_hp_potion', 'crystal_shard', 'ore_gold', 'fisherman_thread']
 
 function rand(min, max) {
 return Math.floor(Math.random() * (max - min + 1)) + min
@@ -65,6 +66,7 @@ if (typeof player.int !== 'number') player.int = 5
 if (typeof player.toughness !== 'number') player.toughness = 0
 if (typeof player.gold !== 'number') player.gold = 0
 if (typeof player.exp !== 'number') player.exp = 0
+if (!Array.isArray(player.inventory)) player.inventory = []
 if (typeof player.lastDungeon !== 'number') player.lastDungeon = 0
 if (typeof player.lastExpDungeon !== 'number') player.lastExpDungeon = 0
 if (player.weapon === undefined) player.weapon = null
@@ -219,6 +221,38 @@ let penalty = isExpMode
 : Math.min(player.gold, Math.floor(player.gold * 0.03))
 player.gold -= penalty
 text += `\n\nDungeon gagal.\nPenalty: -${penalty} Gold\nHP jadi 1`
+
+if (Math.random() * 100 < 60) {
+let salvageRoll = Math.random() * 100
+if (salvageRoll < 45) {
+let salvageExp = isExpMode
+? Math.max(15, Math.floor((expCfg.rewardExpBase + (player.level * expCfg.rewardExpScale)) * 0.25))
+: Math.max(10, Math.floor((150 + (player.level * 10)) * 0.2))
+player.exp += salvageExp
+text += `\nSalvage: +${salvageExp} EXP`
+let lvResult = levelUp(player)
+if (lvResult) {
+let g = lvResult.gains
+let gainText = []
+if (g.str) gainText.push(`STR +${g.str}`)
+if (g.agi) gainText.push(`AGI +${g.agi}`)
+if (g.int) gainText.push(`INT +${g.int}`)
+if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
+text += `\nLEVEL UP!\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
+}
+} else if (salvageRoll < 80) {
+let salvageGold = isExpMode
+? Math.max(8, Math.floor((expCfg.rewardGoldBase + (player.level * expCfg.rewardGoldScale)) * 0.25))
+: Math.max(12, Math.floor((120 + (player.level * 8)) * 0.2))
+player.gold += salvageGold
+text += `\nSalvage: +${salvageGold} Gold`
+} else {
+let salvageItem = DUNGEON_SALVAGE_POOL[Math.floor(Math.random() * DUNGEON_SALVAGE_POOL.length)]
+player.inventory.push(salvageItem)
+let itemName = itemDB[salvageItem] ? itemDB[salvageItem].name : salvageItem
+text += `\nSalvage: +1 ${itemName}`
+}
+}
 }
 
 if (player.weapon) useDurability(player, player.weapon, 2)

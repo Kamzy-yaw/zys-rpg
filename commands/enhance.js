@@ -15,7 +15,14 @@ if (idx !== -1) inv.splice(idx, 1)
 }
 }
 
-function reqByLevel(nextLevel) {
+function reqByLevel(nextLevel, target) {
+if (target === 'rod') {
+if (nextLevel <= 5) return { fishing_hook: 2, tiny_shell: 2 }
+if (nextLevel <= 10) return { magic_pearl: 1, silver_coin: 2, fisherman_thread: 1 }
+if (nextLevel <= 15) return { legendary_pearl: 1, ancient_relic: 1, coral_gem: 1 }
+if (nextLevel <= 20) return { ocean_heart: 1, sea_king_crown: 1, abyss_pearl: 1 }
+return { leviathan_scale: 1, ancient_ocean_relic: 1, abyss_pearl: 2 }
+}
 if (nextLevel <= 4) return { ore_iron: 2 }
 if (nextLevel <= 8) return { ore_gold: 2, crystal_shard: 1 }
 if (nextLevel <= 12) return { ore_mythril: 2, ore_titanium: 1 }
@@ -32,7 +39,13 @@ if (nextLevel === 24) return { void_stone: 3, celestial_gem: 2, ancient_ocean_re
 return { void_stone: 3, celestial_gem: 3, ancient_artifact: 1 }
 }
 
-function goldCostByLevel(nextLevel) {
+function goldCostByLevel(nextLevel, target) {
+if (target === 'rod') {
+if (nextLevel <= 10) return 180 * nextLevel
+if (nextLevel <= 15) return 260 * nextLevel
+if (nextLevel <= 20) return 320 * nextLevel
+return 400 * nextLevel
+}
 if (nextLevel <= 10) return 220 * nextLevel
 if (nextLevel <= 15) return 320 * nextLevel
 if (nextLevel <= 20) return 400 * nextLevel
@@ -54,6 +67,7 @@ if (typeof p.gold !== 'number') p.gold = 0
 if (typeof p.weapon === 'undefined') p.weapon = null
 if (typeof p.armor === 'undefined') p.armor = null
 if (typeof p.pickaxe === 'undefined') p.pickaxe = null
+if (typeof p.rod === 'undefined') p.rod = null
 ensureEnhanceState(p)
 
 let target = (args[0] || '').toLowerCase()
@@ -63,16 +77,18 @@ return m.reply(
 Weapon: +${p.enhance.weapon} (${p.weapon ? (itemDB[p.weapon]?.name || p.weapon) : 'None'})
 Armor: +${p.enhance.armor} (${p.armor ? (itemDB[p.armor]?.name || p.armor) : 'None'})
 Pickaxe: +${p.enhance.pickaxe} (${p.pickaxe ? (itemDB[p.pickaxe]?.name || p.pickaxe) : 'None'})
+Rod: +${p.enhance.rod} (${p.rod ? (itemDB[p.rod]?.name || p.rod) : 'None'})
 
 Command:
 .enhance weapon
 .enhance armor
-.enhance pickaxe`
+.enhance pickaxe
+.enhance rod`
 )
 }
 
-if (!['weapon', 'armor', 'pickaxe'].includes(target)) {
-return m.reply("Pilih target: weapon / armor / pickaxe")
+if (!['weapon', 'armor', 'pickaxe', 'rod'].includes(target)) {
+return m.reply("Pilih target: weapon / armor / pickaxe / rod")
 }
 
 let equipped = p[target]
@@ -81,8 +97,8 @@ let current = Number(p.enhance[target] || 0)
 if (current >= MAX_ENHANCE) return m.reply(`${target} sudah max +${MAX_ENHANCE}.`)
 
 let next = current + 1
-let costGold = goldCostByLevel(next)
-let mats = reqByLevel(next)
+let costGold = goldCostByLevel(next, target)
+let mats = reqByLevel(next, target)
 let successChance = successChanceByLevel(next)
 
 if (p.gold < costGold) return m.reply(`Gold kurang. Butuh ${costGold} Gold.`)

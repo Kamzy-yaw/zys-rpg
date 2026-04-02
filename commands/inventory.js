@@ -61,7 +61,7 @@ let consumables = []
 for (let item of order) {
 let data = itemDB[item] || {}
 let type = data.type || 'resource'
-if (type === 'weapon' || type === 'armor' || type === 'pickaxe' || type === 'accessory') equipment.push(item)
+if (type === 'weapon' || type === 'armor' || type === 'pickaxe' || type === 'rod' || type === 'accessory') equipment.push(item)
 else if (type === 'potion') consumables.push(item)
 else resources.push(item)
 }
@@ -72,6 +72,7 @@ text += `Armor: ${player.armor && itemDB[player.armor] ? itemDB[player.armor].na
 text += `Accessory 1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name + formatAccessoryStats(player.accessories[0]) : 'None'}\n`
 text += `Accessory 2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name + formatAccessoryStats(player.accessories[1]) : 'None'}\n`
 text += `Pickaxe: ${player.pickaxe && itemDB[player.pickaxe] ? itemDB[player.pickaxe].name : 'None'}\n\n`
+text += `Rod: ${player.rod && itemDB[player.rod] ? itemDB[player.rod].name : 'None'}\n\n`
 
 if (equipment.length) {
 text += "List Equipment (koleksi)\n"
@@ -105,7 +106,7 @@ text += `${i + 1}. ${name} x${counts[item]}\n`
 })
 
 text += "\nContoh cepat:"
-text += "\n- Equip senjata/armor/pickaxe: .equip 5"
+text += "\n- Equip senjata/armor/pickaxe/rod: .equip 5"
 text += "\n- Equip aksesoris slot 1/2: .equip 8 1"
 text += "\n- Jual item: .sell 3 10"
 text += "\n- Repair gear: .fix 2"

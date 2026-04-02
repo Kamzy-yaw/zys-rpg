@@ -105,12 +105,12 @@ let data = itemDB[itemId]
 if (!data) continue
 
 let amount = Math.floor(Math.random() * (t.max - t.min + 1)) + t.min
-if (['weapon', 'armor', 'pickaxe', 'accessory'].includes(data.type)) {
+if (['weapon', 'armor', 'pickaxe', 'rod', 'accessory'].includes(data.type)) {
 amount = 1
 }
 
 for (let x = 0; x < amount; x++) player.inventory.push(itemId)
-if (['weapon', 'armor', 'pickaxe'].includes(data.type)) {
+if (['weapon', 'armor', 'pickaxe', 'rod'].includes(data.type)) {
 ensureItemDurability(player, itemId)
 }
 
