@@ -10,6 +10,8 @@
   "dragon_sword": { "name": "Dragon Sword", "type": "weapon", "atk": 18, "craftOnly": true, "durability": 250 },
   "voidblade": { "name": "Voidblade", "type": "weapon", "atk": 20, "craftOnly": true, "durability": 290 },
   "celestial_blade": { "name": "Celestial Blade", "type": "weapon", "atk": 23, "craftOnly": true, "durability": 340 },
+  "voidbreaker_sword": { "name": "Voidbreaker Sword", "type": "weapon", "atk": 32, "dropOnly": true, "durability": 520 },
+  "celestial_reaver": { "name": "Celestial Reaver", "type": "weapon", "atk": 36, "dropOnly": true, "durability": 600 },
 
   "iron_armor": { "name": "Iron Armor", "type": "armor", "def": 3, "tough": 1, "craftOnly": true, "durability": 140 },
   "gold_armor": { "name": "Gold Armor", "type": "armor", "def": 4, "tough": 1, "craftOnly": true, "durability": 150 },
@@ -19,6 +21,8 @@
   "dragon_armor": { "name": "Dragon Armor", "type": "armor", "def": 12, "tough": 5, "craftOnly": true, "durability": 330 },
   "celestial_armor": { "name": "Celestial Armor", "type": "armor", "def": 14, "tough": 6, "craftOnly": true, "durability": 380 },
   "void_armor": { "name": "Void Armor", "type": "armor", "def": 16, "tough": 7, "craftOnly": true, "durability": 430 },
+  "eternal_guard_armor": { "name": "Eternal Guard Armor", "type": "armor", "def": 22, "tough": 10, "dropOnly": true, "durability": 620 },
+  "titan_warden_armor": { "name": "Titan Warden Armor", "type": "armor", "def": 24, "tough": 12, "dropOnly": true, "durability": 700 },
 
   "hunter_earring": { "name": "Hunter Earring", "type": "accessory", "agi": 8, "dodge": 2, "craftOnly": true },
   "sage_talisman": { "name": "Sage Talisman", "type": "accessory", "int": 10, "crit": 3, "craftOnly": true },

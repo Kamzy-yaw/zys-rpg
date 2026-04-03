@@ -3,6 +3,8 @@ const itemDB = require('../database/item.json')
 const levelUp = require('../system/level')
 const { ensureDurabilityState, ensureItemDurability, useDurability } = require('../system/equipment')
 const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
+const { ensureRoleState, getRoleBonuses, applyExpRoleBonus } = require('../system/role')
+const { ensurePetState, getActivePetBonus } = require('../system/pet')
 
 const RAID_SALVAGE_POOL = ['crystal_shard', 'ore_mythril', 'ore_titanium', 'shadow_crystal', 'spirit_gem']
 
@@ -52,6 +54,8 @@ if (typeof player.maid.active !== 'boolean') player.maid.active = false
 ensureDurabilityState(player)
 ensureEnhanceState(player)
 normalizeAccessories(player)
+ensureRoleState(player)
+ensurePetState(player)
 
 let firstArg = (args[0] || '').toLowerCase()
 if (firstArg === 'list') {
@@ -97,15 +101,17 @@ armorTough = Number(itemDB[player.armor].tough || 0)
 let bossHp = boss.hp
 let rounds = 0
 let logs = []
+let roleBonus = getRoleBonuses(player)
+let petBonus = getActivePetBonus(player)
 
 let maidStatBuff = (player.maid.owned && player.maid.active) ? 10 : 0
-let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff
-let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff
-let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff
-let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff
+let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff + Number(petBonus.str || 0)
+let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff + Number(petBonus.agi || 0)
+let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff + Number(petBonus.int || 0)
+let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff + Number(roleBonus.toughBonus || 0) + Number(petBonus.tough || 0)
 let critChance = Math.min(50, (effectiveInt * 0.1) + Number(accessoryBonus.crit || 0))
-let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0))
-let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0))
+let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0) + Number(roleBonus.dodgeBonus || 0) + Number(petBonus.dodge || 0))
+let reductionChance = Math.min(30, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0) + Number(roleBonus.reduceChanceBonus || 0) + Number(petBonus.reduce || 0))
 
 while (bossHp > 0 && player.hp > 0 && rounds < 25) {
 rounds += 1
@@ -114,6 +120,7 @@ let crit = Math.random() * 100 < Math.max(0, critChance - Number(boss.critRes ||
 let base = weaponAtk > 0
 ? Math.max(1, Math.floor(weaponAtk * (1 + (effectiveStr / 120))))
 : Math.max(1, Math.floor(1 + (effectiveStr * 0.3)))
+if (Number(roleBonus.damageMult || 0) > 0) base = Math.max(1, Math.floor(base * (1 + Number(roleBonus.damageMult))))
 let dmg = Math.max(1, base - Number(boss.def || 0))
 if (crit) dmg = Math.floor(dmg * 1.5)
 bossHp -= dmg
@@ -137,8 +144,9 @@ let text = `Raid Lv.${lv}: ${boss.name}\nHP Boss: ${boss.hp}\nHP Kamu: ${Math.ma
 
 if (bossHp <= 0) {
 player.gold += boss.rewardGold
-player.exp += boss.rewardExp
-text += `\n\nBoss tumbang!\nReward:\n+${boss.rewardGold} Gold\n+${boss.rewardExp} EXP\nDrop:\nTidak ada`
+let rewardExp = applyExpRoleBonus(boss.rewardExp, player)
+player.exp += rewardExp
+text += `\n\nBoss tumbang!\nReward:\n+${boss.rewardGold} Gold\n+${rewardExp} EXP\nDrop:\nTidak ada`
 let lvResult = levelUp(player)
 if (lvResult) {
 let g = lvResult.gains
@@ -158,7 +166,7 @@ text += `\n\nRaid gagal.\nReward:\n-${penalty} Gold\nHP jadi 1\nDrop:\nTidak ada
 if (Math.random() * 100 < 55) {
 let salvageRoll = Math.random() * 100
 if (salvageRoll < 40) {
-let salvageExp = Math.max(12, Math.floor((Number(boss.rewardExp || 0) || 100) * 0.2))
+let salvageExp = applyExpRoleBonus(Math.max(12, Math.floor((Number(boss.rewardExp || 0) || 100) * 0.2)), player)
 player.exp += salvageExp
 text += `\nSalvage: +${salvageExp} EXP`
 let lvResult = levelUp(player)

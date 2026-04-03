@@ -106,6 +106,7 @@ let pool = ORES
 if (pool.length === 0) return m.reply("Kamu belum bisa mining ore apapun.")
 
 let text = "Kamu mulai menambang...\n\n"
+let legendaryFound = {}
 incrementStat(player, 'mineRuns', 1)
 text += `Tool: ${pickaxeName} (Power +${pickaxePower})\n`
 if (player.pickaxe) text += `Enhance Pickaxe: +${Number(player.enhance.pickaxe || 0)}\n`
@@ -151,6 +152,7 @@ let legPool = ORES.filter((o) => o.tier === 'LEGENDARY' && player.level >= o.min
 if (legPool.length > 0) {
 let jackpot = legPool[Math.floor(Math.random() * legPool.length)]
 player.inventory.push(jackpot.id)
+legendaryFound[jackpot.id] = (legendaryFound[jackpot.id] || 0) + 1
 text += `Jackpot!\nDrop: + 1 ${jackpot.name}\n`
 }
 }
@@ -174,6 +176,9 @@ if (qty < 1) qty = 1
 player.inventory.push(...Array(qty).fill(ore.id))
 if (!mined[ore.id]) mined[ore.id] = { name: ore.name, qty: 0 }
 mined[ore.id].qty += qty
+if (ore.tier === 'LEGENDARY') {
+legendaryFound[ore.id] = (legendaryFound[ore.id] || 0) + qty
+}
 }
 
 for (let id of Object.keys(mined)) {
@@ -222,5 +227,13 @@ let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x
 text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 }
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+let legendaryLines = Object.keys(legendaryFound).map((id) => {
+let name = itemDB[id] ? itemDB[id].name : id
+return `${name} x${legendaryFound[id]}`
+})
+if (legendaryLines.length) {
+text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} menemukan loot LEGENDARY dari mining!\nDrop: ${legendaryLines.join(', ')}`
+return m.reply({ text, mentions: [sender] })
+}
 m.reply(text)
 }

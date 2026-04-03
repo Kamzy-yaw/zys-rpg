@@ -10,6 +10,8 @@ const { ensureDurabilityState, ensureItemDurability, useDurability, getDurabilit
 const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 const { getQuestDailyKeyWIB } = require('../system/questreset')
 const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
+const { ensureRoleState, getRoleBonuses, applyExpRoleBonus } = require('../system/role')
+const { ensurePetState, getActivePetBonus } = require('../system/pet')
 
 const DEATH_LOOT_POOL = [
 'hp_potion',
@@ -41,6 +43,8 @@ if (typeof player.toughness !== 'number') player.toughness = 0
 ensureEnhanceState(player)
 normalizeAccessories(player)
 ensureAchievementState(player)
+ensureRoleState(player)
+ensurePetState(player)
 if (!player.maid || typeof player.maid !== 'object') {
 player.maid = { owned: false, active: false, autoFix: true, autoHeal: true }
 }
@@ -104,16 +108,18 @@ if (typeof player.hp !== 'number') player.hp = player.maxhp
 let mobHP = mob.hp
 let rounds = 0
 let battleLog = []
+let roleBonus = getRoleBonuses(player)
+let petBonus = getActivePetBonus(player)
 
 let maidStatBuff = (player.maid.owned && player.maid.active) ? 10 : 0
-let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff
-let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff
-let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff
-let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff
+let effectiveStr = Number(player.str || 0) + Number(accessoryBonus.str || 0) + maidStatBuff + Number(petBonus.str || 0)
+let effectiveAgi = Number(player.agi || 0) + Number(accessoryBonus.agi || 0) + maidStatBuff + Number(petBonus.agi || 0)
+let effectiveInt = Number(player.int || 0) + Number(accessoryBonus.int || 0) + maidStatBuff + Number(petBonus.int || 0)
+let effectiveTough = Number(player.toughness || 0) + Number(accessoryBonus.tough || 0) + armorTough + maidStatBuff + Number(roleBonus.toughBonus || 0) + Number(petBonus.tough || 0)
 
 let critChance = Math.min(50, (effectiveInt * 0.1) + Number(accessoryBonus.crit || 0))
-let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0))
-let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0))
+let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(accessoryBonus.dodge || 0) + Number(roleBonus.dodgeBonus || 0) + Number(petBonus.dodge || 0))
+let reductionChance = Math.min(30, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0) + Number(roleBonus.reduceChanceBonus || 0) + Number(petBonus.reduce || 0))
 
 while (mobHP > 0 && player.hp > 0 && rounds < 20) {
 rounds += 1
@@ -123,6 +129,9 @@ let strValue = effectiveStr
 let basePlayerDamage = weaponAtk > 0
 ? Math.max(1, Math.floor(weaponAtk * (1 + (strValue / 120))))
 : Math.max(1, Math.floor(1 + (strValue * 0.3)))
+if (Number(roleBonus.damageMult || 0) > 0) {
+basePlayerDamage = Math.max(1, Math.floor(basePlayerDamage * (1 + Number(roleBonus.damageMult))))
+}
 let playerDamage = isCrit ? Math.floor(basePlayerDamage * 1.5) : basePlayerDamage
 mobHP -= playerDamage
 battleLog.push(`Ronde ${rounds}: kamu hit ${mob.name} -${playerDamage} HP${isCrit ? " (CRIT!)" : ""}`)
@@ -163,7 +172,7 @@ if (battleLog.length > 6) text += "\n..."
 
 if (mobHP <= 0) {
 incrementStat(player, 'monstersKilled', 1)
-let rewardExp = Number(mob.exp || 0)
+let rewardExp = applyExpRoleBonus(Number(mob.exp || 0), player)
 let rewardGold = Number(mob.gold || 0)
 let bonusResource = null
 if (Number(mob.rarity || 99) <= 3) {
@@ -264,7 +273,7 @@ let salvageChance = 65
 if (Math.random() * 100 < salvageChance) {
 let salvageRoll = Math.random() * 100
 if (salvageRoll < 40) {
-let salvageExp = Math.max(5, Math.floor((Number(mob.exp || 0) || 10) * 0.25))
+let salvageExp = applyExpRoleBonus(Math.max(5, Math.floor((Number(mob.exp || 0) || 10) * 0.25)), player)
 player.exp += salvageExp
 text += `\nSalvage: +${salvageExp} EXP`
 let lvResult = levelUp(player)

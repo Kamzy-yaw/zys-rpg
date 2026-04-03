@@ -6,6 +6,8 @@ const { normalizePvp, getRankGrade } = require('../system/pvp')
 const { getDurability, ensureDurabilityState } = require('../system/equipment')
 const { ensureEnhanceState, getWeaponAtk, getArmorDef, getPickaxePower, getRodPower, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 const { ensureAchievementState, evaluateAchievements } = require('../system/achievement')
+const { ensureRoleState, getRoleData, getRoleKey } = require('../system/role')
+const { ensurePetState, getPetData, getActivePetBonus } = require('../system/pet')
 
 module.exports = async (m, { sender }) => {
 
@@ -22,7 +24,12 @@ ensureDurabilityState(p)
 ensureEnhanceState(p)
 normalizeAccessories(p)
 ensureAchievementState(p)
+ensureRoleState(p)
+ensurePetState(p)
 evaluateAchievements(p, achievementDB)
+let roleKey = getRoleKey(p)
+let roleData = getRoleData(roleKey)
+let petData = getPetData(p.pet)
 let rank = getRankGrade(p)
 let weaponName = (p.weapon && itemDB[p.weapon]) ? itemDB[p.weapon].name : (p.weapon ? p.weapon : "None")
 let armorName = (p.armor && itemDB[p.armor]) ? itemDB[p.armor].name : (p.armor ? p.armor : "None")
@@ -64,17 +71,18 @@ if (typeof p.miningExp !== 'number') p.miningExp = 0
 if (typeof p.miningLevel !== 'number') p.miningLevel = 1
 let armorTough = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].tough || 0) : 0
 let accessoryBonus = getAccessoryBonuses(p)
+let petBonus = getActivePetBonus(p)
 let armorDef = getArmorDef(p)
 let effectiveWeaponAtk = getWeaponAtk(p)
 let effectivePickaxe = getPickaxePower(p)
 let effectiveRod = getRodPower(p)
-let effectiveTough = Number(p.toughness || 0) + armorTough + Number(accessoryBonus.tough || 0)
-let totalStr = Number(p.str || 0) + Number(accessoryBonus.str || 0)
-let totalAgi = Number(p.agi || 0) + Number(accessoryBonus.agi || 0)
-let totalInt = Number(p.int || 0) + Number(accessoryBonus.int || 0)
-let critChance = Math.min(50, (totalInt * 0.1) + Number(accessoryBonus.crit || 0))
-let dodgeChance = Math.min(50, (totalAgi * 0.1) + Number(accessoryBonus.dodge || 0))
-let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0))
+let effectiveTough = Number(p.toughness || 0) + armorTough + Number(accessoryBonus.tough || 0) + Number(petBonus.tough || 0)
+let totalStr = Number(p.str || 0) + Number(accessoryBonus.str || 0) + Number(petBonus.str || 0)
+let totalAgi = Number(p.agi || 0) + Number(accessoryBonus.agi || 0) + Number(petBonus.agi || 0)
+let totalInt = Number(p.int || 0) + Number(accessoryBonus.int || 0) + Number(petBonus.int || 0)
+let critChance = Math.min(50, (totalInt * 0.1) + Number(accessoryBonus.crit || 0) + Number(petBonus.crit || 0))
+let dodgeChance = Math.min(50, (totalAgi * 0.1) + Number(accessoryBonus.dodge || 0) + Number(petBonus.dodge || 0))
+let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonus.reduce || 0) + Number(petBonus.reduce || 0))
 
 let need = p.level * 100
 let achTotal = Object.keys(achievementDB).length
@@ -83,6 +91,8 @@ let achDone = p.achievements.completed.length
 let text = `Profile Player
 
 Title: ${p.titles.equipped}
+Role: ${roleKey} (${roleData.desc})
+Pet: ${p.pet} (${petData.desc})
 Level: ${p.level}
 EXP: ${p.exp}/${need}
 

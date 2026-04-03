@@ -73,6 +73,7 @@ titles: {
 unlocked: ['Novice'],
 equipped: 'Novice'
 },
+role: 'none',
 dungeon: {
 dailyKey: '',
 cleared: false

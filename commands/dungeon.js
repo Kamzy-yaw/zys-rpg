@@ -5,6 +5,8 @@ const { ensureDurabilityState, ensureItemDurability, useDurability } = require('
 const { ensureEnhanceState, getWeaponAtk, getArmorDef, getAccessoryBonuses, normalizeAccessories } = require('../system/gearstats')
 const { getQuestDailyKeyWIB } = require('../system/questreset')
 const { ensureAchievementState, incrementStat, evaluateAchievements } = require('../system/achievement')
+const { ensureRoleState, getRoleBonuses, applyExpRoleBonus } = require('../system/role')
+const { ensurePetState, getActivePetBonus } = require('../system/pet')
 const achievementDB = require('../database/achievement.json')
 const DUNGEON_SALVAGE_POOL = ['hp_potion', 'big_hp_potion', 'crystal_shard', 'ore_gold', 'fisherman_thread']
 
@@ -20,8 +22,8 @@ floors: 6,
 hpScale: 10.2,
 atkScale: 0.92,
 defScale: 0.21,
-rewardExpBase: 420,
-rewardExpScale: 17,
+rewardExpBase: 250,
+rewardExpScale: 11,
 rewardGoldBase: 36,
 rewardGoldScale: 2
 }
@@ -33,8 +35,8 @@ floors: 5,
 hpScale: 8.8,
 atkScale: 0.8,
 defScale: 0.18,
-rewardExpBase: 270,
-rewardExpScale: 15,
+rewardExpBase: 180,
+rewardExpScale: 9,
 rewardGoldBase: 30,
 rewardGoldScale: 1.8
 }
@@ -45,8 +47,8 @@ floors: 4,
 hpScale: 7.6,
 atkScale: 0.7,
 defScale: 0.15,
-rewardExpBase: 220,
-rewardExpScale: 13,
+rewardExpBase: 130,
+rewardExpScale: 7,
 rewardGoldBase: 24,
 rewardGoldScale: 1.4
 }
@@ -81,6 +83,8 @@ ensureDurabilityState(player)
 ensureEnhanceState(player)
 normalizeAccessories(player)
 ensureAchievementState(player)
+ensureRoleState(player)
+ensurePetState(player)
 
 let key = getQuestDailyKeyWIB()
 if (player.dungeon.dailyKey !== key) {
@@ -120,13 +124,15 @@ armorTough = Number(itemDB[player.armor].tough || 0)
 }
 let acc = getAccessoryBonuses(player)
 let maidBuff = (player.maid.owned && player.maid.active) ? 10 : 0
-let effectiveStr = Number(player.str || 0) + Number(acc.str || 0) + maidBuff
-let effectiveAgi = Number(player.agi || 0) + Number(acc.agi || 0) + maidBuff
-let effectiveInt = Number(player.int || 0) + Number(acc.int || 0) + maidBuff
-let effectiveTough = Number(player.toughness || 0) + Number(acc.tough || 0) + armorTough + maidBuff
+let roleBonus = getRoleBonuses(player)
+let petBonus = getActivePetBonus(player)
+let effectiveStr = Number(player.str || 0) + Number(acc.str || 0) + maidBuff + Number(petBonus.str || 0)
+let effectiveAgi = Number(player.agi || 0) + Number(acc.agi || 0) + maidBuff + Number(petBonus.agi || 0)
+let effectiveInt = Number(player.int || 0) + Number(acc.int || 0) + maidBuff + Number(petBonus.int || 0)
+let effectiveTough = Number(player.toughness || 0) + Number(acc.tough || 0) + armorTough + maidBuff + Number(roleBonus.toughBonus || 0) + Number(petBonus.tough || 0)
 let critChance = Math.min(50, (effectiveInt * 0.1) + Number(acc.crit || 0))
-let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(acc.dodge || 0))
-let reduceChance = Math.min(25, (effectiveTough * 0.1) + Number(acc.reduce || 0))
+let dodgeChance = Math.min(50, (effectiveAgi * 0.1) + Number(acc.dodge || 0) + Number(roleBonus.dodgeBonus || 0) + Number(petBonus.dodge || 0))
+let reduceChance = Math.min(30, (effectiveTough * 0.1) + Number(acc.reduce || 0) + Number(roleBonus.reduceChanceBonus || 0) + Number(petBonus.reduce || 0))
 
 incrementStat(player, 'dungeonRuns', 1)
 
@@ -155,6 +161,7 @@ let crit = Math.random() * 100 < critChance
 let base = weaponAtk > 0
 ? Math.max(1, Math.floor(weaponAtk * (1 + (effectiveStr / 120))))
 : Math.max(1, Math.floor(1 + (effectiveStr * 0.3)))
+if (Number(roleBonus.damageMult || 0) > 0) base = Math.max(1, Math.floor(base * (1 + Number(roleBonus.damageMult))))
 let dmg = Math.max(1, base - enemyDef)
 if (crit) dmg = Math.floor(dmg * 1.5)
 enemyHp -= dmg
@@ -192,6 +199,7 @@ let rewardGold = isExpMode
 let rewardExp = isExpMode
 ? Math.floor(expCfg.rewardExpBase + (player.level * expCfg.rewardExpScale))
 : (150 + (player.level * 10))
+rewardExp = applyExpRoleBonus(rewardExp, player)
 player.gold += rewardGold
 player.exp += rewardExp
 if (!isExpMode) player.dungeon.cleared = true
@@ -220,8 +228,9 @@ if (Math.random() * 100 < 60) {
 let salvageRoll = Math.random() * 100
 if (salvageRoll < 45) {
 let salvageExp = isExpMode
-? Math.max(15, Math.floor((expCfg.rewardExpBase + (player.level * expCfg.rewardExpScale)) * 0.25))
+? Math.max(8, Math.floor((expCfg.rewardExpBase + (player.level * expCfg.rewardExpScale)) * 0.18))
 : Math.max(10, Math.floor((150 + (player.level * 10)) * 0.2))
+salvageExp = applyExpRoleBonus(salvageExp, player)
 player.exp += salvageExp
 text += `\nSalvage: +${salvageExp} EXP`
 let lvResult = levelUp(player)

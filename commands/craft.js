@@ -35,6 +35,10 @@ if (!isNaN(idx) && ids[idx]) picked = ids[idx]
 if (!recipeDB[picked]) return m.reply("Resep tidak ditemukan.")
 
 let r = recipeDB[picked]
+let outData = itemDB[r.output]
+if (outData && outData.dropOnly) {
+return m.reply("Item ini drop-only dan tidak bisa di-craft.")
+}
 
 for (let mat in r.materials) {
 let need = r.materials[mat]

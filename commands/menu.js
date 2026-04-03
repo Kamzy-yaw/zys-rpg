@@ -10,11 +10,13 @@ Mulai cepat:
 *BASIC*
 .start
 .profile
+.role [nama]
 .ach
 .title
 .menu
 .channel
 .maid
+.pet
 
 *COMBAT*
 .hunt
@@ -25,6 +27,7 @@ Mulai cepat:
 .raid <1-10> (Lv20+)
 .raid test
 .raid list
+.legendboss
 .dungeon
 .dungeon exp
 

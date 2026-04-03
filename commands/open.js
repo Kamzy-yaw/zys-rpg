@@ -51,6 +51,8 @@ const LEGENDARY = [
 'void_emblem'
 ]
 
+const LEGENDARY_SET = new Set(LEGENDARY)
+
 function pick(list) {
 return list[Math.floor(Math.random() * list.length)]
 }
@@ -72,7 +74,7 @@ return { list: LEGENDARY, min: 1, max: 1, goldMin: 120, goldMax: 260 }
 
 module.exports = async (m, { sender, args }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
-if (!db[sender]) return m.reply("Karakter belum ada.\nKetik .start dulu ya.")
+if (!db[sender]) return m.reply('Karakter belum ada.\nKetik .start dulu ya.')
 
 let player = db[sender]
 if (!Array.isArray(player.inventory)) player.inventory = []
@@ -82,7 +84,7 @@ ensureDurabilityState(player)
 let chestId = 'treasure_chest'
 let have = player.inventory.filter((x) => x === chestId).length
 if (have <= 0) {
-return m.reply("Kamu tidak punya Treasure Chest.\nCari dari .fish atau event.")
+return m.reply('Kamu tidak punya Treasure Chest.\nCari dari .fish atau event.')
 }
 
 let qty = parseInt(args[0] || '1')
@@ -129,6 +131,16 @@ let name = itemDB[id] ? itemDB[id].name : id
 return `- ${name} x${summary[id]}`
 })
 
-let text = `🧰 Buka Treasure Chest x${qty}\n\nTier hasil:\n- Common: ${tierCount.COMMON}\n- Mid: ${tierCount.MID}\n- Rare: ${tierCount.RARE}\n- Legendary: ${tierCount.LEGENDARY}\n\nLoot:\n${lines.join('\n') || '- Tidak ada'}\n\nGold bonus: +${goldTotal}\nSisa chest: ${have - qty}`
+let text = `Buka Treasure Chest x${qty}\n\nTier hasil:\n- Common: ${tierCount.COMMON}\n- Mid: ${tierCount.MID}\n- Rare: ${tierCount.RARE}\n- Legendary: ${tierCount.LEGENDARY}\n\nLoot:\n${lines.join('\n') || '- Tidak ada'}\n\nGold bonus: +${goldTotal}\nSisa chest: ${have - qty}`
+
+let legendaryLines = Object.keys(summary)
+.filter((id) => LEGENDARY_SET.has(id))
+.map((id) => `${itemDB[id] ? itemDB[id].name : id} x${summary[id]}`)
+
+if (legendaryLines.length) {
+text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} mendapatkan loot LEGENDARY dari Treasure Chest!\nDrop: ${legendaryLines.join(', ')}`
+return m.reply({ text, mentions: [sender] })
+}
+
 return m.reply(text)
 }

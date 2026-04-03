@@ -114,6 +114,7 @@ return m.reply(`Joran masih basah, tunggu ${sisa} detik lagi.`)
 
 let roll = Math.random() * 100
 let text = `\uD83C\uDFA3 Kamu melempar pancing...\nRod: ${rodName} (Power +${rodPower})\n\n`
+let legendaryDrops = []
 incrementStat(player, 'fishRuns', 1)
 
 // Random event block
@@ -137,6 +138,7 @@ if (lucky) {
 let id = pick(LEGENDARY)
 let qty = getTierQty('Legendary', rodPower, id)
 giveItem(player, id, qty)
+legendaryDrops.push(`${itemName(id)} x${qty}`)
 text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + ${qty} ${itemName(id)}`
 } else {
 // Tier distribution: Common turun jika rod power naik
@@ -196,5 +198,9 @@ text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 
 player.lastFish = now
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+if (legendaryDrops.length) {
+text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} mendapatkan loot LEGENDARY dari mancing!\nDrop: ${legendaryDrops.join(', ')}`
+return m.reply({ text, mentions: [sender] })
+}
 m.reply(text)
 }
