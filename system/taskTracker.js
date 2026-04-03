@@ -42,7 +42,7 @@ module.exports = async function taskTracker(sock, msg) {
       groupName = from
     }
 
-    const alert = `📚 *TUGAS TERDETEKSI*
+    const alert = `*TUGAS TERDETEKSI*
 
 ${text}
 

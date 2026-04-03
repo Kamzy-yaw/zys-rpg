@@ -73,6 +73,11 @@ if (typeof player.maxhp !== 'number') player.maxhp = 100
 if (typeof player.miningExp !== 'number') player.miningExp = 0
 if (typeof player.miningLevel !== 'number') player.miningLevel = 1
 if (player.pickaxe === undefined) player.pickaxe = null
+if (!player.maid || typeof player.maid !== 'object') player.maid = { owned: false, active: false, autoFix: true, autoHeal: true }
+if (typeof player.maid.owned !== 'boolean') player.maid.owned = false
+if (typeof player.maid.active !== 'boolean') player.maid.active = false
+if (typeof player.maid.autoFix !== 'boolean') player.maid.autoFix = true
+if (typeof player.maid.autoHeal !== 'boolean') player.maid.autoHeal = true
 ensureDurabilityState(player)
 ensureEnhanceState(player)
 ensureAchievementState(player)
@@ -197,6 +202,16 @@ text += `\n${itemDB[active].name} rusak!`
 } else {
 let dv = getDurability(player, active)
 if (dv) text += `\nDurability Pickaxe: ${dv.current}/${dv.max}`
+}
+}
+
+if (player.maid.owned && player.maid.active && player.maid.autoFix && player.pickaxe && itemDB[player.pickaxe] && itemDB[player.pickaxe].durability && player.gold >= 100) {
+let maxDur = Number(itemDB[player.pickaxe].durability)
+let curDur = Number(player.durability[player.pickaxe] ?? maxDur)
+if (curDur <= Math.floor(maxDur * 0.5)) {
+player.durability[player.pickaxe] = maxDur
+player.gold -= 100
+text += `\nMaid Service Aktif:\nFix pickaxe: -100 Gold`
 }
 }
 

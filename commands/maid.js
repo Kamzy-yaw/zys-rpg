@@ -14,6 +14,7 @@ if (typeof player.hp !== 'number') player.hp = player.maxhp || 100
 if (typeof player.maxhp !== 'number') player.maxhp = 100
 if (typeof player.weapon === 'undefined') player.weapon = null
 if (typeof player.armor === 'undefined') player.armor = null
+if (typeof player.pickaxe === 'undefined') player.pickaxe = null
 if (typeof player.rod === 'undefined') player.rod = null
 if (!player.durability || typeof player.durability !== 'object') player.durability = {}
 }
@@ -62,16 +63,17 @@ let logs = []
 let hpLow = p.hp <= Math.floor(p.maxhp * 0.5)
 let weaponNeedFix = !!(p.weapon && itemDB[p.weapon] && itemDB[p.weapon].durability && p.durability[p.weapon] < Number(itemDB[p.weapon].durability))
 let armorNeedFix = !!(p.armor && itemDB[p.armor] && itemDB[p.armor].durability && p.durability[p.armor] < Number(itemDB[p.armor].durability))
+let pickaxeNeedFix = !!(p.pickaxe && itemDB[p.pickaxe] && itemDB[p.pickaxe].durability && p.durability[p.pickaxe] < Number(itemDB[p.pickaxe].durability))
 let rodNeedFix = false
 if (p.rod && itemDB[p.rod] && itemDB[p.rod].durability) {
 let rodMax = Number(itemDB[p.rod].durability)
 let rodCurrent = Number(p.durability[p.rod] ?? rodMax)
 rodNeedFix = rodCurrent <= Math.floor(rodMax * 0.5)
 }
-let gearNeedFix = weaponNeedFix || armorNeedFix || rodNeedFix
-let fixTrigger = hpLow || rodNeedFix
+let gearNeedFix = weaponNeedFix || armorNeedFix || pickaxeNeedFix || rodNeedFix
 
-if (p.maid.autoFix && fixTrigger && gearNeedFix && p.gold >= 100) {
+// Manual override: .maid now akan langsung coba fix semua equipment yang perlu
+if (p.maid.autoFix && gearNeedFix && p.gold >= 100) {
 let fixedAny = false
 if (weaponNeedFix && p.weapon && itemDB[p.weapon] && itemDB[p.weapon].durability) {
 p.durability[p.weapon] = Number(itemDB[p.weapon].durability)
@@ -79,6 +81,10 @@ fixedAny = true
 }
 if (armorNeedFix && p.armor && itemDB[p.armor] && itemDB[p.armor].durability) {
 p.durability[p.armor] = Number(itemDB[p.armor].durability)
+fixedAny = true
+}
+if (pickaxeNeedFix && p.pickaxe && itemDB[p.pickaxe] && itemDB[p.pickaxe].durability) {
+p.durability[p.pickaxe] = Number(itemDB[p.pickaxe].durability)
 fixedAny = true
 }
 if (rodNeedFix && p.rod && itemDB[p.rod] && itemDB[p.rod].durability) {
@@ -89,6 +95,10 @@ if (fixedAny) {
 p.gold -= 100
 logs.push("Fix gear/rod: -100 Gold")
 }
+} else if (p.maid.autoFix && gearNeedFix && p.gold < 100) {
+logs.push("Gold kurang untuk fix gear/rod (butuh 100 Gold)")
+} else if (p.maid.autoFix && !gearNeedFix) {
+logs.push("Semua gear/rod sudah full durability")
 }
 if (p.maid.autoHeal && hpLow && p.gold >= 150) {
 p.gold -= 150

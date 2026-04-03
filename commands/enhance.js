@@ -52,11 +52,6 @@ if (nextLevel <= 20) return 400 * nextLevel
 return 480 * nextLevel
 }
 
-function successChanceByLevel(nextLevel) {
-if (nextLevel <= 15) return 100
-return Math.max(10, 100 - ((nextLevel - 15) * 10))
-}
-
 module.exports = async (m, { sender, args }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
 if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
@@ -99,7 +94,6 @@ if (current >= MAX_ENHANCE) return m.reply(`${target} sudah max +${MAX_ENHANCE}.
 let next = current + 1
 let costGold = goldCostByLevel(next, target)
 let mats = reqByLevel(next, target)
-let successChance = successChanceByLevel(next)
 
 if (p.gold < costGold) return m.reply(`Gold kurang. Butuh ${costGold} Gold.`)
 for (let id of Object.keys(mats)) {
@@ -110,13 +104,9 @@ if (have < need) return m.reply(`Material kurang: ${(itemDB[id]?.name || id)} ${
 
 p.gold -= costGold
 for (let id of Object.keys(mats)) takeItem(p.inventory, id, mats[id])
-let success = Math.random() * 100 < successChance
-if (success) p.enhance[target] = next
+p.enhance[target] = next
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 let matTxt = Object.entries(mats).map(([id, qty]) => `${itemDB[id]?.name || id} x${qty}`).join(', ')
-if (!success) {
-return m.reply(`Enhance gagal: ${itemDB[equipped].name} tetap +${current}\nChance: ${successChance}%\nBiaya: ${costGold} Gold\nMaterial terpakai: ${matTxt}`)
-}
-return m.reply(`Enhance sukses: ${itemDB[equipped].name} +${next}\nChance: ${successChance}%\nBiaya: ${costGold} Gold\nMaterial: ${matTxt}`)
+return m.reply(`Enhance sukses: ${itemDB[equipped].name} +${next}\nBiaya: ${costGold} Gold\nMaterial: ${matTxt}`)
 }

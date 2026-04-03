@@ -318,13 +318,14 @@ let maidLogs = []
 let hpLow = Number(player.hp) <= Math.floor(Number(player.maxhp) * 0.5)
 let weaponNeedFix = !!(player.weapon && itemDB[player.weapon] && itemDB[player.weapon].durability && player.durability[player.weapon] < Number(itemDB[player.weapon].durability))
 let armorNeedFix = !!(player.armor && itemDB[player.armor] && itemDB[player.armor].durability && player.durability[player.armor] < Number(itemDB[player.armor].durability))
+let pickaxeNeedFix = !!(player.pickaxe && itemDB[player.pickaxe] && itemDB[player.pickaxe].durability && player.durability[player.pickaxe] < Number(itemDB[player.pickaxe].durability))
 let rodNeedFix = false
 if (player.rod && itemDB[player.rod] && itemDB[player.rod].durability) {
 let rodMax = Number(itemDB[player.rod].durability)
 let rodCurrent = Number(player.durability[player.rod] ?? rodMax)
 rodNeedFix = rodCurrent <= Math.floor(rodMax * 0.5)
 }
-let gearNeedFix = weaponNeedFix || armorNeedFix || rodNeedFix
+let gearNeedFix = weaponNeedFix || armorNeedFix || pickaxeNeedFix || rodNeedFix
 let fixTrigger = hpLow || rodNeedFix
 
 if (player.maid.autoFix && fixTrigger && gearNeedFix && player.gold >= 100) {
@@ -335,6 +336,10 @@ fixedAny = true
 }
 if (armorNeedFix && player.armor && itemDB[player.armor] && itemDB[player.armor].durability) {
 player.durability[player.armor] = Number(itemDB[player.armor].durability)
+fixedAny = true
+}
+if (pickaxeNeedFix && player.pickaxe && itemDB[player.pickaxe] && itemDB[player.pickaxe].durability) {
+player.durability[player.pickaxe] = Number(itemDB[player.pickaxe].durability)
 fixedAny = true
 }
 if (rodNeedFix && player.rod && itemDB[player.rod] && itemDB[player.rod].durability) {

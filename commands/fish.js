@@ -62,6 +62,23 @@ function itemName(id) {
 return itemDB[id] ? itemDB[id].name : id
 }
 
+function getTierQty(tier, rodPower, itemId) {
+let data = itemDB[itemId]
+if (!data || data.type !== 'resource') return 1
+let bonus = Math.floor(Math.max(0, Number(rodPower || 0)) / 6)
+if (tier === 'Legendary') return Math.max(1, Math.min(2, 1 + Math.floor(rodPower / 15)))
+if (tier === 'Rare') return Math.max(1, Math.min(3, 1 + Math.floor(rodPower / 12)))
+if (tier === 'Mid') return Math.max(1, Math.min(4, 1 + bonus + (Math.random() < 0.4 ? 1 : 0)))
+return Math.max(1, Math.min(5, 1 + bonus + (Math.random() < 0.6 ? 1 : 0)))
+}
+
+function giveItem(player, id, qty) {
+for (let i = 0; i < qty; i++) player.inventory.push(id)
+if (itemDB[id] && ['weapon', 'armor', 'pickaxe', 'rod'].includes(itemDB[id].type)) {
+ensureItemDurability(player, id)
+}
+}
+
 module.exports = async (m, { sender }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
 if (!db[sender]) return m.reply("Bikin karakter dulu pakai .start")
@@ -105,19 +122,22 @@ let dmg = 8 + Math.floor(Math.random() * 15)
 player.hp = Math.max(1, player.hp - dmg)
 text += `\uD83D\uDC09 Sesuatu menarik pancingmu...\nMonster muncul!\nReward: HP -${dmg}\nDrop: Tidak ada`
 } else if (roll < 15) {
-player.inventory.push('big_fish')
-text += `\uD83D\uDC1F Kamu menangkap ikan besar!\nDrop: + 1 ${itemName('big_fish')}`
+let qty = Math.max(1, 1 + Math.floor(rodPower / 10) + (Math.random() < 0.45 ? 1 : 0))
+giveItem(player, 'big_fish', qty)
+text += `\uD83D\uDC1F Kamu menangkap ikan besar!\nDrop: + ${qty} ${itemName('big_fish')}`
 } else if (roll < 20) {
-player.inventory.push('treasure_chest')
-text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\nDrop: + 1 ${itemName('treasure_chest')}`
+let qty = 1 + ((rodPower >= 10 && Math.random() < 0.35) ? 1 : 0)
+giveItem(player, 'treasure_chest', qty)
+text += `\uD83D\uDCE6 Kamu menemukan peti terkubur!\nDrop: + ${qty} ${itemName('treasure_chest')}`
 } else {
 // Legendary jackpot naik seiring rod power
 let luckyChance = Math.min(5, 1 + (rodPower * 0.25))
 let lucky = Math.random() * 100 < luckyChance
 if (lucky) {
 let id = pick(LEGENDARY)
-player.inventory.push(id)
-text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
+let qty = getTierQty('Legendary', rodPower, id)
+giveItem(player, id, qty)
+text += `\uD83D\uDC8E Jackpot!\n\nTreasure Tier: Legendary\nItem: ${itemName(id)}\nDrop: + ${qty} ${itemName(id)}`
 } else {
 // Tier distribution: Common turun jika rod power naik
 let commonCap = Math.max(40, 65 - Math.floor(rodPower * 2))
@@ -135,14 +155,25 @@ list = RARE
 }
 
 let id = pick(list)
-player.inventory.push(id)
+let qty = getTierQty(tier, rodPower, id)
+giveItem(player, id, qty)
 
 if (tier === 'Rare') {
-text += `\uD83D\uDC8E Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
+text += `\uD83D\uDC8E Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + ${qty} ${itemName(id)}`
 } else if (tier === 'Mid') {
-text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
+text += `\uD83D\uDCB0 Kamu menemukan treasure!\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + ${qty} ${itemName(id)}`
 } else {
-text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + 1 ${itemName(id)}`
+text += `Kamu mendapatkan sesuatu...\n\nTreasure Tier: ${tier}\nItem: ${itemName(id)}\nDrop: + ${qty} ${itemName(id)}`
+}
+
+// Bonus resource tambahan dari laut
+let bonusChance = Math.min(45, 18 + (rodPower * 2))
+if (Math.random() * 100 < bonusChance) {
+let bonusPool = ['fisherman_thread', 'coral_gem', 'magic_pearl', 'gold_nugget', 'abyss_pearl']
+let bonusId = bonusPool[Math.floor(Math.random() * bonusPool.length)]
+let bonusQty = 1 + ((rodPower >= 8 && Math.random() < 0.4) ? 1 : 0)
+giveItem(player, bonusId, bonusQty)
+text += `\nBonus Laut: + ${bonusQty} ${itemName(bonusId)}`
 }
 }
 }
