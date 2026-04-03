@@ -34,12 +34,20 @@ module.exports = async function taskTracker(sock, msg) {
     const detected = KEYWORDS.some((k) => lower.includes(k))
     if (!detected) return
 
+    let groupName = from
+    try {
+      const metadata = await sock.groupMetadata(from)
+      groupName = metadata?.subject || from
+    } catch (_) {
+      groupName = from
+    }
+
     const alert = `📚 *TUGAS TERDETEKSI*
 
 ${text}
 
 📍 Grup:
-${from}`
+${groupName}`
 
     const owner = "6285722929429@s.whatsapp.net"
 
