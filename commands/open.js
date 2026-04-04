@@ -137,10 +137,6 @@ let legendaryLines = Object.keys(summary)
 .filter((id) => LEGENDARY_SET.has(id))
 .map((id) => `${itemDB[id] ? itemDB[id].name : id} x${summary[id]}`)
 
-if (legendaryLines.length) {
-text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} mendapatkan loot LEGENDARY dari Treasure Chest!\nDrop: ${legendaryLines.join(', ')}`
-return m.reply({ text, mentions: [sender] })
-}
-
+// Announcement removed to avoid global mention risks
 return m.reply(text)
 }

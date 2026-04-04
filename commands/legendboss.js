@@ -185,14 +185,6 @@ let lootTxt = loot.length ? loot.map((id) => `- ${itemDB[id] ? itemDB[id].name :
 let petTxt = unlockedPets.length ? unlockedPets.map((id) => `- ${id}`).join('\n') : '- Tidak ada pet baru'
 
 let msg = `${text}\n\nBOSS TUMBANG!\nReward:\n+${BOSS.rewardGold} Gold\n+${rewardExp} EXP\n\nDrop Legendary:\n${lootTxt}\n\nPet Unlock:\n${petTxt}${lvText}`
-
-if (loot.length || unlockedPets.length) {
-let ann = []
-if (loot.length) ann.push(loot.map((id) => itemDB[id] ? itemDB[id].name : id).join(', '))
-if (unlockedPets.length) ann.push(`Pet: ${unlockedPets.join(', ')}`)
-msg += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} menaklukkan ${BOSS.name}!\nDrop: ${ann.join(' | ')}`
-return m.reply({ text: msg, mentions: [sender] })
-}
-
+// Announcement removed to avoid global mention risks
 return m.reply(msg)
 }

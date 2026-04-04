@@ -19,6 +19,7 @@ let text = `╔══ RPG v2 MENU ══
 .channel
 .maid
 .pet
+.ai <pertanyaan>
 
 ⚔ COMBAT
 .hunt

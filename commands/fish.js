@@ -198,9 +198,6 @@ text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 
 player.lastFish = now
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
-if (legendaryDrops.length) {
-text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} mendapatkan loot LEGENDARY dari mancing!\nDrop: ${legendaryDrops.join(', ')}`
-return m.reply({ text, mentions: [sender] })
-}
+// Announcement removed to avoid global mention risks
 m.reply(text)
 }

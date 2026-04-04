@@ -227,13 +227,6 @@ let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x
 text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
 }
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
-let legendaryLines = Object.keys(legendaryFound).map((id) => {
-let name = itemDB[id] ? itemDB[id].name : id
-return `${name} x${legendaryFound[id]}`
-})
-if (legendaryLines.length) {
-text += `\n\n[WORLD ANNOUNCEMENT]\n@${String(sender).replace(/\D/g, '')} menemukan loot LEGENDARY dari mining!\nDrop: ${legendaryLines.join(', ')}`
-return m.reply({ text, mentions: [sender] })
-}
+// Announcement removed to avoid global mention risks
 m.reply(text)
 }
