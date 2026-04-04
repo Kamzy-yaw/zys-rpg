@@ -14,6 +14,16 @@ function rand(min, max) {
 return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+function formatCooldown(seconds) {
+let s = Math.max(0, Number(seconds || 0))
+let h = Math.floor(s / 3600)
+let m = Math.floor((s % 3600) / 60)
+let r = s % 60
+if (h > 0) return `${h} jam ${m} menit`
+if (m > 0) return `${m} menit ${r} detik`
+return `${r} detik`
+}
+
 function getExpDungeonConfig(level) {
 if (level >= 60) {
 return {
@@ -107,7 +117,7 @@ let cooldown = isExpMode ? (2 * 60 * 60 * 1000) : 30000
 let lastRun = isExpMode ? player.lastExpDungeon : player.lastDungeon
 if (now - lastRun < cooldown) {
 let sisa = Math.ceil((cooldown - (now - lastRun)) / 1000)
-return m.reply(`Dungeon cooldown, tunggu ${sisa} detik lagi.`)
+return m.reply(`Dungeon cooldown, tunggu ${formatCooldown(sisa)} lagi.`)
 }
 
 let weaponAtk = 0
@@ -189,7 +199,7 @@ break
 logs.push(`Lantai ${floor} clear.`)
 }
 
-let text = `${isExpMode ? 'Dungeon EXP Grind' : 'Dungeon Harian'}\n\n${logs.slice(0, 12).join('\n')}`
+let text = `${isExpMode ? '=== DUNGEON EXP ===' : '=== DUNGEON HARIAN ==='}\n\nBattle Log:\n${logs.slice(0, 12).join('\n')}`
 if (logs.length > 12) text += '\n...'
 
 if (cleared) {
@@ -205,7 +215,7 @@ player.exp += rewardExp
 if (!isExpMode) player.dungeon.cleared = true
 incrementStat(player, 'dungeonClears', 1)
 
-text += `\n\nDungeon clear!\nReward:\n+${rewardExp} EXP\n+${rewardGold} Gold`
+text += `\n\n--------------\nCLEAR\n+${rewardExp} EXP\n+${rewardGold} Gold`
 let lvResult = levelUp(player)
 if (lvResult) {
 let g = lvResult.gains
@@ -214,7 +224,7 @@ if (g.str) gainText.push(`STR +${g.str}`)
 if (g.agi) gainText.push(`AGI +${g.agi}`)
 if (g.int) gainText.push(`INT +${g.int}`)
 if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
-text += `\n\nLEVEL UP!\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
+text += `\nLEVEL UP\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
 }
 } else {
 player.hp = 1
@@ -222,7 +232,7 @@ let penalty = isExpMode
 ? Math.min(player.gold, Math.floor(player.gold * 0.01))
 : Math.min(player.gold, Math.floor(player.gold * 0.03))
 player.gold -= penalty
-text += `\n\nDungeon gagal.\nPenalty: -${penalty} Gold\nHP jadi 1`
+text += `\n\n--------------\nFAILED\nPenalty: -${penalty} Gold\nHP jadi 1`
 
 if (Math.random() * 100 < 60) {
 let salvageRoll = Math.random() * 100
@@ -264,7 +274,7 @@ if (player.armor) useDurability(player, player.armor, 2)
 let unlocked = evaluateAchievements(player, achievementDB)
 if (unlocked.length) {
 let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`).join('\n')
-text += `\n\nAchievement Unlocked:\n${unlockText}`
+text += `\n\n--------------\nAchievement Unlocked:\n${unlockText}`
 }
 
 if (isExpMode) player.lastExpDungeon = now

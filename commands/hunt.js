@@ -1,4 +1,4 @@
-const fs = require('fs')
+﻿const fs = require('fs')
 const monster = require('../database/monster.json')
 const areaDB = require('../database/area.json')
 const itemDB = require('../database/item.json')
@@ -152,21 +152,22 @@ battleLog.push(`Ronde ${rounds}: ${mob.name} balas hit kamu -${mobDamage} HP${re
 }
 }
 
-let text = `\u2694\uFE0F Kamu bertemu ${mob.name} di ${area.name}
-HP Monster: ${mob.hp}
-HP Kamu: ${player.hp < 0 ? 0 : player.hp}/${player.maxhp}
-Combat Stats:
-ATK Senjata: ${weaponAtk}
-DEF Armor: ${armorDef}
-Crit: ${critChance.toFixed(1)}% | Dodge: ${dodgeChance.toFixed(1)}% | Reduce: ${reductionChance.toFixed(1)}%
-Accessory 1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'}
-Accessory 2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'}
-Maid Buff: ${maidStatBuff > 0 ? '+10 ALL STAT' : 'OFF'}
-`
+let text = `=== HUNT RESULT ===
+Enemy : ${mob.name}
+Area  : ${area.name}
+HP Mob: ${mob.hp}
+HP You: ${player.hp < 0 ? 0 : player.hp}/${player.maxhp}
+
+Combat:
+ATK ${weaponAtk} | DEF ${armorDef}
+Crit ${critChance.toFixed(1)}% | Dodge ${dodgeChance.toFixed(1)}% | Reduce ${reductionChance.toFixed(1)}%
+Acc1 ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'}
+Acc2 ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'}
+Maid Buff: ${maidStatBuff > 0 ? '+10 ALL STAT' : 'OFF'}`
 
 let shortLog = battleLog.slice(0, 6).join("\n")
 if (shortLog) {
-text += `\n\n${shortLog}`
+text += `\n\n--------------\nBattle Log:\n${shortLog}`
 if (battleLog.length > 6) text += "\n..."
 }
 
@@ -185,16 +186,11 @@ player.inventory.push(bonusResource)
 player.exp += rewardExp
 player.gold += rewardGold
 
-text += `
-
-\uD83C\uDF89 Monster kalah!
-Reward:
-+${rewardExp} EXP
-+${rewardGold} Gold`
+text += `\n\n--------------\nWIN\n+${rewardExp} EXP\n+${rewardGold} Gold`
 
 if (bonusResource) {
 let resName = itemDB[bonusResource] ? itemDB[bonusResource].name : bonusResource
-text += `\nResource Bonus:\n+ 1 ${resName}`
+text += `\nResource Bonus: +1 ${resName}`
 }
 
 let item = dropItem(mob)
@@ -205,13 +201,9 @@ player.inventory.push(item)
 ensureItemDurability(player, item)
 let itemName = itemDB[item] ? itemDB[item].name : item
 
-text += `
-
-\uD83C\uDF81 Kamu mendapatkan item!
-Drop:
-+ 1 ${itemName}`
+text += `\nDrop: +1 ${itemName}`
 } else {
-text += `\n\nDrop:\nTidak ada`
+text += `\nDrop: Tidak ada`
 }
 
 if (player.quest.active && questDB[player.quest.active]) {
@@ -222,19 +214,12 @@ if (!player.quest.claimable) {
 player.quest.progress += 1
 if (player.quest.progress > quest.amount) player.quest.progress = quest.amount
 
-text += `
-
-\uD83D\uDCDC Progress Quest:
-${quest.name} (${player.quest.progress}/${quest.amount})`
+text += `\nQuest: ${quest.name} (${player.quest.progress}/${quest.amount})`
 
 if (player.quest.progress >= quest.amount && !player.quest.claimable) {
 player.quest.claimable = true
 
-text += `
-
-\u2705 Quest selesai!
-${quest.name}
-Ketik .claim untuk ambil reward.`
+text += `\nQuest selesai: ${quest.name}\nKetik .claim untuk ambil reward.`
 }
 }
 }
@@ -249,25 +234,14 @@ if (g.agi) gainText.push(`AGI +${g.agi}`)
 if (g.int) gainText.push(`INT +${g.int}`)
 if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
 
-text += `
-
-\u2728 LEVEL UP!
-
-Level sekarang: ${player.level}
-HP: ${player.maxhp}
-Bonus stat: ${gainText.join(", ")}`
+text += `\n\nLEVEL UP\nLevel: ${player.level}\nHP: ${player.maxhp}\nBonus: ${gainText.join(", ")}`
 }
 } else {
 let penalty = Math.min(player.gold, Math.floor(player.gold * 0.1))
 player.gold -= penalty
 player.hp = player.maxhp
 
-text += `
-
-\uD83D\uDC80 Kamu kalah dari ${mob.name}.
-Reward:
--${penalty} Gold
-HP dipulihkan ke ${player.maxhp}.`
+text += `\n\n--------------\nLOSE\nPenalty: -${penalty} Gold\nHP dipulihkan ke ${player.maxhp}.`
 
 let salvageChance = 65
 if (Math.random() * 100 < salvageChance) {
@@ -305,17 +279,17 @@ text += `\nSalvage: +1 ${salvageName}`
 if (player.weapon) {
 let activeWeapon = player.weapon
 let w = useDurability(player, activeWeapon, 1)
-if (w.broken) text += `\n\n\u26A0\uFE0F Senjatamu rusak dan terlepas!`
+if (w.broken) text += `\n\nWARNING: Senjatamu rusak dan terlepas.`
 else {
 let wd = getDurability(player, activeWeapon)
-if (wd) text += `\n\nDurability senjata: ${wd.current}/${wd.max}`
+if (wd) text += `\nDurability senjata: ${wd.current}/${wd.max}`
 }
 }
 
 if (player.armor) {
 let activeArmor = player.armor
 let a = useDurability(player, activeArmor, 1)
-if (a.broken) text += `\n\n\u26A0\uFE0F Armor-mu rusak dan terlepas!`
+if (a.broken) text += `\nWARNING: Armor-mu rusak dan terlepas.`
 else {
 let ad = getDurability(player, activeArmor)
 if (ad) text += `\nDurability armor: ${ad.current}/${ad.max}`
@@ -365,13 +339,13 @@ player.gold -= 150
 player.hp = player.maxhp
 maidLogs.push("Heal full: -150 Gold")
 }
-if (maidLogs.length) text += `\n\nMaid Service Aktif:\n${maidLogs.join('\n')}`
+if (maidLogs.length) text += `\n\n--------------\nMaid Service:\n${maidLogs.join('\n')}`
 }
 
 let unlocked = evaluateAchievements(player, achievementDB)
 if (unlocked.length) {
 let unlockText = unlocked.map((x) => `- ${x.name}${x.rewardTitle ? ` (Title: ${x.rewardTitle})` : ''}`).join('\n')
-text += `\n\n🏆 Achievement Unlocked:\n${unlockText}`
+text += `\n\n--------------\nAchievement Unlocked:\n${unlockText}`
 }
 
 player.lastHunt = now
@@ -381,3 +355,4 @@ fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 m.reply(text)
 
 }
+

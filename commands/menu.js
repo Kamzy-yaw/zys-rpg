@@ -1,13 +1,15 @@
 module.exports = async (m) => {
-let text = `*RPG v2 MENU*
+let text = `╔══ RPG v2 MENU ══
 
-Mulai cepat:
-1) .start
-2) .hunt
-3) .profile
-4) .inventory
+🚀 QUICK START
+1. .start
+2. .hunt
+3. .profile
+4. .inventory
 
-*BASIC*
+══════════════
+
+📘 BASIC
 .start
 .profile
 .role [nama]
@@ -18,7 +20,7 @@ Mulai cepat:
 .maid
 .pet
 
-*COMBAT*
+⚔ COMBAT
 .hunt
 .explore
 .heal [big/full]
@@ -31,18 +33,18 @@ Mulai cepat:
 .dungeon
 .dungeon exp
 
-*PVP*
+🏆 PVP
 .duel @user
 .duel accept
 .duel decline
 .arena join
 .arena leave
 .arena list
-.arena (fight)
+.arena
 .rank
 .party
 
-*LOOT & ECONOMY*
+💰 LOOT & ECONOMY
 .shop
 .buy <no> [jumlah]
 .gacha
@@ -56,29 +58,29 @@ Mulai cepat:
 .fix <armor|pickaxe|rod|sword>
 .market
 
-*FARMING*
+🌱 FARMING
 .plant <wheat|berry|magic_herb>
 .harvest
 
-*INVENTORY*
+🎒 INVENTORY
 .inventory
 
-*QUEST*
+📜 QUEST
 .quest
 .accept <id_quest>
 .claim
 .cancel / .cancelquest
-Quest reset: tiap hari jam 07:00
+Reset quest: tiap hari jam 07:00
 
-*LEADERBOARD*
+📊 LEADERBOARD
 .top
 .topgold
 .toplevel
 
-*SEASON RESET (ADMIN)*
+🛠 ADMIN
 .seasonreset confirm
 
-*GUILD*
+🏰 GUILD
 .guild
 .guild list
 .guild create <nama>
@@ -91,15 +93,11 @@ Quest reset: tiap hari jam 07:00
 .guild contrib
 .guildraid
 
-Tips:
-- .buy ada di .shop
-- .equip/.sell/.fix ada di .inventory
-- aksesori 2 slot: .equip <nomor> 1 atau .equip <nomor> 2
-- title: .title | achievement: .ach
-- party: .party | market: .market
-- market cancel: .market cancel <id>
-Format kategori: .sell equipment|resource|consumable <no> [jumlah]
-.fix armor`
+💡 Tips
+.buy ada di .shop
+.equip/.sell/.fix ada di .inventory
+aksesori 2 slot: .equip <nomor> 1 atau 2
+market cancel: .market cancel <id>`
 
 m.reply(text)
 }

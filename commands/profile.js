@@ -87,47 +87,80 @@ let reductionChance = Math.min(25, (effectiveTough * 0.1) + Number(accessoryBonu
 let need = p.level * 100
 let achTotal = Object.keys(achievementDB).length
 let achDone = p.achievements.completed.length
+let equippedTitle = (p.titles && p.titles.equipped) ? p.titles.equipped : 'Adventurer'
+let petLabel = p.pet || 'none'
+let roleLabel = roleKey || 'none'
+let safeAreaName = (areaDB[p.area] && areaDB[p.area].name) ? areaDB[p.area].name : 'Unknown'
+let expNow = Math.max(0, Number(p.exp || 0))
+let expNeed = Math.max(1, Number(need || 1))
 
-let text = `Profile Player
+let text = `╔══ PLAYER PROFILE ══
 
-Title: ${p.titles.equipped}
-Role: ${roleKey} (${roleData.desc})
-Pet: ${p.pet} (${petData.desc})
-Level: ${p.level}
-EXP: ${p.exp}/${need}
+🏷 Title : ${equippedTitle}
+👤 Role  : ${roleLabel}
+🐾 Pet   : ${petLabel}
 
-HP: ${p.hp}/${p.maxhp}
-Gold: ${p.gold}
-Area: ${areaDB[p.area].name}
+📊 LEVEL
+Lv ${p.level}
+EXP ${expNow} / ${expNeed}
 
-STR: ${p.str}
-AGI: ${p.agi}
-INT: ${p.int}
-TOUGH: ${p.toughness} + ${armorTough} (armor) + ${Number(accessoryBonus.tough || 0)} (acc) = ${effectiveTough}
-DEF Armor: ${armorDef}
-Crit Chance: ${critChance.toFixed(1)}% (cap 50%)
-Dodge Chance: ${dodgeChance.toFixed(1)}% (cap 50%)
-Damage Reduction Chance: ${reductionChance.toFixed(1)}% (cap 25%)
-Bonus Accessory: STR +${Number(accessoryBonus.str || 0)} | AGI +${Number(accessoryBonus.agi || 0)} | INT +${Number(accessoryBonus.int || 0)} | Crit +${Number(accessoryBonus.crit || 0)}% | Dodge +${Number(accessoryBonus.dodge || 0)}% | Reduce +${Number(accessoryBonus.reduce || 0)}%
+❤️ HP
+${p.hp} / ${p.maxhp}
 
-Weapon: ${weaponName}
-Armor: ${armorName}
-Accessory 1: ${accessory1}${accessory1Detail}
-Accessory 2: ${accessory2}${accessory2Detail}
-Pickaxe: ${pickaxeName}
-Rod: ${rodName}
-Enhance: Weapon +${p.enhance.weapon} | Armor +${p.enhance.armor} | Pickaxe +${p.enhance.pickaxe} | Rod +${p.enhance.rod}
-Effective Stats: STR ${totalStr} | AGI ${totalAgi} | INT ${totalInt} | Weapon ATK ${effectiveWeaponAtk} | Armor DEF ${armorDef} | Pickaxe Power ${effectivePickaxe} | Rod Power ${effectiveRod}
-Durability: ${wD ? `Weapon ${wD.current}/${wD.max}` : "Weapon -"} | ${aD ? `Armor ${aD.current}/${aD.max}` : "Armor -"} | ${pD ? `Pickaxe ${pD.current}/${pD.max}` : "Pickaxe -"} | ${rD ? `Rod ${rD.current}/${rD.max}` : "Rod -"}
-Mining: Lv.${p.miningLevel} (${p.miningExp} EXP)
-Rank: ${rank.grade} (${rank.wins} win)
-PVP: ${p.pvpWins}W/${p.pvpLosses}L
-Achievement: ${achDone}/${achTotal}
+💰 Gold
+${p.gold}
 
-Tips:
-- Mulai battle: .hunt
-- Lihat semua command: .menu
-`
+📍 Area
+${safeAreaName}
+
+══════════════
+
+⚔ STATS
+STR   ${p.str}
+AGI   ${p.agi}
+INT   ${p.int}
+TOUGH ${effectiveTough}
+
+🛡 COMBAT
+Crit   ${critChance.toFixed(1)}%
+Dodge  ${dodgeChance.toFixed(1)}%
+Reduce ${reductionChance.toFixed(1)}%
+Armor  ${armorDef}
+
+══════════════
+
+🧰 EQUIPMENT
+⚔ ${weaponName} (+${p.enhance.weapon})
+🛡 ${armorName} (+${p.enhance.armor})
+💍 ${accessory1}${accessory1Detail}
+💍 ${accessory2}${accessory2Detail}
+⛏ ${pickaxeName} (+${p.enhance.pickaxe})
+🎣 ${rodName} (+${p.enhance.rod})
+
+══════════════
+
+⚡ EFFECTIVE
+STR ${totalStr} | AGI ${totalAgi} | INT ${totalInt}
+ATK ${effectiveWeaponAtk} | DEF ${armorDef}
+Pickaxe ${effectivePickaxe} | Rod ${effectiveRod}
+
+🔧 DURABILITY
+Weapon ${wD ? `${wD.current}/${wD.max}` : '-'}
+Armor ${aD ? `${aD.current}/${aD.max}` : '-'}
+Pickaxe ${pD ? `${pD.current}/${pD.max}` : '-'}
+Rod ${rD ? `${rD.current}/${rD.max}` : '-'}
+
+══════════════
+
+📈 PROGRESS
+Mining Lv.${p.miningLevel}
+Rank ${rank.grade} (${rank.wins} win)
+PVP ${p.pvpWins}W / ${p.pvpLosses}L
+Achievement ${achDone} / ${achTotal}
+
+💡 Tips
+.hunt → battle
+.menu → command list`
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 m.reply(text)

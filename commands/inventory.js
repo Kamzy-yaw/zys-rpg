@@ -39,7 +39,7 @@ if (player.inventory.length == 0) {
 return m.reply("Inventory masih kosong.\nCoba cari item lewat .hunt, .mine, .fish, atau .shop")
 }
 
-let text = "Inventory\n\n"
+let text = "=== INVENTORY ===\n\n"
 let counts = {}
 let order = []
 
@@ -66,16 +66,16 @@ else if (type === 'potion') consumables.push(item)
 else resources.push(item)
 }
 
-text += `Equipment (yang dipakai)\n`
-text += `Weapon: ${player.weapon && itemDB[player.weapon] ? itemDB[player.weapon].name : 'None'}\n`
-text += `Armor: ${player.armor && itemDB[player.armor] ? itemDB[player.armor].name : 'None'}\n`
-text += `Accessory 1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name + formatAccessoryStats(player.accessories[0]) : 'None'}\n`
-text += `Accessory 2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name + formatAccessoryStats(player.accessories[1]) : 'None'}\n`
-text += `Pickaxe: ${player.pickaxe && itemDB[player.pickaxe] ? itemDB[player.pickaxe].name : 'None'}\n\n`
-text += `Rod: ${player.rod && itemDB[player.rod] ? itemDB[player.rod].name : 'None'}\n\n`
+text += `Equipped:\n`
+text += `Weapon   : ${player.weapon && itemDB[player.weapon] ? itemDB[player.weapon].name : 'None'}\n`
+text += `Armor    : ${player.armor && itemDB[player.armor] ? itemDB[player.armor].name : 'None'}\n`
+text += `Accessory1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name + formatAccessoryStats(player.accessories[0]) : 'None'}\n`
+text += `Accessory2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name + formatAccessoryStats(player.accessories[1]) : 'None'}\n`
+text += `Pickaxe  : ${player.pickaxe && itemDB[player.pickaxe] ? itemDB[player.pickaxe].name : 'None'}\n`
+text += `Rod      : ${player.rod && itemDB[player.rod] ? itemDB[player.rod].name : 'None'}\n\n`
 
 if (equipment.length) {
-text += "List Equipment (koleksi)\n"
+text += "--------------\nEquipment List:\n"
 equipment.forEach((item, i) => {
 let name = itemDB[item] ? itemDB[item].name : (alias[item] || item)
 let extra = formatAccessoryStats(item)
@@ -84,7 +84,7 @@ text += `${i + 1}. ${name} x${counts[item]}${extra}\n`
 text += "\n"
 }
 
-text += "Resource (bahan)\n"
+text += "--------------\nResources:\n"
 if (!resources.length) text += "- Tidak ada\n"
 resources.forEach((item, i) => {
 let name = itemDB[item] ? itemDB[item].name : (alias[item] || item)
@@ -92,26 +92,26 @@ text += `${i + 1}. ${name} x${counts[item]}\n`
 })
 text += "\n"
 
-text += "Consumable (sekali pakai)\n"
+text += "--------------\nConsumables:\n"
 if (!consumables.length) text += "- Tidak ada\n"
 consumables.forEach((item, i) => {
 let name = itemDB[item] ? itemDB[item].name : (alias[item] || item)
 text += `${i + 1}. ${name} x${counts[item]}\n`
 })
 
-text += "\nIndex Global (untuk .equip / .sell / .fix)\n"
+text += "\n--------------\nGlobal Index (.equip / .sell / .fix)\n"
 order.forEach((item, i) => {
 let name = itemDB[item] ? itemDB[item].name : (alias[item] || item)
 text += `${i + 1}. ${name} x${counts[item]}\n`
 })
 
-text += "\nContoh cepat:"
-text += "\n- Equip senjata/armor/pickaxe/rod: .equip 5"
-text += "\n- Equip aksesoris slot 1/2: .equip 8 1"
-text += "\n- Jual item: .sell 3 10"
-text += "\n- Repair gear: .fix armor | .fix pickaxe | .fix rod | .fix sword"
-text += "\n- Lihat resep crafting: .craft"
-text += "\n- Buka treasure chest: .open 1"
+text += "\n--------------\nQuick Help:"
+text += "\nEquip senjata/armor/pickaxe/rod: .equip 5"
+text += "\nEquip aksesoris slot 1/2: .equip 8 1"
+text += "\nJual item: .sell 3 10"
+text += "\nRepair gear: .fix armor | .fix pickaxe | .fix rod | .fix sword"
+text += "\nLihat resep crafting: .craft"
+text += "\nBuka treasure chest: .open 1"
 
 m.reply(text)
 

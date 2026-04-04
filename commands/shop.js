@@ -3,7 +3,7 @@ const { getPetData } = require('../system/pet')
 
 module.exports = async (m)=>{
 
-let text = "\u2554\u2550\u2550\u2550\u2550\u2550 \uD83C\uDFEA ARMORY & SHOP \u2550\u2550\u2550\u2550\u2550\u2557\n\n"
+let text = "╔══ 🏪 ARMORY & SHOP ══\n\n"
 
 let i = 1
 
@@ -25,13 +25,13 @@ let pet = getPetData(item.unlockPet || 'none')
 bonus = pet.desc || "Unlock Pet"
 }
 
-text += `${i}. ${item.name}\n   ${bonus} | ${item.price} Gold\n`
+text += `${i}. ${item.name}\n   ${bonus || '-'}\n   💰 ${item.price} Gold\n`
 
 i++
 
 }
 
-text += "\n\u255A\u2550 Ketik .buy <nomor> [jumlah] untuk beli item \u2550\u255D"
+text += "\n══════════════\n💡 Ketik .buy <nomor> [jumlah]"
 
 m.reply(text)
 

@@ -25,7 +25,7 @@ const bosses = {
 function formatRaidList() {
 return Object.keys(bosses).map((id) => {
 let b = bosses[id]
-return `Lv.${id} - ${b.name}\nReq Level: ${b.minLevel}\nHP: ${b.hp} | ATK: ${b.atk} | DEF: ${b.def} | CritRes: ${b.critRes}%\nReward: +${b.rewardGold} Gold, +${b.rewardExp} EXP`
+return `Lv.${id} - ${b.name}\nReq Lv ${b.minLevel} | HP ${b.hp} | ATK ${b.atk} | DEF ${b.def} | CritRes ${b.critRes}%\nReward: +${b.rewardGold} Gold | +${b.rewardExp} EXP`
 }).join('\n\n')
 }
 
@@ -59,7 +59,7 @@ ensurePetState(player)
 
 let firstArg = (args[0] || '').toLowerCase()
 if (firstArg === 'list') {
-return m.reply(`RAID LIST\n\n${formatRaidList()}\n\nPakai: .raid <level>\nTips: .raid test untuk test damage.`)
+return m.reply(`=== RAID LIST ===\n\n${formatRaidList()}\n\nGunakan: .raid <level>\nTips: .raid test untuk test damage.`)
 }
 if (firstArg === 'test') firstArg = '0'
 
@@ -140,13 +140,24 @@ logs.push(`Ronde ${rounds}: boss hit kamu -${taken}${reduced ? " (REDUCE 30%)" :
 }
 }
 
-let text = `Raid Lv.${lv}: ${boss.name}\nHP Boss: ${boss.hp}\nHP Kamu: ${Math.max(0, player.hp)}/${player.maxhp}\nStats: Weapon ATK ${weaponAtk} | Armor DEF ${armorDef} | Acc1 ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'} | Acc2 ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'} | Maid Buff ${maidStatBuff > 0 ? '+10 ALL' : 'OFF'}\n\n${logs.slice(0, 8).join('\n')}${logs.length > 8 ? '\n...' : ''}`
+let text = `=== RAID RESULT ===
+Boss  : Lv.${lv} ${boss.name}
+HP Boss: ${boss.hp}
+HP You : ${Math.max(0, player.hp)}/${player.maxhp}
+ATK ${weaponAtk} | DEF ${armorDef}
+Acc1 ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name : 'None'}
+Acc2 ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name : 'None'}
+Maid Buff: ${maidStatBuff > 0 ? '+10 ALL' : 'OFF'}
+
+--------------
+Battle Log:
+${logs.slice(0, 8).join('\n')}${logs.length > 8 ? '\n...' : ''}`
 
 if (bossHp <= 0) {
 player.gold += boss.rewardGold
 let rewardExp = applyExpRoleBonus(boss.rewardExp, player)
 player.exp += rewardExp
-text += `\n\nBoss tumbang!\nReward:\n+${boss.rewardGold} Gold\n+${rewardExp} EXP\nDrop:\nTidak ada`
+text += `\n\n--------------\nWIN\n+${boss.rewardGold} Gold\n+${rewardExp} EXP\nDrop: Tidak ada`
 let lvResult = levelUp(player)
 if (lvResult) {
 let g = lvResult.gains
@@ -155,13 +166,13 @@ if (g.str) gainText.push(`STR +${g.str}`)
 if (g.agi) gainText.push(`AGI +${g.agi}`)
 if (g.int) gainText.push(`INT +${g.int}`)
 if (g.toughness) gainText.push(`TOUGH +${g.toughness}`)
-text += `\n\nLEVEL UP!\nLevel sekarang: ${player.level}\nBonus stat: ${gainText.join(', ')}`
+text += `\nLEVEL UP\nLevel: ${player.level}\nBonus: ${gainText.join(', ')}`
 }
 } else {
 let penalty = Math.min(player.gold, 80)
 player.gold -= penalty
 player.hp = 1
-text += `\n\nRaid gagal.\nReward:\n-${penalty} Gold\nHP jadi 1\nDrop:\nTidak ada`
+text += `\n\n--------------\nLOSE\nPenalty: -${penalty} Gold\nHP jadi 1\nDrop: Tidak ada`
 
 if (Math.random() * 100 < 55) {
 let salvageRoll = Math.random() * 100
