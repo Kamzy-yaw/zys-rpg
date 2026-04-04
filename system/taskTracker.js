@@ -61,14 +61,18 @@ function getMessageContent(msg) {
 async function downloadImageBuffer(sock, msg, content) {
   const mediaMsg = { ...msg, message: content }
   try {
-    return await sock.downloadMediaMessage(
-      mediaMsg,
-      "buffer",
-      {},
-      { reuploadRequest: sock.updateMediaMessage }
-    )
+    return await sock.downloadMessage(mediaMsg)
   } catch (_) {
-    return sock.downloadMediaMessage(mediaMsg, "buffer", {})
+    try {
+      return await sock.downloadMediaMessage(
+        mediaMsg,
+        "buffer",
+        {},
+        { reuploadRequest: sock.updateMediaMessage }
+      )
+    } catch (__) {
+      return sock.downloadMediaMessage(mediaMsg, "buffer", {})
+    }
   }
 }
 

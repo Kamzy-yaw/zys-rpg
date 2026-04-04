@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = "gpt-oss-120b"
+const DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 let localConfig = {}
 try {
