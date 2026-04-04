@@ -6,7 +6,6 @@ DisconnectReason
 } = require("@whiskeysockets/baileys")
 const P = require("pino")
 const readline = require("readline")
-const taskTracker = require("./system/taskTracker")
 
 function ask(question) {
 return new Promise((resolve) => {
@@ -82,8 +81,6 @@ if (type !== "notify") return
 let msg = messages[0]
 if (!msg?.message) return
 if (msg.key?.fromMe) return
-
- await taskTracker(sock, msg)
 
 let content = msg.message.ephemeralMessage?.message || msg.message
 let text = content.conversation || content.extendedTextMessage?.text
