@@ -1,4 +1,5 @@
 const itemDB = require('../database/item.json')
+const { getPetData } = require('../system/pet')
 
 module.exports = async (m)=>{
 
@@ -19,6 +20,10 @@ if (item.type === "potion") bonus = `Heal ${item.heal} HP`
 if (item.type === "pickaxe") bonus = `Mining Power +${item.miningPower}`
 if (item.type === "rod") bonus = `Fishing Power +${item.fishingPower}`
 if (item.type === "potion" && item.fullHeal) bonus = "Full Heal HP"
+if (item.type === "pet") {
+let pet = getPetData(item.unlockPet || 'none')
+bonus = pet.desc || "Unlock Pet"
+}
 
 text += `${i}. ${item.name}\n   ${bonus} | ${item.price} Gold\n`
 

@@ -44,6 +44,10 @@
   "mythril_rod": { "name": "Mythril Rod", "type": "rod", "fishingPower": 7, "price": 1400, "durability": 230 },
   "dragon_rod": { "name": "Dragon Rod", "type": "rod", "fishingPower": 11, "price": 3600, "durability": 320 },
   "leviathan_rod": { "name": "Leviathan Rod", "type": "rod", "fishingPower": 15, "price": 7800, "durability": 430 },
+  "pet_flame_fox": { "name": "Pet Voucher: Flame Fox", "type": "pet", "unlockPet": "flame_fox", "price": 25000 },
+  "pet_storm_wolf": { "name": "Pet Voucher: Storm Wolf", "type": "pet", "unlockPet": "storm_wolf", "price": 25000 },
+  "pet_void_owl": { "name": "Pet Voucher: Void Owl", "type": "pet", "unlockPet": "void_owl", "price": 26000 },
+  "pet_iron_turtle": { "name": "Pet Voucher: Iron Turtle", "type": "pet", "unlockPet": "iron_turtle", "price": 26000 },
 
   "hp_potion": { "name": "HP Potion", "type": "potion", "heal": 50, "price": 30 },
   "big_hp_potion": { "name": "Big HP Potion", "type": "potion", "heal": 120, "price": 60 },
