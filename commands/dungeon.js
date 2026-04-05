@@ -28,12 +28,12 @@ function getExpDungeonConfig(level) {
 if (level >= 60) {
 return {
 cooldownMs: 70000,
-floors: 6,
-hpScale: 10.2,
-atkScale: 0.92,
-defScale: 0.21,
-rewardExpBase: 250,
-rewardExpScale: 11,
+floors: 5,
+hpScale: 8.0,
+atkScale: 0.75,
+defScale: 0.16,
+rewardExpBase: 340,
+rewardExpScale: 15,
 rewardGoldBase: 36,
 rewardGoldScale: 2
 }
@@ -41,24 +41,24 @@ rewardGoldScale: 2
 if (level >= 40) {
 return {
 cooldownMs: 60000,
-floors: 5,
-hpScale: 8.8,
-atkScale: 0.8,
-defScale: 0.18,
-rewardExpBase: 180,
-rewardExpScale: 9,
+floors: 4,
+hpScale: 7.0,
+atkScale: 0.65,
+defScale: 0.14,
+rewardExpBase: 260,
+rewardExpScale: 12,
 rewardGoldBase: 30,
 rewardGoldScale: 1.8
 }
 }
 return {
 cooldownMs: 45000,
-floors: 4,
-hpScale: 7.6,
-atkScale: 0.7,
-defScale: 0.15,
-rewardExpBase: 130,
-rewardExpScale: 7,
+floors: 3,
+hpScale: 6.0,
+atkScale: 0.55,
+defScale: 0.12,
+rewardExpBase: 190,
+rewardExpScale: 9,
 rewardGoldBase: 24,
 rewardGoldScale: 1.4
 }

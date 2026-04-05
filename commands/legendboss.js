@@ -9,19 +9,23 @@ const { ensurePetState, addPet, getActivePetBonus } = require('../system/pet')
 const BOSS = {
 name: 'Astra Dreadlord',
 minLevel: 60,
-hp: 9800,
-atk: 185,
-def: 34,
-critRes: 30,
-rewardGold: 8500,
-rewardExp: 15000
+hp: 8200,
+atk: 165,
+def: 28,
+critRes: 24,
+rewardGold: 6800,
+rewardExp: 11800
 }
 
-const LOOT_TABLE = [
-{ id: 'voidbreaker_sword', chance: 5 },
-{ id: 'celestial_reaver', chance: 3 },
-{ id: 'eternal_guard_armor', chance: 5 },
-{ id: 'titan_warden_armor', chance: 3 }
+const MAIN_LOOT_TABLE = [
+{ id: 'voidbreaker_sword', weight: 10 },
+{ id: 'celestial_reaver', weight: 6 },
+{ id: 'eternal_guard_armor', weight: 10 },
+{ id: 'titan_warden_armor', weight: 6 },
+{ id: 'astral_sigil', weight: 8 },
+{ id: 'eclipse_charm', weight: 7 },
+{ id: 'titan_core', weight: 8 },
+{ id: 'phantom_feather', weight: 8 }
 ]
 
 const PET_TABLE = [
@@ -31,7 +35,19 @@ const PET_TABLE = [
 { id: 'iron_turtle', chance: 3 }
 ]
 
-function rollLoot(table) {
+function rollWeightedLoot(table, chance) {
+if (Math.random() * 100 >= chance) return null
+let totalWeight = table.reduce((sum, item) => sum + Number(item.weight || 0), 0)
+if (totalWeight <= 0) return null
+let roll = Math.random() * totalWeight
+for (let item of table) {
+roll -= Number(item.weight || 0)
+if (roll < 0) return item.id
+}
+return table[table.length - 1].id
+}
+
+function rollPet(table) {
 let got = []
 for (let x of table) {
 if (Math.random() * 100 < x.chance) got.push(x.id)
@@ -151,13 +167,15 @@ let rewardExp = applyExpRoleBonus(BOSS.rewardExp, p)
 p.gold += BOSS.rewardGold
 p.exp += rewardExp
 
-let loot = rollLoot(LOOT_TABLE)
-for (let id of loot) {
-p.inventory.push(id)
-ensureItemDurability(p, id)
+let mainLoot = rollWeightedLoot(MAIN_LOOT_TABLE, 24)
+let loot = []
+if (mainLoot) {
+loot.push(mainLoot)
+p.inventory.push(mainLoot)
+ensureItemDurability(p, mainLoot)
 }
 
-let petDrop = rollLoot(PET_TABLE)
+let petDrop = rollPet(PET_TABLE)
 let unlockedPets = []
 for (let petId of petDrop) {
 if (addPet(p, petId)) unlockedPets.push(petId)

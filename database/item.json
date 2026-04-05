@@ -33,6 +33,10 @@
   "ironheart_badge": { "name": "Ironheart Badge", "type": "accessory", "tough": 12, "reduce": 3, "craftOnly": true },
   "warrior_medallion": { "name": "Warrior Medallion", "type": "accessory", "str": 12, "crit": 2, "reduce": 1, "craftOnly": true },
   "void_emblem": { "name": "Void Emblem", "type": "accessory", "str": 6, "agi": 6, "int": 6, "tough": 6, "crit": 2, "dodge": 2, "reduce": 1, "craftOnly": true },
+  "astral_sigil": { "name": "Astral Sigil", "type": "accessory", "str": 12, "agi": 8, "crit": 3, "reduce": 2, "dropOnly": true },
+  "eclipse_charm": { "name": "Eclipse Charm", "type": "accessory", "int": 14, "crit": 4, "dodge": 2, "dropOnly": true },
+  "titan_core": { "name": "Titan Core", "type": "accessory", "tough": 14, "reduce": 3, "str": 6, "dropOnly": true },
+  "phantom_feather": { "name": "Phantom Feather", "type": "accessory", "agi": 14, "dodge": 4, "crit": 2, "dropOnly": true },
 
   "wood_pickaxe": { "name": "Wooden Pickaxe", "type": "pickaxe", "miningPower": 2, "price": 150, "durability": 90 },
   "iron_pickaxe": { "name": "Iron Pickaxe", "type": "pickaxe", "miningPower": 4, "price": 400, "durability": 140 },
