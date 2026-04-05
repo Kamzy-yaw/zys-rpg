@@ -146,7 +146,8 @@ let parsed = text.trim()
 if (!parsed.startsWith(".")) return
 
 let sender = msg.key.participant || msg.key.remoteJid
-let senderPn = await resolveSenderPn(sock, sender)
+let senderAlt = msg.key.participantAlt || msg.key.remoteJidAlt || null
+let senderPn = senderAlt || await resolveSenderPn(sock, sender)
 
 let parts = parsed.slice(1).trim().split(/\s+/)
 let command = (parts[0] || "").toLowerCase().replace(/[^a-z0-9_-]/g, "")
@@ -184,6 +185,7 @@ return sock.sendMessage(jid, { text: String(payload || '') })
 }
 }, {
 sender,
+senderAlt,
 senderPn,
 args,
 mentionedJid
