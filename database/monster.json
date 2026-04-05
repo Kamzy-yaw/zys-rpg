@@ -373,6 +373,78 @@
     ],
     "rarity": 1
   },
+  "rift_stalker": {
+    "name": "Rift Stalker",
+    "hp": 1120,
+    "atk": 98,
+    "exp": 1360,
+    "gold": 640,
+    "drops": [
+      {
+        "item": "astral_fragment",
+        "chance": 28
+      },
+      {
+        "item": "rift_crystal",
+        "chance": 10
+      }
+    ],
+    "rarity": 1
+  },
+  "fallen_seraph": {
+    "name": "Fallen Seraph",
+    "hp": 1260,
+    "atk": 104,
+    "exp": 1490,
+    "gold": 700,
+    "drops": [
+      {
+        "item": "fallen_feather",
+        "chance": 22
+      },
+      {
+        "item": "astral_fragment",
+        "chance": 20
+      }
+    ],
+    "rarity": 1
+  },
+  "astral_reaper": {
+    "name": "Astral Reaper",
+    "hp": 1410,
+    "atk": 112,
+    "exp": 1680,
+    "gold": 790,
+    "drops": [
+      {
+        "item": "rift_crystal",
+        "chance": 18
+      },
+      {
+        "item": "astral_core",
+        "chance": 6
+      }
+    ],
+    "rarity": 1
+  },
+  "throne_devourer": {
+    "name": "Throne Devourer",
+    "hp": 1580,
+    "atk": 122,
+    "exp": 1880,
+    "gold": 910,
+    "drops": [
+      {
+        "item": "astral_core",
+        "chance": 10
+      },
+      {
+        "item": "void_stone",
+        "chance": 16
+      }
+    ],
+    "rarity": 1
+  },
   "ruin_revenant": {
     "name": "Ruin Revenant",
     "hp": 520,

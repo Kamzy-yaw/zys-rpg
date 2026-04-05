@@ -30,6 +30,8 @@ let text = `╔══ RPG v2 MENU ══
 .raid test
 .raid list
 .legendboss
+.legendboss shard
+.legendboss redeem <item_id>
 .dungeon
 .dungeon exp
 
@@ -53,7 +55,7 @@ let text = `╔══ RPG v2 MENU ══
 .mine
 .mining
 .craft
-.enhance <weapon|armor|pickaxe|rod>
+.enhance <weapon|armor|pickaxe|rod|accessory>
 .sell <no> [jumlah]
 .fix <armor|pickaxe|rod|sword>
 .market

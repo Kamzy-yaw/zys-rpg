@@ -69,6 +69,7 @@ let pD = p.pickaxe ? getDurability(p, p.pickaxe) : null
 let rD = p.rod ? getDurability(p, p.rod) : null
 if (typeof p.miningExp !== 'number') p.miningExp = 0
 if (typeof p.miningLevel !== 'number') p.miningLevel = 1
+if (typeof p.legendShard !== 'number') p.legendShard = 0
 let armorTough = (p.armor && itemDB[p.armor]) ? Number(itemDB[p.armor].tough || 0) : 0
 let accessoryBonus = getAccessoryBonuses(p)
 let petBonus = getActivePetBonus(p)
@@ -132,8 +133,8 @@ Armor  ${armorDef}
 🧰 EQUIPMENT
 ⚔ ${weaponName} (+${p.enhance.weapon})
 🛡 ${armorName} (+${p.enhance.armor})
-💍 ${accessory1}${accessory1Detail}
-💍 ${accessory2}${accessory2Detail}
+💍 ${accessory1} (+${p.enhance.accessory1})${accessory1Detail}
+💍 ${accessory2} (+${p.enhance.accessory2})${accessory2Detail}
 ⛏ ${pickaxeName} (+${p.enhance.pickaxe})
 🎣 ${rodName} (+${p.enhance.rod})
 
@@ -154,6 +155,7 @@ Rod ${rD ? `${rD.current}/${rD.max}` : '-'}
 
 📈 PROGRESS
 Mining Lv.${p.miningLevel}
+Legend Shard ${p.legendShard}
 Rank ${rank.grade} (${rank.wins} win)
 PVP ${p.pvpWins}W / ${p.pvpLosses}L
 Achievement ${achDone} / ${achTotal}

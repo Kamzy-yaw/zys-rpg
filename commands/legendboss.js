@@ -35,6 +35,17 @@ const PET_TABLE = [
 { id: 'iron_turtle', chance: 3 }
 ]
 
+const SHARD_REDEEM = {
+astral_sigil: 18,
+phantom_feather: 18,
+titan_core: 20,
+eclipse_charm: 20,
+voidbreaker_sword: 32,
+eternal_guard_armor: 32,
+celestial_reaver: 42,
+titan_warden_armor: 42
+}
+
 function rollWeightedLoot(table, chance) {
 if (Math.random() * 100 >= chance) return null
 let totalWeight = table.reduce((sum, item) => sum + Number(item.weight || 0), 0)
@@ -55,7 +66,7 @@ if (Math.random() * 100 < x.chance) got.push(x.id)
 return got
 }
 
-module.exports = async (m, { sender }) => {
+module.exports = async (m, { sender, args }) => {
 let db = JSON.parse(fs.readFileSync('./database/player.json'))
 if (!db[sender]) return m.reply('Bikin karakter dulu pakai .start')
 
@@ -69,6 +80,7 @@ if (typeof p.int !== 'number') p.int = 5
 if (typeof p.toughness !== 'number') p.toughness = 0
 if (typeof p.gold !== 'number') p.gold = 0
 if (typeof p.exp !== 'number') p.exp = 0
+if (typeof p.legendShard !== 'number') p.legendShard = 0
 if (typeof p.lastLegendBoss !== 'number') p.lastLegendBoss = 0
 if (!Array.isArray(p.inventory)) p.inventory = []
 if (p.weapon === undefined) p.weapon = null
@@ -82,6 +94,25 @@ ensureEnhanceState(p)
 normalizeAccessories(p)
 ensureRoleState(p)
 ensurePetState(p)
+
+let sub = String(args[0] || '').toLowerCase()
+if (sub === 'shard' || sub === 'redeem') {
+let list = Object.keys(SHARD_REDEEM).map((id) => `- ${id}: ${SHARD_REDEEM[id]} Shard`).join('\n')
+let picked = String(args[1] || '').toLowerCase()
+if (!picked) {
+return m.reply(`Legend Shard: ${p.legendShard}\n\nRedeem List:\n${list}\n\nPakai: .legendboss redeem <item_id>`)
+}
+if (!SHARD_REDEEM[picked] || !itemDB[picked]) {
+return m.reply(`Item redeem tidak valid.\n\nRedeem List:\n${list}`)
+}
+let cost = SHARD_REDEEM[picked]
+if (p.legendShard < cost) return m.reply(`Legend Shard kurang. Butuh ${cost}, kamu punya ${p.legendShard}.`)
+p.legendShard -= cost
+p.inventory.push(picked)
+ensureItemDurability(p, picked)
+fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+return m.reply(`Redeem sukses: ${itemDB[picked].name}\nBiaya: ${cost} Legend Shard\nSisa Shard: ${p.legendShard}`)
+}
 
 if (p.level < BOSS.minLevel) {
 return m.reply(`Legend Boss butuh minimal level ${BOSS.minLevel}.`) 
@@ -158,14 +189,16 @@ if (bossHp > 0) {
 let penalty = Math.min(p.gold, 200)
 p.gold -= penalty
 p.hp = 1
+ p.legendShard += 1
 p.lastLegendBoss = now
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
-return m.reply(`${text}\n\nBoss belum tumbang.\nPenalty: -${penalty} Gold\nHP jadi 1`) 
+return m.reply(`${text}\n\nBoss belum tumbang.\nPenalty: -${penalty} Gold\nHP jadi 1\nShard: +1 Legend Shard (Total ${p.legendShard})`) 
 }
 
 let rewardExp = applyExpRoleBonus(BOSS.rewardExp, p)
 p.gold += BOSS.rewardGold
 p.exp += rewardExp
+p.legendShard += 3
 
 let mainLoot = rollWeightedLoot(MAIN_LOOT_TABLE, 24)
 let loot = []
@@ -202,7 +235,7 @@ fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 let lootTxt = loot.length ? loot.map((id) => `- ${itemDB[id] ? itemDB[id].name : id}`).join('\n') : '- Tidak ada item legendary'
 let petTxt = unlockedPets.length ? unlockedPets.map((id) => `- ${id}`).join('\n') : '- Tidak ada pet baru'
 
-let msg = `${text}\n\nBOSS TUMBANG!\nReward:\n+${BOSS.rewardGold} Gold\n+${rewardExp} EXP\n\nDrop Legendary:\n${lootTxt}\n\nPet Unlock:\n${petTxt}${lvText}`
+let msg = `${text}\n\nBOSS TUMBANG!\nReward:\n+${BOSS.rewardGold} Gold\n+${rewardExp} EXP\n+3 Legend Shard (Total ${p.legendShard})\n\nDrop Legendary:\n${lootTxt}\n\nPet Unlock:\n${petTxt}${lvText}\n\nPity Shop: .legendboss redeem`
 // Announcement removed to avoid global mention risks
 return m.reply(msg)
 }

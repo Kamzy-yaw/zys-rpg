@@ -57,6 +57,11 @@
   "big_hp_potion": { "name": "Big HP Potion", "type": "potion", "heal": 120, "price": 60 },
   "full_hp_potion": { "name": "Full HP Potion", "type": "potion", "fullHeal": true, "price": 150 },
 
+  "astral_fragment": { "name": "Astral Fragment", "type": "resource", "sellPrice": 165 },
+  "rift_crystal": { "name": "Rift Crystal", "type": "resource", "sellPrice": 210 },
+  "fallen_feather": { "name": "Fallen Feather", "type": "resource", "sellPrice": 190 },
+  "astral_core": { "name": "Astral Core", "type": "resource", "sellPrice": 320 },
+
   "gold_coin": { "name": "Gold Coin", "type": "resource", "sellPrice": 14 },
   "ancient_wood": { "name": "Ancient Wood", "type": "resource", "sellPrice": 16 },
   "spider_silk": { "name": "Spider Silk", "type": "resource", "sellPrice": 18 },

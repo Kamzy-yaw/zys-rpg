@@ -34,6 +34,10 @@ return m.reply("Karakter belum ada.\nKetik .start dulu ya.")
 let player = db[sender]
 if (!Array.isArray(player.inventory)) player.inventory = []
 normalizeAccessories(player)
+if (!player.enhance || typeof player.enhance !== 'object') player.enhance = {}
+if (typeof player.enhance.accessory1 !== 'number') player.enhance.accessory1 = 0
+if (typeof player.enhance.accessory2 !== 'number') player.enhance.accessory2 = 0
+if (typeof player.legendShard !== 'number') player.legendShard = 0
 
 if (player.inventory.length == 0) {
 return m.reply("Inventory masih kosong.\nCoba cari item lewat .hunt, .mine, .fish, atau .shop")
@@ -69,10 +73,11 @@ else resources.push(item)
 text += `Equipped:\n`
 text += `Weapon   : ${player.weapon && itemDB[player.weapon] ? itemDB[player.weapon].name : 'None'}\n`
 text += `Armor    : ${player.armor && itemDB[player.armor] ? itemDB[player.armor].name : 'None'}\n`
-text += `Accessory1: ${player.accessories[0] && itemDB[player.accessories[0]] ? itemDB[player.accessories[0]].name + formatAccessoryStats(player.accessories[0]) : 'None'}\n`
-text += `Accessory2: ${player.accessories[1] && itemDB[player.accessories[1]] ? itemDB[player.accessories[1]].name + formatAccessoryStats(player.accessories[1]) : 'None'}\n`
+text += `Accessory1: ${player.accessories[0] && itemDB[player.accessories[0]] ? `${itemDB[player.accessories[0]].name} (+${player.enhance.accessory1})` + formatAccessoryStats(player.accessories[0]) : 'None'}\n`
+text += `Accessory2: ${player.accessories[1] && itemDB[player.accessories[1]] ? `${itemDB[player.accessories[1]].name} (+${player.enhance.accessory2})` + formatAccessoryStats(player.accessories[1]) : 'None'}\n`
 text += `Pickaxe  : ${player.pickaxe && itemDB[player.pickaxe] ? itemDB[player.pickaxe].name : 'None'}\n`
-text += `Rod      : ${player.rod && itemDB[player.rod] ? itemDB[player.rod].name : 'None'}\n\n`
+text += `Rod      : ${player.rod && itemDB[player.rod] ? itemDB[player.rod].name : 'None'}\n`
+text += `Shard    : ${player.legendShard}\n\n`
 
 if (equipment.length) {
 text += "--------------\nEquipment List:\n"
@@ -110,6 +115,7 @@ text += "\nEquip senjata/armor/pickaxe/rod: .equip 5"
 text += "\nEquip aksesoris slot 1/2: .equip 8 1"
 text += "\nJual item: .sell 3 10"
 text += "\nRepair gear: .fix armor | .fix pickaxe | .fix rod | .fix sword"
+text += "\nEnhance aksesori: .enhance accessory 1"
 text += "\nLihat resep crafting: .craft"
 text += "\nBuka treasure chest: .open 1"
 

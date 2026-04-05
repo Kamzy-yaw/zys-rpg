@@ -16,6 +16,13 @@ if (idx !== -1) inv.splice(idx, 1)
 }
 
 function reqByLevel(nextLevel, target) {
+if (target === 'accessory') {
+if (nextLevel <= 5) return { astral_fragment: 2, rift_crystal: 1 }
+if (nextLevel <= 10) return { astral_fragment: 3, rift_crystal: 2, fallen_feather: 1 }
+if (nextLevel <= 15) return { rift_crystal: 3, fallen_feather: 2, ancient_crystal: 1 }
+if (nextLevel <= 20) return { astral_core: 1, rift_crystal: 3, celestial_gem: 1 }
+return { astral_core: 2, fallen_feather: 3, void_stone: 1 }
+}
 if (target === 'rod') {
 if (nextLevel <= 5) return { fishing_hook: 2, tiny_shell: 2 }
 if (nextLevel <= 10) return { magic_pearl: 1, silver_coin: 2, fisherman_thread: 1 }
@@ -40,6 +47,12 @@ return { void_stone: 3, celestial_gem: 3, ancient_artifact: 1 }
 }
 
 function goldCostByLevel(nextLevel, target) {
+if (target === 'accessory') {
+if (nextLevel <= 10) return 260 * nextLevel
+if (nextLevel <= 15) return 340 * nextLevel
+if (nextLevel <= 20) return 430 * nextLevel
+return 520 * nextLevel
+}
 if (target === 'rod') {
 if (nextLevel <= 10) return 180 * nextLevel
 if (nextLevel <= 15) return 260 * nextLevel
@@ -73,23 +86,43 @@ Weapon: +${p.enhance.weapon} (${p.weapon ? (itemDB[p.weapon]?.name || p.weapon) 
 Armor: +${p.enhance.armor} (${p.armor ? (itemDB[p.armor]?.name || p.armor) : 'None'})
 Pickaxe: +${p.enhance.pickaxe} (${p.pickaxe ? (itemDB[p.pickaxe]?.name || p.pickaxe) : 'None'})
 Rod: +${p.enhance.rod} (${p.rod ? (itemDB[p.rod]?.name || p.rod) : 'None'})
+Accessory 1: +${p.enhance.accessory1} (${p.accessories?.[0] ? (itemDB[p.accessories[0]]?.name || p.accessories[0]) : 'None'})
+Accessory 2: +${p.enhance.accessory2} (${p.accessories?.[1] ? (itemDB[p.accessories[1]]?.name || p.accessories[1]) : 'None'})
 
 Command:
 .enhance weapon
 .enhance armor
 .enhance pickaxe
-.enhance rod`
+.enhance rod
+.enhance accessory 1
+.enhance accessory 2`
 )
 }
 
-if (!['weapon', 'armor', 'pickaxe', 'rod'].includes(target)) {
-return m.reply("Pilih target: weapon / armor / pickaxe / rod")
+if (!['weapon', 'armor', 'pickaxe', 'rod', 'accessory'].includes(target)) {
+return m.reply("Pilih target: weapon / armor / pickaxe / rod / accessory")
 }
 
-let equipped = p[target]
-if (!equipped || !itemDB[equipped]) return m.reply(`Kamu belum equip ${target}.`)
-let current = Number(p.enhance[target] || 0)
-if (current >= MAX_ENHANCE) return m.reply(`${target} sudah max +${MAX_ENHANCE}.`)
+let equipped = null
+let enhanceKey = target
+let targetLabel = target
+
+if (target === 'accessory') {
+let slotArg = String(args[1] || '').toLowerCase()
+let slotIndex = slotArg === '2' || slotArg === 'acc2' || slotArg === 'slot2' ? 1 : 0
+if (slotArg && !['1', '2', 'acc1', 'acc2', 'slot1', 'slot2'].includes(slotArg)) {
+return m.reply("Pilih slot aksesori: 1 atau 2")
+}
+equipped = p.accessories?.[slotIndex] || null
+enhanceKey = `accessory${slotIndex + 1}`
+targetLabel = `accessory slot ${slotIndex + 1}`
+} else {
+equipped = p[target]
+}
+
+if (!equipped || !itemDB[equipped]) return m.reply(`Kamu belum equip ${targetLabel}.`)
+let current = Number(p.enhance[enhanceKey] || 0)
+if (current >= MAX_ENHANCE) return m.reply(`${targetLabel} sudah max +${MAX_ENHANCE}.`)
 
 let next = current + 1
 let costGold = goldCostByLevel(next, target)
@@ -104,7 +137,7 @@ if (have < need) return m.reply(`Material kurang: ${(itemDB[id]?.name || id)} ${
 
 p.gold -= costGold
 for (let id of Object.keys(mats)) takeItem(p.inventory, id, mats[id])
-p.enhance[target] = next
+p.enhance[enhanceKey] = next
 
 fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
 let matTxt = Object.entries(mats).map(([id, qty]) => `${itemDB[id]?.name || id} x${qty}`).join(', ')
