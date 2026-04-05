@@ -13,6 +13,9 @@
   "type": "commonjs",
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "dotenv": "^16.6.1",
+    "mongodb": "^6.21.0",
+    "node-cron": "^4.1.0",
     "pino": "^10.3.1",
     "qrcode-terminal": "^0.12.0"
   }

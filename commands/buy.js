@@ -1,11 +1,11 @@
-const fs = require('fs')
 const itemDB = require('../database/item.json')
 const { ensureItemDurability } = require('../system/equipment')
 const { ensurePetState, hasPet, addPet, getPetData } = require('../system/pet')
+const { scheduleSave } = require('../database')
 
 module.exports = async (m, { sender, args }) => {
 
-let db = JSON.parse(fs.readFileSync('./database/player.json'))
+let db = global.db.players
 
 if (!db[sender]) return m.reply('Buat karakter dulu pakai .start')
 
@@ -37,7 +37,7 @@ if (player.gold < petCost) return m.reply(`Gold tidak cukup. Butuh ${petCost} Go
 player.gold -= petCost
 addPet(player, petId)
 
-fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+scheduleSave('players')
 return m.reply(`=== PET PURCHASE ===\nKamu membeli ${petData.name}\nBonus : ${petData.desc}\nTotal : ${petCost} Gold`)
 }
 
@@ -50,7 +50,7 @@ player.inventory.push(id)
 ensureItemDurability(player, id)
 }
 
-fs.writeFileSync('./database/player.json', JSON.stringify(db, null, 2))
+scheduleSave('players')
 
 m.reply(`=== PURCHASE SUCCESS ===\nItem  : ${item.name} x${qty}\nTotal : ${totalCost} Gold`)
 }

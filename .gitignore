@@ -2,6 +2,7 @@ node_modules
 .npm-cache
 .git
 session
+.env
 database/player.json
 database/guild.json
 database/market.json

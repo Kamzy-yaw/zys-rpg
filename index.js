@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const {
 default: makeWASocket,
 useMultiFileAuthState,
@@ -6,6 +8,7 @@ DisconnectReason
 } = require("@whiskeysockets/baileys")
 const P = require("pino")
 const readline = require("readline")
+const { initDatabase, setupShutdownHooks } = require("./database")
 
 function ask(question) {
 return new Promise((resolve) => {
@@ -22,6 +25,8 @@ return String(input || "").replace(/[^\d]/g, "")
 }
 
 async function startBot() {
+await initDatabase()
+setupShutdownHooks()
 const { state, saveCreds } = await useMultiFileAuthState("./session")
 const { version } = await fetchLatestBaileysVersion()
 
