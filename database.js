@@ -34,6 +34,14 @@ let backupRunning = false
 let backupQueued = false
 let dbInitialized = false
 let shutdownHooksInstalled = false
+let mongoConnectedLogged = false
+let schedulerLogged = false
+
+function getErrorMessage(err) {
+if (!err) return 'unknown error'
+if (typeof err.message === 'string' && err.message.trim()) return err.message.trim()
+return String(err)
+}
 
 function getEmptyDB() {
 return {
@@ -162,6 +170,10 @@ mongoClient = new MongoClient(MONGODB_URI, {
 maxPoolSize: 3
 })
 await mongoClient.connect()
+if (!mongoConnectedLogged) {
+console.log('[database] mongo connected')
+mongoConnectedLogged = true
+}
 return mongoClient
 }
 
@@ -184,8 +196,8 @@ guilds: snapshot.guilds,
 market: snapshot.market,
 party: snapshot.party
 })
-  } catch (err) {
-console.error('[database] mongo backup gagal:', err)
+} catch (err) {
+console.error(`[database] mongo backup gagal: ${getErrorMessage(err)}`)
   } finally {
 backupRunning = false
 if (backupQueued) {
@@ -200,10 +212,14 @@ runMongoBackup().catch((err) => console.error('[database] mongo backup queued er
 function startBackupCron() {
 if (!MONGODB_URI || backupJob) return null
 backupJob = cron.schedule(BACKUP_CRON, () => {
-runMongoBackup().catch((err) => console.error('[database] mongo backup cron error:', err))
+runMongoBackup().catch((err) => console.error(`[database] mongo backup cron error: ${getErrorMessage(err)}`))
 }, {
 scheduled: true
 })
+if (!schedulerLogged) {
+console.log('[database] backup scheduler started')
+schedulerLogged = true
+}
 return backupJob
 }
 
@@ -223,6 +239,13 @@ party: await loadJsonFile(FILES.party, {})
 }
 
 patchLegacyFs()
+if (MONGODB_URI) {
+try {
+await connectMongo()
+} catch (err) {
+console.error(`[database] mongo connect gagal: ${getErrorMessage(err)}`)
+}
+}
 startBackupCron()
 dbInitialized = true
 return global.db
