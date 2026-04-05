@@ -9,10 +9,11 @@ function normalizeDigits(value) {
 return String(value || '').replace(/\D/g, '')
 }
 
-module.exports = async (m, { sender }) => {
+module.exports = async (m, { sender, senderPn }) => {
 const senderDigits = normalizeDigits(sender)
+const senderPnDigits = normalizeDigits(senderPn)
 
-if (!ALLOWED_NUMBERS.has(senderDigits)) {
+if (!ALLOWED_NUMBERS.has(senderDigits) && !ALLOWED_NUMBERS.has(senderPnDigits)) {
 return m.reply('Command ini khusus owner.')
 }
 

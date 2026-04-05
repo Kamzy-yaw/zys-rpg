@@ -24,6 +24,16 @@ function normalizePhone(input) {
 return String(input || "").replace(/[^\d]/g, "")
 }
 
+async function resolveSenderPn(sock, senderJid) {
+try {
+if (!senderJid || !String(senderJid).endsWith('@lid')) return null
+const pn = await sock.signalRepository?.lidMapping?.getPNForLID(senderJid)
+return pn || null
+  } catch (err) {
+return null
+}
+}
+
 function delay(ms) {
 return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -136,6 +146,7 @@ let parsed = text.trim()
 if (!parsed.startsWith(".")) return
 
 let sender = msg.key.participant || msg.key.remoteJid
+let senderPn = await resolveSenderPn(sock, sender)
 
 let parts = parsed.slice(1).trim().split(/\s+/)
 let command = (parts[0] || "").toLowerCase().replace(/[^a-z0-9_-]/g, "")
@@ -173,6 +184,7 @@ return sock.sendMessage(jid, { text: String(payload || '') })
 }
 }, {
 sender,
+senderPn,
 args,
 mentionedJid
 })
