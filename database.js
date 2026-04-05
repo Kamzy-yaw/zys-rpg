@@ -209,6 +209,29 @@ runMongoBackup().catch((err) => console.error('[database] mongo backup queued er
 }
 }
 
+async function getLatestMongoBackupMeta() {
+if (!MONGODB_URI) return null
+const client = await connectMongo()
+const collection = client.db(MONGODB_DB_NAME).collection(MONGODB_COLLECTION)
+const doc = await collection.findOne(
+{},
+{
+sort: { timestamp: -1 },
+projection: { timestamp: 1, players: 1, guilds: 1, market: 1, party: 1 }
+}
+)
+
+if (!doc) return null
+
+return {
+timestamp: doc.timestamp || null,
+players: Object.keys(doc.players || {}).length,
+guilds: Object.keys(doc.guilds || {}).length,
+market: Object.keys(doc.market || {}).length,
+party: Object.keys(doc.party || {}).length
+}
+}
+
 function startBackupCron() {
 if (!MONGODB_URI || backupJob) return null
 backupJob = cron.schedule(BACKUP_CRON, () => {
@@ -290,6 +313,7 @@ scheduleSave,
 flushDirty,
 flushAll,
 runMongoBackup,
+getLatestMongoBackupMeta,
 startBackupCron,
 setupShutdownHooks
 }

@@ -81,6 +81,8 @@ Reset quest: tiap hari jam 07:00
 
 🛠 ADMIN
 .seasonreset confirm
+.dbbackup
+.dbstatus
 
 🏰 GUILD
 .guild
