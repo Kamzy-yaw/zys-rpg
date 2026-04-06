@@ -9,5 +9,6 @@
   "ruins": { "name": "Ancient Ruins", "level": 25, "monsters": ["minotaur", "golem", "troll", "ruin_revenant"] },
   "dragon_peak": { "name": "Dragon Peak", "level": 30, "monsters": ["dragon", "wyvern", "golem", "elder_drake", "shadow_hydra"] },
   "void_gate": { "name": "Void Gate", "level": 40, "monsters": ["demon_lord", "phoenix", "void_knight", "abyss_overlord", "shadow_hydra", "celestial_sentinel"] },
-  "fallen_throne": { "name": "Fallen Throne", "level": 55, "monsters": ["rift_stalker", "fallen_seraph", "astral_reaper", "throne_devourer"] }
+  "fallen_throne": { "name": "Fallen Throne", "level": 55, "monsters": ["rift_stalker", "fallen_seraph", "astral_reaper", "throne_devourer"] },
+  "seven_sins": { "name": "Seven Sins Domain", "level": 68, "monsters": ["lust_temptress", "glutton_maw", "greed_collector", "sloth_giant", "wrath_reaver", "envy_shade", "pride_sovereign"] }
 }

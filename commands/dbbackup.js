@@ -1,20 +1,8 @@
 const { runMongoBackup } = require('../database')
+const { isOwner } = require('../system/admin')
 
-const ALLOWED_NUMBERS = new Set([
-'6281287345836',
-'6285871325275'
-])
-
-function normalizeDigits(value) {
-return String(value || '').replace(/\D/g, '')
-}
-
-module.exports = async (m, { sender, senderAlt, senderPn }) => {
-const senderDigits = normalizeDigits(sender)
-const senderAltDigits = normalizeDigits(senderAlt)
-const senderPnDigits = normalizeDigits(senderPn)
-
-if (!ALLOWED_NUMBERS.has(senderDigits) && !ALLOWED_NUMBERS.has(senderAltDigits) && !ALLOWED_NUMBERS.has(senderPnDigits)) {
+module.exports = async (m, ctx) => {
+if (!isOwner(ctx)) {
 return m.reply('Command ini khusus owner.')
 }
 

@@ -1,25 +1,23 @@
-const { getLatestMongoBackupMeta } = require('../database')
+const { getLatestMongoBackupMeta, getDatabaseSizeBytes } = require('../database')
+const { isOwner } = require('../system/admin')
 
-const ALLOWED_NUMBERS = new Set([
-'6281287345836',
-'6285871325275'
-])
-
-function normalizeDigits(value) {
-return String(value || '').replace(/\D/g, '')
+function formatSize(bytes) {
+let size = Number(bytes || 0)
+if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`
+if (size >= 1024) return `${Math.round(size / 1024)} KB`
+return `${size} B`
 }
 
-module.exports = async (m, { sender, senderAlt, senderPn }) => {
-const senderDigits = normalizeDigits(sender)
-const senderAltDigits = normalizeDigits(senderAlt)
-const senderPnDigits = normalizeDigits(senderPn)
-
-if (!ALLOWED_NUMBERS.has(senderDigits) && !ALLOWED_NUMBERS.has(senderAltDigits) && !ALLOWED_NUMBERS.has(senderPnDigits)) {
+module.exports = async (m, ctx) => {
+if (!isOwner(ctx)) {
 return m.reply('Command ini khusus owner.')
 }
 
 try {
-const meta = await getLatestMongoBackupMeta()
+const [meta, sizeBytes] = await Promise.all([
+getLatestMongoBackupMeta(),
+getDatabaseSizeBytes()
+])
 
 if (!meta) {
 return m.reply('Belum ada snapshot backup di MongoDB.')
@@ -35,7 +33,8 @@ Last    : ${ts} WIB
 Players : ${meta.players}
 Guilds  : ${meta.guilds}
 Market  : ${meta.market}
-Party   : ${meta.party}`
+Party   : ${meta.party}
+DB Size : ${formatSize(sizeBytes)}`
 )
   } catch (err) {
 return m.reply(`Cek status gagal: ${err && err.message ? err.message : String(err)}`)

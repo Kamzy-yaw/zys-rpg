@@ -5,10 +5,11 @@ const cron = require('node-cron')
 const { MongoClient } = require('mongodb')
 
 const SAVE_DELAY_MS = Number(process.env.DB_SAVE_DELAY_MS || 5000)
-const BACKUP_CRON = process.env.DB_BACKUP_CRON || '0 * * * *'
+const BACKUP_CRON = process.env.DB_BACKUP_CRON || '0 */6 * * *'
 const MONGODB_URI = process.env.MONGODB_URI || ''
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'rpg_backup'
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION || 'snapshots'
+const MAX_BACKUPS = Number(process.env.DB_MAX_BACKUPS || 5)
 
 const FILES = {
 players: path.resolve(process.cwd(), 'database/player.json'),
@@ -177,8 +178,34 @@ mongoConnectedLogged = true
 return mongoClient
 }
 
+async function getBackupCollection() {
+const client = await connectMongo()
+return client.db(MONGODB_DB_NAME).collection(MONGODB_COLLECTION)
+}
+
+async function enforceRollingBackup(collection) {
+if (MAX_BACKUPS < 1) return
+const total = await collection.countDocuments()
+if (total <= MAX_BACKUPS) return
+
+const overflow = total - MAX_BACKUPS
+const oldest = await collection.find(
+{},
+{
+sort: { timestamp: 1, _id: 1 },
+projection: { _id: 1 },
+limit: overflow
+}
+).toArray()
+
+if (!oldest.length) return
+await collection.deleteMany({
+_id: { $in: oldest.map((doc) => doc._id) }
+})
+}
+
 async function runMongoBackup() {
-if (!MONGODB_URI) return
+if (!MONGODB_URI) throw new Error('MONGODB_URI belum diisi')
 if (backupRunning) {
 backupQueued = true
 return
@@ -186,24 +213,23 @@ return
 
 backupRunning = true
 try {
-const client = await connectMongo()
-const collection = client.db(MONGODB_DB_NAME).collection(MONGODB_COLLECTION)
+const collection = await getBackupCollection()
 const snapshot = getSnapshot()
-await collection.insertOne({
+const result = await collection.insertOne({
 timestamp: new Date(),
 players: snapshot.players,
 guilds: snapshot.guilds,
 market: snapshot.market,
 party: snapshot.party
 })
-} catch (err) {
-console.error(`[database] mongo backup gagal: ${getErrorMessage(err)}`)
+await enforceRollingBackup(collection)
+return result
   } finally {
 backupRunning = false
 if (backupQueued) {
 backupQueued = false
 setImmediate(() => {
-runMongoBackup().catch((err) => console.error('[database] mongo backup queued error:', err))
+runMongoBackup().catch((err) => console.error(`[database] mongo backup queued error: ${getErrorMessage(err)}`))
 })
 }
 }
@@ -211,8 +237,7 @@ runMongoBackup().catch((err) => console.error('[database] mongo backup queued er
 
 async function getLatestMongoBackupMeta() {
 if (!MONGODB_URI) return null
-const client = await connectMongo()
-const collection = client.db(MONGODB_DB_NAME).collection(MONGODB_COLLECTION)
+const collection = await getBackupCollection()
 const doc = await collection.findOne(
 {},
 {
@@ -230,6 +255,61 @@ guilds: Object.keys(doc.guilds || {}).length,
 market: Object.keys(doc.market || {}).length,
 party: Object.keys(doc.party || {}).length
 }
+}
+
+async function getLatestMongoBackup() {
+if (!MONGODB_URI) return null
+const collection = await getBackupCollection()
+return collection.findOne({}, { sort: { timestamp: -1, _id: -1 } })
+}
+
+async function restoreLatestMongoBackup() {
+await flushDirty()
+const doc = await getLatestMongoBackup()
+if (!doc) return null
+
+global.db = {
+players: doc.players || {},
+guilds: doc.guilds || {},
+market: doc.market || {},
+party: doc.party || {}
+}
+
+dirtyKeys.clear()
+if (saveTimer) {
+clearTimeout(saveTimer)
+saveTimer = null
+}
+
+await Promise.all([
+writeJsonAtomic(FILES.players, global.db.players),
+writeJsonAtomic(FILES.guilds, global.db.guilds),
+writeJsonAtomic(FILES.market, global.db.market),
+writeJsonAtomic(FILES.party, global.db.party)
+])
+
+return {
+timestamp: doc.timestamp || null,
+players: Object.keys(global.db.players || {}).length,
+guilds: Object.keys(global.db.guilds || {}).length,
+market: Object.keys(global.db.market || {}).length,
+party: Object.keys(global.db.party || {}).length
+}
+}
+
+async function getDatabaseSizeBytes() {
+let stats = await Promise.all(
+Object.values(FILES).map(async (filePath) => {
+try {
+return await fsp.stat(filePath)
+      } catch (err) {
+if (err.code === 'ENOENT') return { size: 0 }
+throw err
+}
+})
+)
+
+return stats.reduce((sum, item) => sum + Number(item.size || 0), 0)
 }
 
 function startBackupCron() {
@@ -314,6 +394,9 @@ flushDirty,
 flushAll,
 runMongoBackup,
 getLatestMongoBackupMeta,
+getLatestMongoBackup,
+restoreLatestMongoBackup,
+getDatabaseSizeBytes,
 startBackupCron,
 setupShutdownHooks
 }

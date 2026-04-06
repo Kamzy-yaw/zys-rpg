@@ -445,6 +445,132 @@
     ],
     "rarity": 1
   },
+  "lust_temptress": {
+    "name": "Lust Temptress",
+    "hp": 1660,
+    "atk": 128,
+    "exp": 1960,
+    "gold": 980,
+    "drops": [
+      {
+        "item": "astral_fragment",
+        "chance": 28
+      },
+      {
+        "item": "fallen_feather",
+        "chance": 16
+      }
+    ],
+    "rarity": 1
+  },
+  "glutton_maw": {
+    "name": "Glutton Maw",
+    "hp": 1880,
+    "atk": 135,
+    "exp": 2140,
+    "gold": 1050,
+    "drops": [
+      {
+        "item": "astral_core",
+        "chance": 12
+      },
+      {
+        "item": "ancient_crystal",
+        "chance": 18
+      }
+    ],
+    "rarity": 1
+  },
+  "greed_collector": {
+    "name": "Greed Collector",
+    "hp": 1730,
+    "atk": 132,
+    "exp": 2050,
+    "gold": 1180,
+    "drops": [
+      {
+        "item": "ancient_artifact",
+        "chance": 10
+      },
+      {
+        "item": "celestial_gem",
+        "chance": 16
+      }
+    ],
+    "rarity": 1
+  },
+  "sloth_giant": {
+    "name": "Sloth Giant",
+    "hp": 2140,
+    "atk": 129,
+    "exp": 2220,
+    "gold": 1010,
+    "drops": [
+      {
+        "item": "void_stone",
+        "chance": 18
+      },
+      {
+        "item": "astral_core",
+        "chance": 10
+      }
+    ],
+    "rarity": 1
+  },
+  "wrath_reaver": {
+    "name": "Wrath Reaver",
+    "hp": 1820,
+    "atk": 148,
+    "exp": 2380,
+    "gold": 1240,
+    "drops": [
+      {
+        "item": "void_stone",
+        "chance": 22
+      },
+      {
+        "item": "dragon_heart_ore",
+        "chance": 12
+      }
+    ],
+    "rarity": 1
+  },
+  "envy_shade": {
+    "name": "Envy Shade",
+    "hp": 1710,
+    "atk": 140,
+    "exp": 2280,
+    "gold": 1130,
+    "drops": [
+      {
+        "item": "rift_crystal",
+        "chance": 22
+      },
+      {
+        "item": "shadow_crystal",
+        "chance": 20
+      }
+    ],
+    "rarity": 1
+  },
+  "pride_sovereign": {
+    "name": "Pride Sovereign",
+    "hp": 2360,
+    "atk": 156,
+    "exp": 2620,
+    "gold": 1360,
+    "drops": [
+      {
+        "item": "celestial_gem",
+        "chance": 18
+      },
+      {
+        "item": "ancient_artifact",
+        "chance": 12
+      }
+    ],
+    "rarity": 1
+  },
   "ruin_revenant": {
     "name": "Ruin Revenant",
     "hp": 520,

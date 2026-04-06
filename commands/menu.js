@@ -83,6 +83,9 @@ Reset quest: tiap hari jam 07:00
 .seasonreset confirm
 .dbbackup
 .dbstatus
+.dblatest
+.dbrestore latest
+.gold @pemain 1000
 
 🏰 GUILD
 .guild

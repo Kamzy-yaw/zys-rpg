@@ -32,10 +32,10 @@ floors: 5,
 hpScale: 8.0,
 atkScale: 0.75,
 defScale: 0.16,
-rewardExpBase: 340,
-rewardExpScale: 15,
-rewardGoldBase: 36,
-rewardGoldScale: 2
+rewardExpBase: 430,
+rewardExpScale: 18,
+rewardGoldBase: 55,
+rewardGoldScale: 2.8
 }
 }
 if (level >= 40) {
@@ -45,10 +45,10 @@ floors: 4,
 hpScale: 7.0,
 atkScale: 0.65,
 defScale: 0.14,
-rewardExpBase: 260,
-rewardExpScale: 12,
-rewardGoldBase: 30,
-rewardGoldScale: 1.8
+rewardExpBase: 330,
+rewardExpScale: 15,
+rewardGoldBase: 44,
+rewardGoldScale: 2.3
 }
 }
 return {
@@ -57,10 +57,10 @@ floors: 3,
 hpScale: 6.0,
 atkScale: 0.55,
 defScale: 0.12,
-rewardExpBase: 190,
-rewardExpScale: 9,
-rewardGoldBase: 24,
-rewardGoldScale: 1.4
+rewardExpBase: 250,
+rewardExpScale: 11,
+rewardGoldBase: 34,
+rewardGoldScale: 1.9
 }
 }
 
